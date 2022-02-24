@@ -58,6 +58,23 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
+  fonts: 
+    - family: M+ 1C
+      fonts:
+        - asset: assets/fonts/mplus-1c-regular.ttf
+        - asset: assets/fonts/mplus-1c-black.ttf
+          weight: 900
+        - asset: assets/fonts/mplus-1c-bold.ttf
+          weight: 700
+        - asset: assets/fonts/mplus-1c-heavy.ttf
+          weight: 800
+        - asset: assets/fonts/mplus-1c-light.ttf
+          weight: 300
+        - asset: assets/fonts/mplus-1c-medium.ttf
+          weight: 500
+        - asset: assets/fonts/mplus-1c-thin.ttf
+          weight: 100
+
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
