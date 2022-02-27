@@ -9,10 +9,14 @@ class PageTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(0.0, 50.0, 135.0, 0.0),
-      child: Text(title,
-        textAlign: TextAlign.left,
-        style: Styles.pageTitle
+      padding: const EdgeInsets.fromLTRB(10.0, 80.0, 0.0, 0.0),
+      child: Align(
+        alignment: Alignment.topLeft,
+        child: Text(
+          title,
+          textAlign: TextAlign.left,
+          style: Styles.pageTitle
+        ),
       ),
     );
   }

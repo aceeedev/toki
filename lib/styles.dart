@@ -1,24 +1,42 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 
 class Styles {
   static const _textSizeLarge = 25.0;
   static const _textSizeDefault = 16.0;
-  static const _textSizeTitle = 75.0;
+  static const _textSizePageTitle = 50.0;
+  static const _textSizeAlarmTitle = 20.0;
+
   static final Color _textColorStrong = _hexToColor('000000');
   static final Color _textColorDefault = _hexToColor('666666');
+  static final MaterialColor colorLogoGreen = _createMaterialColor(const Color(0xffC6D57E));
+  static final MaterialColor colorLogoRed = _createMaterialColor(const Color(0xffD57E7E));
+  static final MaterialColor colorLogoBlue = _createMaterialColor(const Color(0xffA2CDCD));
+  static final MaterialColor colorLogoTan = _createMaterialColor(const Color(0xffFFE1AF));
+
+  static final MaterialColor selectedAccentColor = colorLogoBlue;
+
   static const String _fontNameDefault = 'M+ 1C';
 
   static const pageTitle = TextStyle(
     fontFamily: _fontNameDefault,
-    fontSize: _textSizeTitle,
+    fontSize: _textSizePageTitle,
     fontWeight: FontWeight.w700,
   );
 
-  static final headerLarge = TextStyle(
+  static const alarmTitle = TextStyle(
     fontFamily: _fontNameDefault,
-    fontSize: _textSizeLarge,
-    color: _textColorStrong,
+    fontSize: _textSizeAlarmTitle,
+    fontWeight: FontWeight.w700,
   );
+
+  static TextStyle alarmDateUnselected = TextStyle(
+    fontFamily: _fontNameDefault,
+    fontSize: _textSizeDefault,
+    color: Colors.grey[400],
+  );
+
   static final textDefault = TextStyle(
     fontFamily: _fontNameDefault,
     fontSize: _textSizeDefault,
@@ -27,5 +45,27 @@ class Styles {
 
   static Color _hexToColor(String code) {
     return Color(int.parse(code.substring(0, 6), radix: 16) + 0xFF000000);
+  }
+
+  static MaterialColor _createMaterialColor(Color color) {
+    List strengths = <double>[.05];
+    final swatch = <int, Color>{};
+    final int r = color.red, g = color.green, b = color.blue;
+
+    for (int i = 1; i < 10; i++) {
+      strengths.add(0.1 * i);
+    }
+
+    for (var strength in strengths) { 
+      final double ds = 0.5 - strength;
+      swatch[(strength * 1000).round()] = Color.fromRGBO(
+        r + ((ds < 0 ? r : (255 - r)) * ds).round(),
+        g + ((ds < 0 ? g : (255 - r)) * ds).round(),
+        b + ((ds < 0 ? b : (255 - r)) * ds).round(),
+        1,
+      );
+    }
+
+    return MaterialColor(color.value, swatch);
   }
 }
