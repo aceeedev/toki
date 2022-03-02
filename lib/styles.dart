@@ -8,16 +8,20 @@ class Styles {
   static const _textSizePageTitle = 50.0;
   static const _textSizeAlarmTitle = 20.0;
 
-  static final Color _textColorStrong = _hexToColor('000000');
-  static final Color _textColorDefault = _hexToColor('666666');
+  static final Color _textColorStrong = _createMaterialColor(const Color(0xff000000));
+  static final Color _textColorDefault = _createMaterialColor(const Color(0xff666666));
   static final MaterialColor colorLogoGreen = _createMaterialColor(const Color(0xffC6D57E));
   static final MaterialColor colorLogoRed = _createMaterialColor(const Color(0xffD57E7E));
   static final MaterialColor colorLogoBlue = _createMaterialColor(const Color(0xffA2CDCD));
   static final MaterialColor colorLogoTan = _createMaterialColor(const Color(0xffFFE1AF));
 
+  static const String _fontNameDefault = 'M+ 1C';
+
+  static const alarmFormCardHeight = 100.0;
+  static const alarmFormCardWidth = 300.0;
+
   static final MaterialColor selectedAccentColor = colorLogoBlue;
 
-  static const String _fontNameDefault = 'M+ 1C';
 
   static const pageTitle = TextStyle(
     fontFamily: _fontNameDefault,
@@ -37,15 +41,30 @@ class Styles {
     color: Colors.grey[400],
   );
 
+  static final selectTimeText = TextStyle(
+    fontFamily: _fontNameDefault,
+    fontSize: _textSizeLarge,
+    color: selectedAccentColor,
+  );
+
   static final textDefault = TextStyle(
     fontFamily: _fontNameDefault,
     fontSize: _textSizeDefault,
     color: _textColorDefault,
   );
 
-  static Color _hexToColor(String code) {
-    return Color(int.parse(code.substring(0, 6), radix: 16) + 0xFF000000);
-  }
+  static final alarmFormButtonStyle = ElevatedButton.styleFrom(
+    fixedSize: const Size(110.0, 30.0), 
+    primary: selectedAccentColor,
+  );
+
+  static final dayButtonStyle = TextButton.styleFrom(
+    fixedSize: const Size(10,10),
+    textStyle: TextStyle(
+      color: selectedAccentColor,
+    ),
+  );
+
 
   static MaterialColor _createMaterialColor(Color color) {
     List strengths = <double>[.05];

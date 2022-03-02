@@ -11,54 +11,62 @@ class _AlarmState extends State<Alarm> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Card(
-        elevation: 2.0,
-        margin: const EdgeInsets.all(10.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Column(
-              children: [
-                const Text(
-                  '7:30 AM',
-                  style: Styles.alarmTitle
-                ),
-                RichText(
-                  text: TextSpan(
-                    style: Styles.textDefault,
-                    children: <TextSpan>[
-                      TextSpan(text: 'S ', style: Styles.alarmDateUnselected),
-                      const TextSpan(text: 'M '),
-                      const TextSpan(text: 'T '),
-                      const TextSpan(text: 'W '),
-                      const TextSpan(text: 'T '),
-                      const TextSpan(text: 'F '),
-                      TextSpan(text: 'S', style: Styles.alarmDateUnselected),
-                    ],
+    return Align( // you have to wrap in an align because it they are in another container, needed to change size
+      child: SizedBox( 
+        height: 100,
+        width: 250,
+        child: Card(
+          elevation: 2.0,
+          margin: const EdgeInsets.all(10.0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0)
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    '7:30 AM',
+                    style: Styles.alarmTitle
                   ),
-                ),
-                Text(
-                  'Alarm Name',
-                  style: Styles.textDefault
-                  )
-              ],
-            ),
-            Container(
-              alignment: Alignment.centerRight,
-              padding: const EdgeInsets.fromLTRB(20.0, 0.0, 0.0, 0.0),
-              child: Switch(
-                value: isSwitched,
-                onChanged: (value) {
-                  setState(() {
-                    isSwitched = value;
-                  });
-                },
-                activeTrackColor: Styles.selectedAccentColor,
-                activeColor: Styles.selectedAccentColor[700],
+                  RichText(
+                    text: TextSpan(
+                      style: Styles.textDefault,
+                      children: <TextSpan>[
+                        TextSpan(text: 'S ', style: Styles.alarmDateUnselected),
+                        const TextSpan(text: 'M '),
+                        const TextSpan(text: 'T '),
+                        const TextSpan(text: 'W '),
+                        const TextSpan(text: 'T '),
+                        const TextSpan(text: 'F '),
+                        TextSpan(text: 'S', style: Styles.alarmDateUnselected),
+                      ],
+                    ),
+                  ),
+                  Text(
+                    'Alarm Name',
+                    style: Styles.textDefault
+                    )
+                ],
               ),
-            ),   
-          ],
+              Container(
+                alignment: Alignment.centerRight,
+                padding: const EdgeInsets.fromLTRB(20.0, 0.0, 0.0, 0.0),
+                child: Switch(
+                  value: isSwitched,
+                  onChanged: (value) {
+                    setState(() {
+                      isSwitched = value;
+                    });
+                  },
+                  activeTrackColor: Styles.selectedAccentColor,
+                  activeColor: Styles.selectedAccentColor[700],
+                ),
+              ),   
+            ],
+          ),
         ),
       ),
     );
