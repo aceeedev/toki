@@ -1,12 +1,9 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 
 class Styles {
   static const _textSizeLarge = 25.0;
   static const _textSizeDefault = 16.0;
   static const _textSizePageTitle = 50.0;
-  static const _textSizeAlarmTitle = 20.0;
 
   static final Color _textColorStrong = _createMaterialColor(const Color(0xff000000));
   static final Color _textColorDefault = _createMaterialColor(const Color(0xff666666));
@@ -31,7 +28,7 @@ class Styles {
 
   static const alarmTitle = TextStyle(
     fontFamily: _fontNameDefault,
-    fontSize: _textSizeAlarmTitle,
+    fontSize: _textSizeLarge,
     fontWeight: FontWeight.w700,
   );
 
@@ -58,11 +55,22 @@ class Styles {
     primary: selectedAccentColor,
   );
 
-  static final dayButtonStyle = TextButton.styleFrom(
-    fixedSize: const Size(10,10),
-    textStyle: TextStyle(
-      color: selectedAccentColor,
-    ),
+  static final dayButtonStyleSelected = TextButton.styleFrom(
+    minimumSize: const Size(5.0, 5.0),
+    primary: selectedAccentColor[500],
+    textStyle: const TextStyle(
+      fontFamily: _fontNameDefault,
+      fontSize: 18.0,
+    )
+  );
+
+  static final dayButtonStyleNotSelected = TextButton.styleFrom(
+    minimumSize: const Size(5.0, 5.0),
+    primary: Colors.grey[400],
+    textStyle: const TextStyle(
+      fontFamily: _fontNameDefault,
+      fontSize: 18.0,
+    )
   );
 
 

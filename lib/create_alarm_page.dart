@@ -13,6 +13,43 @@ class StatelessAlarmPage extends StatefulWidget {
 
 class _StatelessAlarmPageState extends State<StatelessAlarmPage> {
   DateTime time = DateTime.now();
+  late TextEditingController _controller;
+
+  List<Text> ringtones = const [
+    Text('ringtone 1'),
+    Text('ringtone 2'),
+    Text('ringtone 3'),
+  ];
+  List<DayButton> dayButtons = [
+    DayButton('Su'),
+    DayButton('Mo'),
+    DayButton('Tu'),
+    DayButton('We'),
+    DayButton('Th'),
+    DayButton('Fr'),                  
+    DayButton('Sa'),
+  ];
+
+  String alarmName = "";
+  String alarmRingtone = "";
+
+
+  @override
+  void initState() {
+    alarmRingtone = ringtones[0].data.toString();
+
+    _controller = TextEditingController();
+    _controller.addListener(() { 
+      alarmName = _controller.text;
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,30 +76,44 @@ class _StatelessAlarmPageState extends State<StatelessAlarmPage> {
                 ),
               ),
               child: Text(
-                DateFormat('hh:mm a').format(time),
+                'Time: ${DateFormat('hh:mm a').format(time)}',
                 style: Styles.selectTimeText
               ),
             ),
           ),
           _StyledCard(
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: const [
-                DayButton('S'),
-                DayButton('M'),
-                DayButton('T'),
-                DayButton('W'),
-                DayButton('T'),
-                DayButton('F'),
-                DayButton('S'),
-              ],
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: dayButtons,
             ),
           ),
-          const _StyledCard(
-            child: Text('Alarm Name')
+          _StyledCard(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: CupertinoTextField(
+                  controller: _controller,
+                  placeholder: 'Optional: Alarm Name',
+                ),
+              ),
+            ),
           ),
-          const _StyledCard(
-            child: Text('Alarm Sound')
+          _StyledCard(
+            child: CupertinoButton(
+              onPressed: () => _showDialog(
+                CupertinoPicker(
+                  children: ringtones,
+                  itemExtent: 30.0,
+                  onSelectedItemChanged: (value) {
+                    setState(() => alarmRingtone = ringtones[value].data.toString());
+                  },
+                ),
+              ),
+              child: Text(
+                'Ringtone: $alarmRingtone',
+                style: Styles.selectTimeText
+              ),
+            ),
           ),
           Align(
             alignment: Alignment.bottomCenter,
@@ -126,7 +177,16 @@ class _StatelessAlarmPageState extends State<StatelessAlarmPage> {
 
   void _addAlarm() {
     // TODO adding alarm
+    var selectedDays = {};
+
+    for (var element in dayButtons) {
+      selectedDays[element.day] = element.selected;
+    }
     print('added alarm');
+    print(time);
+    print(selectedDays);
+    print(alarmName);
+    print(alarmRingtone);
   }
 }
 
@@ -153,8 +213,10 @@ class _StyledCard extends StatelessWidget {
 
 class DayButton extends StatefulWidget {
   final String day;
+  // default to being selected
+  bool selected = true;
 
-  const DayButton(this.day, {Key? key}) : super(key: key);
+  DayButton(this.day, {Key? key}) : super(key: key);
 
   @override
   State<DayButton> createState() => _DayButtonState();
@@ -162,14 +224,18 @@ class DayButton extends StatefulWidget {
 
 class _DayButtonState extends State<DayButton> {
 
+
   @override
   Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: () {},
-      child: Text(widget.day),
-      // TODO fix sizing of days in form
-      style: ButtonStyle(
-        fixedSize: MaterialStateProperty.all(const Size(5,5)),
+    return Expanded(
+      child: TextButton(
+        onPressed: () {
+          setState(() {
+            widget.selected = !widget.selected;
+          });
+        },
+        child: Text(widget.day),
+        style: widget.selected ? Styles.dayButtonStyleSelected : Styles.dayButtonStyleNotSelected,
       ),
     );
   }

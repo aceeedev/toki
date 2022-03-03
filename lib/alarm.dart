@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'styles.dart';
 
 class Alarm extends StatefulWidget {
+  const Alarm({Key? key}) : super(key: key);
+
   @override
   _AlarmState createState() => _AlarmState();
 }
@@ -26,6 +28,7 @@ class _AlarmState extends State<Alarm> {
             children: <Widget>[
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
                     '7:30 AM',

@@ -54,7 +54,7 @@ class _MyAppState extends State<MyApp> {
             label: 'Alarms'
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings_outlined), 
+            icon: const Icon(Icons.settings_outlined), 
             activeIcon: Container(
               decoration: BoxDecoration(
                 color: Styles.selectedAccentColor[100],
