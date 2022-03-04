@@ -36,6 +36,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter_local_notifications: ^9.2.0
   intl: ^0.17.0
+  path_provider: ^2.0.9
+  sqflite: ^2.0.2
 
 dev_dependencies:
   flutter_test:

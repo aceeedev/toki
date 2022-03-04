@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'alarm_page.dart';
-import 'leaderboard_page.dart';
-import 'settings_page.dart';
+import 'page/alarm_page.dart';
+import 'page/leaderboard_page.dart';
+import 'page/settings_page.dart';
 import 'styles.dart';
 
 class MyApp extends StatefulWidget {

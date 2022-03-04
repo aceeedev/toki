@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'page_title.dart';
+import '../widget/page_title.dart';
 
 class LeaderboardPage extends StatelessWidget {
   const LeaderboardPage({Key? key}) : super(key: key);

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
-import 'styles.dart';
-import 'page_title.dart';
+import '../styles.dart';
+import '../widget/page_title.dart';
 
 class StatelessAlarmPage extends StatefulWidget {
   const StatelessAlarmPage({Key? key}) : super(key: key);

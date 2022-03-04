@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'styles.dart';
-import 'page_title.dart';
-import 'alarm.dart';
+import '../styles.dart';
+import '../widget/page_title.dart';
+import '../widget/alarm_widget.dart';
 import 'create_alarm_page.dart';
 
 class AlarmPage extends StatelessWidget {
@@ -36,6 +36,6 @@ class AlarmPage extends StatelessWidget {
   }
 
   Widget _listViewItemBuilder(BuildContext context, int index) {
-    return Alarm();
+    return const AlarmWidget();
   }
 }

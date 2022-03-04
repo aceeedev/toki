@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'styles.dart';
+import '../styles.dart';
 
-class Alarm extends StatefulWidget {
-  const Alarm({Key? key}) : super(key: key);
+class AlarmWidget extends StatefulWidget {
+  const AlarmWidget({Key? key}) : super(key: key);
 
   @override
   _AlarmState createState() => _AlarmState();
 }
 
-class _AlarmState extends State<Alarm> {
+class _AlarmState extends State<AlarmWidget> {
   bool isSwitched = true;
 
   @override
