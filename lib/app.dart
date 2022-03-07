@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'api/notification_api.dart';
 import 'page/alarm_page.dart';
 import 'page/leaderboard_page.dart';
 import 'page/settings_page.dart';
@@ -18,6 +19,20 @@ class _MyAppState extends State<MyApp> {
     AlarmPage(),
     SettingsPage()
   ];
+
+  @override
+  void initState() {
+    super.initState();
+
+    NotificationApi.init(initScheduled: true);
+    listenNotifications();
+  }
+
+  void listenNotifications() =>
+    NotificationApi.onNotifications.stream.listen((onClickedNotification));
+
+  void onClickedNotification(String? payload) =>
+    print('alarm game');
 
   @override
   Widget build(BuildContext context) {

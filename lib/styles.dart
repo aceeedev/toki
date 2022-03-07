@@ -73,6 +73,12 @@ class Styles {
     )
   );
 
+  static final textDefaultRed = TextStyle(
+    fontFamily: _fontNameDefault,
+    fontSize: _textSizeDefault,
+    color: colorLogoRed,
+  );
+
 
   static MaterialColor _createMaterialColor(Color color) {
     List strengths = <double>[.05];

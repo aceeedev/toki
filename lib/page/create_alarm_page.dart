@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import '../database_helpers.dart';
 import '../styles.dart';
+import '../model/alarm.dart';
 import '../widget/page_title.dart';
 
-class StatelessAlarmPage extends StatefulWidget {
-  const StatelessAlarmPage({Key? key}) : super(key: key);
+class StatefulAlarmPage extends StatefulWidget {
+  const StatefulAlarmPage({Key? key}) : super(key: key);
 
   @override
-  State<StatelessAlarmPage> createState() => _StatelessAlarmPageState();
+  State<StatefulAlarmPage> createState() => _StatefulAlarmPageState();
 }
 
-class _StatelessAlarmPageState extends State<StatelessAlarmPage> {
+class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
   DateTime time = DateTime.now();
   late TextEditingController _controller;
 
@@ -135,8 +138,8 @@ class _StatelessAlarmPageState extends State<StatelessAlarmPage> {
                     padding: const EdgeInsets.only(left: 20.0),
                     child: ElevatedButton.icon(
                       onPressed: () {
-                        Navigator.pop(context);
                         _addAlarm();
+                        Navigator.pop(context);
                       },
                       icon: const Icon(Icons.check),
                       label: const Text('Create'),
@@ -175,18 +178,27 @@ class _StatelessAlarmPageState extends State<StatelessAlarmPage> {
     );
   }
 
-  void _addAlarm() {
-    // TODO adding alarm
+  void _addAlarm() async {
     var selectedDays = {};
-
     for (var element in dayButtons) {
       selectedDays[element.day] = element.selected;
     }
-    print('added alarm');
-    print(time);
-    print(selectedDays);
-    print(alarmName);
-    print(alarmRingtone);
+
+    final alarm = Alarm(
+      time: time,
+      selectedSu: selectedDays['Su'],
+      selectedMo: selectedDays['Mo'],
+      selectedTu: selectedDays['Tu'],
+      selectedWe: selectedDays['We'],
+      selectedTh: selectedDays['Th'],
+      selectedFr: selectedDays['Fr'],
+      selectedSa: selectedDays['Sa'],
+      alarmName: alarmName,
+      alarmRingtone: alarmRingtone,
+      alarmOn: true,
+    );
+
+    await TokiDatabase.instance.create(alarm);
   }
 }
 
@@ -223,8 +235,6 @@ class DayButton extends StatefulWidget {
 }
 
 class _DayButtonState extends State<DayButton> {
-
-
   @override
   Widget build(BuildContext context) {
     return Expanded(
