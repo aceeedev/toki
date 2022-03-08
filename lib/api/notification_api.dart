@@ -13,7 +13,11 @@ class NotificationApi {
     const iOS = IOSInitializationSettings();
     const settings = InitializationSettings(android: android, iOS: iOS);
 
-    //tz.setLocalLocation(tz.getLocation('America/Los_Angeles'));
+    // when app is closed
+    final details = await _notifications.getNotificationAppLaunchDetails();
+    if (details != null && details.didNotificationLaunchApp) {
+      onNotifications.add(details.payload);
+    }
 
     await _notifications.initialize(
       settings,
@@ -30,14 +34,21 @@ class NotificationApi {
   }
 
   static Future _notificationDetails() async {
+
+    const sound = 'digital_alarm_sound.wav';
     return const NotificationDetails(
       android: AndroidNotificationDetails(
-        'channel id',
+        'channel id 1',
         'channel name',
         //'channel description',
         importance: Importance.max,
       ),
-      iOS: IOSNotificationDetails(),
+      iOS: IOSNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
+        sound: sound,
+      ),
     );
   }
 
@@ -55,41 +66,82 @@ class NotificationApi {
       payload: payload,
     );
 
-  static Future showSheduledNotification({
+  static void showSheduledNotification({
     int id = 0,
     String? title,
     String? body,
     String? payload,
-    required DateTime scheduledDate,
-  }) async =>
-    _notifications.zonedSchedule(
-      id,
-      title,
-      body,
-      _scheduleWeekly(const Time(8), days: [DateTime.monday, DateTime.tuesday]),
-      await _notificationDetails(),
-      payload: payload,
-      androidAllowWhileIdle: true,
-      uiLocalNotificationDateInterpretation: 
-        UILocalNotificationDateInterpretation.absoluteTime,
-      matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
+    required DateTime scheduledDateTime,
+    required Map selectedDays,
+    required int firstNotId,
+    required int lastNotId,
+  }) async {
+    List<int> days = [];
+    if (selectedDays['Su']) {
+      days.add(DateTime.sunday);
+    }
+    if (selectedDays['Mo']) {
+      days.add(DateTime.monday);
+    }
+    if (selectedDays['Tu']) {
+      days.add(DateTime.tuesday);
+    }
+    if (selectedDays['We']) {
+      days.add(DateTime.wednesday);
+    }
+    if (selectedDays['Th']) {
+      days.add(DateTime.thursday);
+    }
+    if (selectedDays['Fr']) {
+      days.add(DateTime.friday);
+    }
+    if (selectedDays['Sa']) {
+      days.add(DateTime.saturday);
+    }
+
+    final scheduledDates = _scheduleWeekly(
+      Time(scheduledDateTime.hour, scheduledDateTime.minute), 
+      days: days
     );
+    for (int i = firstNotId; i <= lastNotId; i++) {
+      final scheduledDate = scheduledDates[i-firstNotId]; 
+
+      _notifications.zonedSchedule(
+        id + i,
+        title,
+        body,
+        scheduledDate,
+        await _notificationDetails(),
+        payload: payload,
+        androidAllowWhileIdle: true,
+        uiLocalNotificationDateInterpretation: 
+          UILocalNotificationDateInterpretation.absoluteTime,
+        matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
+      );
+    }
+  }
 
   static tz.TZDateTime _scheduleDaily(Time time) {
     final now = tz.TZDateTime.now(tz.local);
-    final scheduledDate = tz.TZDateTime(tz.local, now.year, now.month, now.day, now.hour, now.minute, now.second);
+    final scheduledDate = tz.TZDateTime(tz.local, now.year, now.month, now.day, time.hour, time.minute, time.second);
 
     return scheduledDate.isBefore(now)
       ? scheduledDate.add(const Duration(days: 1))
       : scheduledDate;
   }
 
-  static tz.TZDateTime _scheduleWeekly(Time time, {required List<int> days}) {
-    tz.TZDateTime scheduledDate = _scheduleDaily(time);
+  static List<tz.TZDateTime> _scheduleWeekly(Time time, {required List<int> days}) {
+    return days.map((day) {
+      tz.TZDateTime scheduledDate = _scheduleDaily(time);
 
-    while (!days.contains(scheduledDate.weekday)) {
-      scheduledDate = scheduledDate.add(const Duration(days: 1));
-    }
-    return scheduledDate;
+      while (day != scheduledDate.weekday) {
+        scheduledDate = scheduledDate.add(const Duration(days: 1));
+      }
+      return scheduledDate;
+    }).toList();  
   }
+
+  static void cancel(int id) => _notifications.cancel(id);
+
+  static void cancelAll() => _notifications.cancelAll();
 }

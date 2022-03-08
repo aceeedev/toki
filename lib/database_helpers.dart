@@ -1,7 +1,5 @@
 import 'package:path/path.dart';
-import 'dart:io';
 import 'package:sqflite/sqflite.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:toki/model/alarm.dart';
 
 class TokiDatabase {
@@ -33,7 +31,7 @@ class TokiDatabase {
     const idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
     const boolType = 'BOOLEAN NOT NULL';
     const textType = 'TEXT NOT NULL';
-    //final integerType = 'INTEGER NOT NULL';
+    const integerType = 'INTEGER NOT NULL';
     
     await db.execute('''
 CREATE TABLE $tableAlarms (
@@ -48,7 +46,9 @@ CREATE TABLE $tableAlarms (
   ${AlarmFields.selectedSa} $boolType,
   ${AlarmFields.alarmName} $textType,
   ${AlarmFields.alarmRingtone} $textType,
-  ${AlarmFields.alarmOn} $boolType
+  ${AlarmFields.alarmOn} $boolType,
+  ${AlarmFields.firstNotId} $integerType,
+  ${AlarmFields.lastNotId} $integerType
   )
 ''');
   }
@@ -77,10 +77,21 @@ CREATE TABLE $tableAlarms (
     }
   }
 
-  Future<List<Alarm>> readAllAlarms() async {
+  Future<List<Alarm>> readAllAlarms(String orderBySelector) async {
     final db = await instance.database;
 
-    final orderBy = '${AlarmFields.time} ASC';
+    String orderBy = '${AlarmFields.time} ASC';
+    switch (orderBySelector) {
+      case 'Time ASC': {
+        orderBy = '${AlarmFields.time} ASC';
+      }
+      break;
+
+      case 'Id ASC': {
+        orderBy = '${AlarmFields.id} ASC';
+      }
+    }
+    orderBy = '${AlarmFields.time} ASC';
 
     final result = await db.query(tableAlarms, orderBy: orderBy);
 
@@ -114,13 +125,11 @@ CREATE TABLE $tableAlarms (
     db.close();
   }
 
-  Future open() async {
-    final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'toki.db');
+  Future<int> getLastId() async {
+    final db = await instance.database;
 
-    return await openDatabase(
-      path, 
-      version: 1, 
-    );
+    final lastInsertRowId = (await db.rawQuery('SELECT last_insert_rowid()')).first.values.first as int;
+
+    return lastInsertRowId;
   }
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../database_helpers.dart';
+import 'package:toki/api/notification_api.dart';
 import '../styles.dart';
 import '../model/alarm.dart';
 import '../widget/page_title.dart';
@@ -137,8 +137,8 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
                   Container(
                     padding: const EdgeInsets.only(left: 20.0),
                     child: ElevatedButton.icon(
-                      onPressed: () {
-                        _addAlarm();
+                      onPressed: () async {
+                        await _addAlarm();
                         Navigator.pop(context);
                       },
                       icon: const Icon(Icons.check),
@@ -178,11 +178,25 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
     );
   }
 
-  void _addAlarm() async {
+  Future _addAlarm() async {
     var selectedDays = {};
+    int numSelectedDays = 0;
     for (var element in dayButtons) {
       selectedDays[element.day] = element.selected;
+      if (element.selected) numSelectedDays++;
     }
+
+    // get the firstNotId and lastNotId
+    final int firstNotId;
+    final int lastNotId;
+    List<Alarm> alarms = await TokiDatabase.instance.readAllAlarms('Id ASC');
+    if (alarms.isNotEmpty) {
+      Alarm largestIdAlarm = alarms[0];
+      firstNotId = int.parse((largestIdAlarm.toJson()['lastNotId'].toString())) + 1; //this is pain
+    } else {
+      firstNotId = 0;
+    }
+    lastNotId = firstNotId + numSelectedDays - 1;
 
     final alarm = Alarm(
       time: time,
@@ -196,9 +210,24 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
       alarmName: alarmName,
       alarmRingtone: alarmRingtone,
       alarmOn: true,
+      firstNotId: firstNotId,
+      lastNotId: lastNotId,
     );
 
     await TokiDatabase.instance.create(alarm);
+
+    // create the notification
+    NotificationApi.showSheduledNotification(
+      title: '${DateFormat('hh:mm a').format(time)} Alarm',
+      body: 'Click this notification to turn off the alarm!',
+      payload: 'schedule',
+      scheduledDateTime: time,
+      selectedDays: selectedDays,
+      firstNotId: firstNotId,
+      lastNotId: lastNotId,
+    );
+
+    print('added alarm');
   }
 }
 

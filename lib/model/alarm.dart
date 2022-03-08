@@ -2,21 +2,23 @@ final String tableAlarms = 'alarms';
 
 class AlarmFields {
   static final List<String> values = [
-    id, time, selectedSu, selectedMo, selectedTu, selectedWe, selectedTh, selectedFr, selectedSa, alarmName, alarmRingtone, alarmOn
+    id, time, selectedSu, selectedMo, selectedTu, selectedWe, selectedTh, selectedFr, selectedSa, alarmName, alarmRingtone, alarmOn, firstNotId, lastNotId
   ];
 
-  static final String id = '_id';
-  static final String time = 'time';
-  static final String selectedSu = 'selectedSu';
-  static final String selectedMo = 'selectedMo';
-  static final String selectedTu = 'selectedTu';
-  static final String selectedWe = 'selectedWe';
-  static final String selectedTh = 'selectedTh';
-  static final String selectedFr = 'selectedFr';
-  static final String selectedSa = 'selectedSa';
-  static final String alarmName = 'alarmName';
-  static final String alarmRingtone = 'alarmRingtone';
-  static final String alarmOn = 'alarmOn';
+  static const String id = '_id';
+  static const String time = 'time';
+  static const String selectedSu = 'selectedSu';
+  static const String selectedMo = 'selectedMo';
+  static const String selectedTu = 'selectedTu';
+  static const String selectedWe = 'selectedWe';
+  static const String selectedTh = 'selectedTh';
+  static const String selectedFr = 'selectedFr';
+  static const String selectedSa = 'selectedSa';
+  static const String alarmName = 'alarmName';
+  static const String alarmRingtone = 'alarmRingtone';
+  static const String alarmOn = 'alarmOn';
+  static const String firstNotId = 'firstNotId';
+  static const String lastNotId = 'lastNotId';
 }
 
 class Alarm {
@@ -32,6 +34,8 @@ class Alarm {
   final String alarmName;
   final String alarmRingtone;
   final bool alarmOn;
+  final int firstNotId;
+  final int lastNotId;
 
   const Alarm({
     this.id,
@@ -46,6 +50,8 @@ class Alarm {
     required this.alarmName,
     required this.alarmRingtone,
     required this.alarmOn,
+    required this.firstNotId,
+    required this.lastNotId,
   });
 
   Alarm copy({
@@ -61,6 +67,8 @@ class Alarm {
     String? alarmName,
     String? alarmRingtone,
     bool? alarmOn,
+    int? firstNotId,
+    int? lastNotId,
   }) =>
     Alarm(
       id: id ?? this.id,
@@ -75,6 +83,8 @@ class Alarm {
       alarmName: alarmName ?? this.alarmName,
       alarmRingtone: alarmRingtone ?? this.alarmRingtone,
       alarmOn: alarmOn ?? this.alarmOn,
+      firstNotId: firstNotId ?? this.firstNotId,
+      lastNotId: lastNotId ?? this.lastNotId,
     );
 
     Map<String, Object?> toJson() => {
@@ -90,6 +100,8 @@ class Alarm {
     AlarmFields.alarmName: alarmName,
     AlarmFields.alarmRingtone: alarmRingtone,
     AlarmFields.alarmOn: alarmOn ? 1 : 0,
+    AlarmFields.firstNotId: firstNotId,
+    AlarmFields.lastNotId: lastNotId,
   };
 
   static Alarm fromJson(Map<String, Object?> json) => Alarm(
@@ -105,5 +117,7 @@ class Alarm {
     alarmName: json[AlarmFields.alarmName] as String,
     alarmRingtone: json[AlarmFields.alarmRingtone] as String,
     alarmOn: json[AlarmFields.alarmOn] == 1,
+    firstNotId: json[AlarmFields.firstNotId] as int,
+    lastNotId: json[AlarmFields.lastNotId] as int,
   );
 }

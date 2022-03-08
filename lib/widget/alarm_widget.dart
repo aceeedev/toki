@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:toki/api/notification_api.dart';
 import '../styles.dart';
 import '../database_helpers.dart';
 import '../model/alarm.dart';
@@ -20,7 +21,7 @@ class _AlarmState extends State<AlarmWidget> {
 
   @override
   void initState() {
-    isSwitched = !widget.alarm.alarmOn;
+    isSwitched = widget.alarm.alarmOn;
     super.initState();
   }
 
@@ -189,6 +190,13 @@ class _ThreeDotsButtonState extends State<ThreeDotsButton> {
                 onPressed: () {
                   // get alarm
                   Map alarmJson = widget.alarm.toJson();
+
+                  // delete (all) scheduled notifications
+                  for (int id = alarmJson['firstNotId']; id <= alarmJson['lastNotId']; id++) {
+                    NotificationApi.cancel(id);
+                  }
+
+                  // delete from db
                   TokiDatabase.instance.delete(alarmJson['_id']);
                   // refresh alarm page
                   widget.refreshFunc();

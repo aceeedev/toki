@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:toki/database_helpers.dart';
 import '../api/notification_api.dart';
 import '../widget/page_title.dart';
 
@@ -28,7 +28,10 @@ class LeaderboardPage extends StatelessWidget {
                 title: 'Schedule test',
                 body: 'today at whatever',
                 payload: 'schedule',
-                scheduledDate: DateTime.now().add(const Duration(seconds: 12)),
+                scheduledDateTime: DateTime.now().add(const Duration(seconds: 12)),
+                selectedDays: {'Mo': true},
+                firstNotId: 0,
+                lastNotId: 0,
               );
 
               const snackBar = SnackBar(
@@ -41,8 +44,29 @@ class LeaderboardPage extends StatelessWidget {
               ScaffoldMessenger.of(context)
                 ..removeCurrentSnackBar()
                 ..showSnackBar(snackBar);
-
             }
+          ),
+          const SizedBox(height: 24),
+          TextButton(
+            child: const Text('Cancel all alarms'),
+            onPressed: () {
+              NotificationApi.cancelAll();
+
+              print('cancelled alarms');
+            }
+          ),
+          const SizedBox(height: 24),
+          TextButton(
+            child: const Text('getLastId'),
+            onPressed: () async {
+              print(await TokiDatabase.instance.getLastId());
+            }
+          ),
+          const Center(
+            child: Text(
+              'Coming Soon',
+              style: TextStyle(fontSize: 24),
+            ),
           ),
         ]
       ),

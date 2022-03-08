@@ -38,13 +38,16 @@ class _AlarmPageState extends State<AlarmPage> {
   Future refreshAlarms() async {
     setState(() => isLoading = true);
 
-    List<Alarm> preAlarms = await TokiDatabase.instance.readAllAlarms();
-
-    setState(() {
-      alarms = preAlarms;
-    });
-
-    setState(() => isLoading = false);
+    List<Alarm> preAlarms = await TokiDatabase.instance.readAllAlarms('Time ASC');
+    if (mounted) {
+      setState(() {
+        alarms = preAlarms;
+      });
+    }
+    
+    if (mounted) {
+      setState(() => isLoading = false);
+    }
   }
 
   @override
@@ -74,9 +77,8 @@ class _AlarmPageState extends State<AlarmPage> {
       child: const Icon(Icons.add),
       backgroundColor: Styles.selectedAccentColor,
       onPressed: () async {
-        await Navigator.push(context, MaterialPageRoute(builder: (context) => const StatefulAlarmPage()));
-        
-        refreshAlarms();
+        await Navigator.push(context, MaterialPageRoute(builder: (context) => const StatefulAlarmPage()))
+        .then((value) => refreshAlarms());
       },
       heroTag: 'createAlarm',
     ),
