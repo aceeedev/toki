@@ -50,6 +50,12 @@ class Styles {
     color: _textColorDefault,
   );
 
+  static final largeTextDefault = TextStyle(
+    fontFamily: _fontNameDefault,
+    fontSize: _textSizeLarge,
+    color: _textColorDefault,
+  );
+
   static final alarmFormButtonStyle = ElevatedButton.styleFrom(
     fixedSize: const Size(110.0, 30.0), 
     primary: selectedAccentColor,

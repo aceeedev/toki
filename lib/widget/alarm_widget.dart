@@ -79,13 +79,46 @@ class _AlarmState extends State<AlarmWidget> {
                     value: isSwitched,
                     onChanged: (value) {
                       setState(() {
+                        print('here');
                         isSwitched = value;
 
-                        Map<String, Object?> alarmJson = widget.alarm.toJson();
+                        Map<String, dynamic> alarmJson = widget.alarm.toJson();
                         alarmJson['alarmOn'] = value ? 0 : 1;
                         Alarm updatedAlarm = Alarm.fromJson(alarmJson);
                         
                         TokiDatabase.instance.update(updatedAlarm);
+
+                        // enable/disable alarm
+                        final int firstNotId = widget.alarm.firstNotId;
+                        final int lastNotId = widget.alarm.lastNotId;
+                        if (isSwitched) {
+                          final DateTime time = widget.alarm.time;
+                          final selectedDays = {
+                            'Su': widget.alarm.selectedSu,
+                            'Mo': widget.alarm.selectedMo,
+                            'Tu': widget.alarm.selectedTu,
+                            'We': widget.alarm.selectedWe,
+                            'Th': widget.alarm.selectedTh,
+                            'Fr': widget.alarm.selectedFr,
+                            'Sa': widget.alarm.selectedSa
+                          };
+
+                          NotificationApi.showSheduledNotification(
+                            title: '${widget.alarm.alarmName == "" ? "" : widget.alarm.alarmName + ' - '}${DateFormat('hh:mm a').format(time)} Alarm',
+                            body: 'Click this notification to turn off the alarm!',
+                            payload: 'schedule',
+                            scheduledDateTime: time,
+                            selectedDays: selectedDays,
+                            firstNotId: firstNotId,
+                            lastNotId: lastNotId,
+                          );
+                        } else {
+                          // delete (all) scheduled notifications
+                          for (int id = firstNotId; id <= lastNotId; id++) {
+                            NotificationApi.cancel(id);
+                          }
+                        }
+
                         widget.refreshFunc;
                       });
                     },
@@ -175,7 +208,7 @@ class _ThreeDotsButtonState extends State<ThreeDotsButton> {
         showCupertinoDialog(
           context: context, 
           builder: (BuildContext context) => CupertinoAlertDialog(
-            title: Text('Delete ${DateFormat('h:mm a').format(widget.alarm.time)} Alarm'),
+            title: Text('Delete ${widget.alarm.alarmName == "" ? DateFormat('h:mm a').format(widget.alarm.time) : widget.alarm.alarmName + ' (' + DateFormat('h:mm a').format(widget.alarm.time) + ')'} Alarm'),
             content: const Text('Are you sure you want to delete this alarm?'),
             actions: <CupertinoDialogAction>[
               CupertinoDialogAction(

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:notification_permissions/notification_permissions.dart';
+import 'widget/page_title.dart';
 import 'api/notification_api.dart';
 import 'page/alarm_page.dart';
 import 'page/leaderboard_page.dart';
 import 'page/settings_page.dart';
 import 'styles.dart';
+import 'puzzles/puzzle_helper.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -12,7 +15,7 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   int selectedPage = 1;
   final _pageOptions = const [
     LeaderboardPage(),
@@ -20,24 +23,106 @@ class _MyAppState extends State<MyApp> {
     SettingsPage()
   ];
 
+  late Future<String> allowedNotificationsPerm;
+
   @override
   void initState() {
     super.initState();
 
     NotificationApi.init(initScheduled: true);
     listenNotifications();
+
+    allowedNotificationsPerm = getAllowedNotificationsPerm();
+    WidgetsBinding.instance?.addObserver(this);
   }
 
   void listenNotifications() =>
     NotificationApi.onNotifications.stream.listen((onClickedNotification));
 
-  void onClickedNotification(String? payload) =>
-    print('alarm game');
+  void onClickedNotification(String? payload) async {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => PuzzleHelper().randomPuzzle()
+    ));
+  }
+
+  Future<String> getAllowedNotificationsPerm() {
+    return NotificationPermissions.getNotificationPermissionStatus()
+      .then((status) {
+        if (status == PermissionStatus.granted) {
+          return 'granted';
+        } else {
+          return 'not granted';
+        }
+      });
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      setState(() {
+        allowedNotificationsPerm = getAllowedNotificationsPerm();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pageOptions[selectedPage],
+      body: FutureBuilder(
+        future: allowedNotificationsPerm,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          if (snapshot.hasError) {
+            return Text('error while retrieving status: ${snapshot.error}');
+          }
+
+          if (snapshot.hasData) {
+            if (snapshot.data == 'granted') {
+              return _pageOptions[selectedPage];
+            }
+
+            return Scaffold(
+              body: Column(
+                children: [
+                  const PageTitle('Notifications Error'),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Text(
+                      'Please enable notifications in order to use Toki',
+                        style: Styles.largeTextDefault,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      NotificationPermissions.requestNotificationPermissions(
+                        iosSettings: const NotificationSettingsIos(
+                          sound: true,
+                          badge: true,
+                          alert: true
+                        )
+                      ).then((value) => allowedNotificationsPerm = getAllowedNotificationsPerm());
+                    }, 
+                    child: Text(
+                      'Go to notifications settings',
+                      style: Styles.textDefault,
+                    ),
+                    style: TextButton.styleFrom(
+                      backgroundColor: Styles.selectedAccentColor
+                    )
+                  )
+                ]
+              ),
+            );
+          }
+
+        return const Text('No permission status yet');
+
+        }),
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(

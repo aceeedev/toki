@@ -60,13 +60,13 @@ class _AlarmPageState extends State<AlarmPage> {
         Expanded(
           child: isLoading
             ? const Center(
-              child: CircularProgressIndicator()
+                child: CircularProgressIndicator()
               )
             : alarms.isEmpty
-              ? const Center(
+              ? Center(
                   child: Text(
                     'No Alarms',
-                    style: TextStyle(fontSize: 24),
+                    style: Styles.largeTextDefault,
                   ),
                 )
               : buildAlarms(),
