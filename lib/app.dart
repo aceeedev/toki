@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:notification_permissions/notification_permissions.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:toki/database_helpers.dart';
+import 'package:toki/model/alarm.dart';
 import 'widget/page_title.dart';
 import 'api/notification_api.dart';
 import 'page/alarm_page.dart';
@@ -29,6 +32,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void initState() {
     super.initState();
 
+    asyncFunc();
+
     NotificationApi.init(initScheduled: true);
     listenNotifications();
 
@@ -36,11 +41,28 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     WidgetsBinding.instance?.addObserver(this);
   }
 
+  void asyncFunc() async {
+    final dir = await getApplicationDocumentsDirectory();
+    print(dir.path);
+  }
+
   void listenNotifications() =>
     NotificationApi.onNotifications.stream.listen((onClickedNotification));
 
   void onClickedNotification(String? payload) async {
-    Navigator.of(context).push(MaterialPageRoute(
+    var alarmIdAndCurrentNotId = payload!.split(' ');
+    // get alarm from db
+    Alarm alarm = await TokiDatabase.instance.readAlarm(int.parse(alarmIdAndCurrentNotId[0]));
+    // create next alarms
+    NotificationApi.scheduleNextNotification(
+      alarm: alarm,
+      currentNotId: int.parse(alarmIdAndCurrentNotId[1]),
+    );
+
+    Navigator.of(context).push(MaterialPageRoute<void>(
+      builder: (context) => build(context)
+    ));
+    Navigator.of(context).push(MaterialPageRoute<void>(
       builder: (context) => PuzzleHelper().randomPuzzle()
     ));
   }

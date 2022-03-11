@@ -182,6 +182,7 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
     var selectedDays = {};
     int numSelectedDays = 0;
     for (var element in dayButtons) {
+      //print('${selectedDays[element.day]} ${element.selected}');
       selectedDays[element.day] = element.selected;
       if (element.selected) numSelectedDays++;
     }
@@ -196,7 +197,7 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
     } else {
       firstNotId = 0;
     }
-    lastNotId = firstNotId + numSelectedDays - 1;
+    lastNotId = firstNotId + ((numSelectedDays - 1) * 10);
 
     final alarm = Alarm(
       time: time,
@@ -217,15 +218,20 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
     await TokiDatabase.instance.create(alarm);
 
     // create the notification
-    NotificationApi.showSheduledNotification(
+    /*NotificationApi.loopScheduledNotification(
       title: '${DateFormat('hh:mm a').format(time)} Alarm',
       body: 'Click this notification to turn off the alarm!',
-      payload: 'schedule',
+      payload: (await TokiDatabase.instance.getLastId()).toString(),
       scheduledDateTime: time,
       selectedDays: selectedDays,
       firstNotId: firstNotId,
       lastNotId: lastNotId,
-    );
+    );*/
+
+    Alarm alarmFromDB = await TokiDatabase.instance.readAlarm(await TokiDatabase.instance.getLastId());
+
+    NotificationApi.initialScheduleNotifications(alarmFromDB);
+    //NotificationApi.scheduleNotification(alarm: alarmFromDB, currentNotId: 0);
 
     print('added alarm');
   }

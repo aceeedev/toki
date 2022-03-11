@@ -1,4 +1,4 @@
-final String tableAlarms = 'alarms';
+const String tableAlarms = 'alarms';
 
 class AlarmFields {
   static final List<String> values = [
@@ -107,13 +107,13 @@ class Alarm {
   static Alarm fromJson(Map<String, Object?> json) => Alarm(
     id: json[AlarmFields.id] as int?,
     time: DateTime.parse(json[AlarmFields.time] as String),
-    selectedSu: json[AlarmFields.selectedMo] == 1,
-    selectedMo: json[AlarmFields.selectedTu] == 1,
-    selectedTu: json[AlarmFields.selectedWe] == 1,
-    selectedWe: json[AlarmFields.selectedTh] == 1,
-    selectedTh: json[AlarmFields.selectedFr] == 1,
-    selectedFr: json[AlarmFields.selectedSa] == 1,
-    selectedSa: json[AlarmFields.selectedSu] == 1,
+    selectedSu: json[AlarmFields.selectedSu] == 1,
+    selectedMo: json[AlarmFields.selectedMo] == 1,
+    selectedTu: json[AlarmFields.selectedTu] == 1,
+    selectedWe: json[AlarmFields.selectedWe] == 1,
+    selectedTh: json[AlarmFields.selectedTh] == 1,
+    selectedFr: json[AlarmFields.selectedFr] == 1,
+    selectedSa: json[AlarmFields.selectedSa] == 1,
     alarmName: json[AlarmFields.alarmName] as String,
     alarmRingtone: json[AlarmFields.alarmRingtone] as String,
     alarmOn: json[AlarmFields.alarmOn] == 1,

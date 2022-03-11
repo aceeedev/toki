@@ -103,7 +103,8 @@ class _AlarmState extends State<AlarmWidget> {
                             'Sa': widget.alarm.selectedSa
                           };
 
-                          NotificationApi.showSheduledNotification(
+                          // TODO: fix disabling alarms
+                          /*NotificationApi.showSheduledNotification(
                             title: '${widget.alarm.alarmName == "" ? "" : widget.alarm.alarmName + ' - '}${DateFormat('hh:mm a').format(time)} Alarm',
                             body: 'Click this notification to turn off the alarm!',
                             payload: 'schedule',
@@ -111,7 +112,7 @@ class _AlarmState extends State<AlarmWidget> {
                             selectedDays: selectedDays,
                             firstNotId: firstNotId,
                             lastNotId: lastNotId,
-                          );
+                          );*/
                         } else {
                           // delete (all) scheduled notifications
                           for (int id = firstNotId; id <= lastNotId; id++) {

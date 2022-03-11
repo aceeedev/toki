@@ -48,7 +48,7 @@ CREATE TABLE $tableAlarms (
   ${AlarmFields.alarmRingtone} $textType,
   ${AlarmFields.alarmOn} $boolType,
   ${AlarmFields.firstNotId} $integerType,
-  ${AlarmFields.lastNotId} $integerType
+  ${AlarmFields.lastNotId} $integerType,
   )
 ''');
   }
