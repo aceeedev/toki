@@ -11,6 +11,7 @@ class Styles {
   static final MaterialColor colorLogoRed = _createMaterialColor(const Color(0xffD57E7E));
   static final MaterialColor colorLogoBlue = _createMaterialColor(const Color(0xffA2CDCD));
   static final MaterialColor colorLogoTan = _createMaterialColor(const Color(0xffFFE1AF));
+  static final MaterialColor backgroundColor = _createMaterialColor(const Color(0xffFFFFFF));
 
   static const String _fontNameDefault = 'M+ 1C';
 

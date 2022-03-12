@@ -32,6 +32,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void initState() {
     super.initState();
 
+    // clear all notifications if needed for debug
+    NotificationApi.cancelAll();
+
     asyncFunc();
 
     NotificationApi.init(initScheduled: true);
@@ -59,11 +62,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       currentNotId: int.parse(alarmIdAndCurrentNotId[1]),
     );
 
+    build(context);
+
     Navigator.of(context).push(MaterialPageRoute<void>(
-      builder: (context) => build(context)
-    ));
-    Navigator.of(context).push(MaterialPageRoute<void>(
-      builder: (context) => PuzzleHelper().randomPuzzle()
+      builder: (context) => PuzzleHelper(alarm).randomPuzzle()
     ));
   }
 

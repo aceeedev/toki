@@ -41,6 +41,7 @@ dependencies:
   rxdart: ^0.27.3
   flutter_native_timezone: ^2.0.0
   notification_permissions: ^0.6.1
+  maze: ^3.0.0
 
 dev_dependencies:
   flutter_test:
@@ -80,6 +81,10 @@ flutter:
           weight: 500
         - asset: assets/fonts/mplus-1c-thin.ttf
           weight: 100
+
+  assets:
+    - assets/images/finish_flag.png
+    - assets/images/smile.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

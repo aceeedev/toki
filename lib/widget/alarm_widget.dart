@@ -92,32 +92,9 @@ class _AlarmState extends State<AlarmWidget> {
                         final int firstNotId = widget.alarm.firstNotId;
                         final int lastNotId = widget.alarm.lastNotId;
                         if (isSwitched) {
-                          final DateTime time = widget.alarm.time;
-                          final selectedDays = {
-                            'Su': widget.alarm.selectedSu,
-                            'Mo': widget.alarm.selectedMo,
-                            'Tu': widget.alarm.selectedTu,
-                            'We': widget.alarm.selectedWe,
-                            'Th': widget.alarm.selectedTh,
-                            'Fr': widget.alarm.selectedFr,
-                            'Sa': widget.alarm.selectedSa
-                          };
-
-                          // TODO: fix disabling alarms
-                          /*NotificationApi.showSheduledNotification(
-                            title: '${widget.alarm.alarmName == "" ? "" : widget.alarm.alarmName + ' - '}${DateFormat('hh:mm a').format(time)} Alarm',
-                            body: 'Click this notification to turn off the alarm!',
-                            payload: 'schedule',
-                            scheduledDateTime: time,
-                            selectedDays: selectedDays,
-                            firstNotId: firstNotId,
-                            lastNotId: lastNotId,
-                          );*/
+                          NotificationApi.initialScheduleNotifications(widget.alarm);
                         } else {
-                          // delete (all) scheduled notifications
-                          for (int id = firstNotId; id <= lastNotId; id++) {
-                            NotificationApi.cancel(id);
-                          }
+                          NotificationApi.cancelAlarm(widget.alarm);
                         }
 
                         widget.refreshFunc;
@@ -222,16 +199,11 @@ class _ThreeDotsButtonState extends State<ThreeDotsButton> {
                   style: Styles.textDefaultRed
                 ),
                 onPressed: () {
-                  // get alarm
-                  Map alarmJson = widget.alarm.toJson();
-
-                  // delete (all) scheduled notifications
-                  for (int id = alarmJson['firstNotId']; id <= alarmJson['lastNotId']; id++) {
-                    NotificationApi.cancel(id);
-                  }
-
+                  
+                  // delete scheduled notifications
+                  NotificationApi.cancelAlarm(widget.alarm);
                   // delete from db
-                  TokiDatabase.instance.delete(alarmJson['_id']);
+                  TokiDatabase.instance.delete(widget.alarm.id!);
                   // refresh alarm page
                   widget.refreshFunc();
 
