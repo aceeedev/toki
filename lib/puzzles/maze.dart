@@ -27,7 +27,7 @@ class MazePuzzle extends StatelessWidget {
                 rows: 7,
                 wallColor: Styles.selectedAccentColor,
                 onFinish: () {
-                  NotificationApi.resetAlarm(alarm);
+                  NotificationApi.resetAlarm();
                   Navigator.pop(context);
                 },
               ),

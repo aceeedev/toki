@@ -79,20 +79,11 @@ class _AlarmState extends State<AlarmWidget> {
                     value: isSwitched,
                     onChanged: (value) {
                       setState(() {
-                        print('here');
                         isSwitched = value;
 
-                        Map<String, dynamic> alarmJson = widget.alarm.toJson();
-                        alarmJson['alarmOn'] = value ? 0 : 1;
-                        Alarm updatedAlarm = Alarm.fromJson(alarmJson);
-                        
-                        TokiDatabase.instance.update(updatedAlarm);
-
-                        // enable/disable alarm
-                        final int firstNotId = widget.alarm.firstNotId;
-                        final int lastNotId = widget.alarm.lastNotId;
                         if (isSwitched) {
-                          NotificationApi.initialScheduleNotifications(widget.alarm);
+                          NotificationApi.updateCurrentAlarm(widget.alarm, widget.alarm.currentAlarm, true);
+                          NotificationApi.scheduleNotification();
                         } else {
                           NotificationApi.cancelAlarm(widget.alarm);
                         }
@@ -199,11 +190,10 @@ class _ThreeDotsButtonState extends State<ThreeDotsButton> {
                   style: Styles.textDefaultRed
                 ),
                 onPressed: () {
-                  
-                  // delete scheduled notifications
-                  NotificationApi.cancelAlarm(widget.alarm);
                   // delete from db
                   TokiDatabase.instance.delete(widget.alarm.id!);
+                  // delete and schedule next alarm if exists
+                  NotificationApi.resetAlarm();
                   // refresh alarm page
                   widget.refreshFunc();
 

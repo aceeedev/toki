@@ -47,8 +47,7 @@ CREATE TABLE $tableAlarms (
   ${AlarmFields.alarmName} $textType,
   ${AlarmFields.alarmRingtone} $textType,
   ${AlarmFields.alarmOn} $boolType,
-  ${AlarmFields.firstNotId} $integerType,
-  ${AlarmFields.lastNotId} $integerType,
+  ${AlarmFields.currentAlarm} $boolType
   )
 ''');
   }
@@ -77,6 +76,9 @@ CREATE TABLE $tableAlarms (
     }
   }
 
+  /// Returns a list of all the alarms in the database
+  /// 
+  /// [orderBySelector] can be ['TIME ASC'] or ['Id ASC]
   Future<List<Alarm>> readAllAlarms(String orderBySelector) async {
     final db = await instance.database;
 

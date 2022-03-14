@@ -130,7 +130,7 @@ class _SpecialIconButtonState extends State<SpecialIconButton> {
         setState(() => widget.pressed = !widget.pressed);
 
         if (widget.checkAllIconsFunc()) {
-          NotificationApi.resetAlarm(widget.alarm);
+          NotificationApi.resetAlarm();
           Navigator.pop(context);
         }
       }, 

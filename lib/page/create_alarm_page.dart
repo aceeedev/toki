@@ -184,18 +184,6 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
       selectedDays[element.day] = element.selected;
     }
 
-    // get the firstNotId and lastNotId
-    final int firstNotId;
-    final int lastNotId;
-    List<Alarm> alarms = await TokiDatabase.instance.readAllAlarms('Id ASC');
-    if (alarms.isNotEmpty) {
-      Alarm largestIdAlarm = alarms[0];
-      firstNotId = int.parse((largestIdAlarm.toJson()['lastNotId'].toString())) + 1; //this is pain
-    } else {
-      firstNotId = 0;
-    }
-    lastNotId = firstNotId + 5; 
-
     final alarm = Alarm(
       time: time,
       selectedSu: selectedDays['Su'],
@@ -208,16 +196,12 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
       alarmName: alarmName,
       alarmRingtone: alarmRingtone,
       alarmOn: true,
-      firstNotId: firstNotId,
-      lastNotId: lastNotId,
+      currentAlarm: false,
     );
 
     await TokiDatabase.instance.create(alarm);
 
-    // get the alarm that was just created from db so we can get the ID of the alarm
-    Alarm alarmFromDB = await TokiDatabase.instance.readAlarm(await TokiDatabase.instance.getLastId());
-
-    NotificationApi.initialScheduleNotifications(alarmFromDB);
+    NotificationApi.scheduleNotification();
 
     print('added alarm');
   }

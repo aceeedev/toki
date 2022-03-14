@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'package:toki/api/notification_api.dart';
 import 'package:toki/model/alarm.dart';
 import 'package:toki/puzzles/matching_icons.dart';
 import 'package:toki/puzzles/maze.dart';
@@ -11,8 +12,8 @@ class PuzzleHelper {
 
   List<Widget> createPuzzleList() {
     return [
-      //MatchingIcons(alarm: alarm),
-      MazePuzzle(alarm: alarm)
+      MatchingIcons(alarm: alarm),
+      //MazePuzzle(alarm: alarm)
     ];
   } 
 
@@ -21,5 +22,10 @@ class PuzzleHelper {
     final List<Widget> puzzleList = createPuzzleList();
 
     return puzzleList[_random.nextInt(puzzleList.length)];
+  }
+
+  static void completePuzzle(BuildContext context) {
+    NotificationApi.resetAlarm();
+    Navigator.pop(context);
   }
 }

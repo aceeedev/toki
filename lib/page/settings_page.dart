@@ -32,6 +32,10 @@ class SettingsPage extends StatelessWidget {
               }
             },
           ),
+          TextButton(
+            child: const Text('Notification test'),
+            onPressed: () => NotificationApi().getNextAlarm()
+          ),
         ]
       ),
     );

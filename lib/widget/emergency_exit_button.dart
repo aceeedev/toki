@@ -33,7 +33,7 @@ class EmergencyExitButton extends StatelessWidget {
 
             if (!clickedOff) {
               print('exited');
-              NotificationApi.resetAlarm(alarm);
+              NotificationApi.resetAlarm();
               Navigator.pop(context);
             }
           },

@@ -32,9 +32,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void initState() {
     super.initState();
 
-    // clear all notifications if needed for debug
-    NotificationApi.cancelAll();
-
     asyncFunc();
 
     NotificationApi.init(initScheduled: true);
@@ -53,14 +50,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     NotificationApi.onNotifications.stream.listen((onClickedNotification));
 
   void onClickedNotification(String? payload) async {
-    var alarmIdAndCurrentNotId = payload!.split(' ');
     // get alarm from db
-    Alarm alarm = await TokiDatabase.instance.readAlarm(int.parse(alarmIdAndCurrentNotId[0]));
-    // create next alarms
-    NotificationApi.scheduleNextNotification(
-      alarm: alarm,
-      currentNotId: int.parse(alarmIdAndCurrentNotId[1]),
-    );
+    Alarm alarm = await TokiDatabase.instance.readAlarm(int.parse(payload!));
 
     build(context);
 

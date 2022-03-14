@@ -2,7 +2,19 @@ const String tableAlarms = 'alarms';
 
 class AlarmFields {
   static final List<String> values = [
-    id, time, selectedSu, selectedMo, selectedTu, selectedWe, selectedTh, selectedFr, selectedSa, alarmName, alarmRingtone, alarmOn, firstNotId, lastNotId
+    id, 
+    time, 
+    selectedSu, 
+    selectedMo, 
+    selectedTu, 
+    selectedWe, 
+    selectedTh, 
+    selectedFr, 
+    selectedSa, 
+    alarmName, 
+    alarmRingtone, 
+    alarmOn, 
+    currentAlarm
   ];
 
   static const String id = '_id';
@@ -17,8 +29,7 @@ class AlarmFields {
   static const String alarmName = 'alarmName';
   static const String alarmRingtone = 'alarmRingtone';
   static const String alarmOn = 'alarmOn';
-  static const String firstNotId = 'firstNotId';
-  static const String lastNotId = 'lastNotId';
+  static const String currentAlarm = 'currentAlarm';
 }
 
 class Alarm {
@@ -34,8 +45,7 @@ class Alarm {
   final String alarmName;
   final String alarmRingtone;
   final bool alarmOn;
-  final int firstNotId;
-  final int lastNotId;
+  final bool currentAlarm;
 
   const Alarm({
     this.id,
@@ -50,8 +60,7 @@ class Alarm {
     required this.alarmName,
     required this.alarmRingtone,
     required this.alarmOn,
-    required this.firstNotId,
-    required this.lastNotId,
+    required this.currentAlarm
   });
 
   Alarm copy({
@@ -67,8 +76,7 @@ class Alarm {
     String? alarmName,
     String? alarmRingtone,
     bool? alarmOn,
-    int? firstNotId,
-    int? lastNotId,
+    bool? currentAlarm,
   }) =>
     Alarm(
       id: id ?? this.id,
@@ -83,8 +91,7 @@ class Alarm {
       alarmName: alarmName ?? this.alarmName,
       alarmRingtone: alarmRingtone ?? this.alarmRingtone,
       alarmOn: alarmOn ?? this.alarmOn,
-      firstNotId: firstNotId ?? this.firstNotId,
-      lastNotId: lastNotId ?? this.lastNotId,
+      currentAlarm: currentAlarm ?? this.currentAlarm,
     );
 
     Map<String, Object?> toJson() => {
@@ -100,8 +107,7 @@ class Alarm {
     AlarmFields.alarmName: alarmName,
     AlarmFields.alarmRingtone: alarmRingtone,
     AlarmFields.alarmOn: alarmOn ? 1 : 0,
-    AlarmFields.firstNotId: firstNotId,
-    AlarmFields.lastNotId: lastNotId,
+    AlarmFields.currentAlarm: currentAlarm ? 1 : 0,
   };
 
   static Alarm fromJson(Map<String, Object?> json) => Alarm(
@@ -117,7 +123,6 @@ class Alarm {
     alarmName: json[AlarmFields.alarmName] as String,
     alarmRingtone: json[AlarmFields.alarmRingtone] as String,
     alarmOn: json[AlarmFields.alarmOn] == 1,
-    firstNotId: json[AlarmFields.firstNotId] as int,
-    lastNotId: json[AlarmFields.lastNotId] as int,
+    currentAlarm: json[AlarmFields.currentAlarm] == 1,
   );
 }
