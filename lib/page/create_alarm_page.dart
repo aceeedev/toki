@@ -61,7 +61,10 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
     child: Scaffold(
       body: Column(
         children: [
-          const PageTitle('Create Alarm'),
+          const PageTitle(
+            title: 'Create Alarm',
+            padding: true,
+          ),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -199,7 +202,7 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
       currentAlarm: false,
     );
 
-    await TokiDatabase.instance.create(alarm);
+    await TokiDatabase.instance.createAlarm(alarm);
 
     NotificationApi.scheduleNotification();
 

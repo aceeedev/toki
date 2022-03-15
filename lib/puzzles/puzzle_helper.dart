@@ -13,7 +13,7 @@ class PuzzleHelper {
   List<Widget> createPuzzleList() {
     return [
       MatchingIcons(alarm: alarm),
-      //MazePuzzle(alarm: alarm)
+      MazePuzzle(alarm: alarm)
     ];
   } 
 

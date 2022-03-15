@@ -1,6 +1,7 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:toki/model/alarm.dart';
+import 'package:toki/model/puzzle.dart';
 
 class TokiDatabase {
   static final TokiDatabase instance = TokiDatabase._init();
@@ -33,6 +34,7 @@ class TokiDatabase {
     const textType = 'TEXT NOT NULL';
     const integerType = 'INTEGER NOT NULL';
     
+    // create alarm table
     await db.execute('''
 CREATE TABLE $tableAlarms (
   ${AlarmFields.id} $idType,
@@ -50,9 +52,36 @@ CREATE TABLE $tableAlarms (
   ${AlarmFields.currentAlarm} $boolType
   )
 ''');
+
+    // create puzzle table
+    await db.execute('''
+CREATE TABLE $tablePuzzles (
+  ${PuzzleFields.id} $idType,
+  ${PuzzleFields.name} $textType,
+  ${PuzzleFields.difficulty} $integerType,
+  ${PuzzleFields.enabled} $boolType
+  )
+''');
+
+    // initalize puzzles 
+    List<String> puzzleNames = ['Matching Icons', 'Maze'];
+    for (String name in puzzleNames) {
+      Puzzle puzzle = Puzzle(
+        name: name,
+        difficulty: 2,
+        enabled: true,
+      );
+      _createPuzzle(puzzle);
+    }
   }
 
-  Future<Alarm> create(Alarm alarm) async {
+  Future close() async {
+    final db = await instance.database;
+
+    db.close();
+  }
+
+  Future<Alarm> createAlarm(Alarm alarm) async {
     final db = await instance.database;
 
     final id = await db.insert(tableAlarms, alarm.toJson());
@@ -100,7 +129,7 @@ CREATE TABLE $tableAlarms (
     return result.map((json) => Alarm.fromJson(json)).toList();
   }
 
-  Future<int> update(Alarm alarm) async {
+  Future<int> updateAlarm(Alarm alarm) async {
     final db = await instance.database;
 
     return db.update(
@@ -111,7 +140,7 @@ CREATE TABLE $tableAlarms (
     );  
   }
 
-  Future<int> delete(int id) async {
+  Future<int> deleteAlarm(int id) async {
     final db = await instance.database;
 
     return await db.delete(
@@ -121,17 +150,58 @@ CREATE TABLE $tableAlarms (
     );
   }
 
-  Future close() async {
+  Future<Puzzle> _createPuzzle(Puzzle puzzle) async {
     final db = await instance.database;
 
-    db.close();
+    final id = await db.insert(tablePuzzles, puzzle.toJson());
+    return puzzle.copy(id: id);
   }
 
-  Future<int> getLastId() async {
+  Future<Puzzle> readPuzzle(int id) async {
     final db = await instance.database;
 
-    final lastInsertRowId = (await db.rawQuery('SELECT last_insert_rowid()')).first.values.first as int;
+    final maps = await db.query(
+      tableAlarms,
+      columns: PuzzleFields.values,
+      where: '${PuzzleFields.id} = ?',
+      whereArgs: [id],
+    );
 
-    return lastInsertRowId;
+    if (maps.isNotEmpty) {
+      return Puzzle.fromJson(maps.first);
+    } else {
+      throw Exception('ID $id not found');
+    }
+  }
+
+  Future<List<Puzzle>> readAllPuzzles() async {
+    final db = await instance.database;
+
+    String orderBy = '${PuzzleFields.id} ASC';
+
+    final result = await db.query(tablePuzzles, orderBy: orderBy);
+
+    return result.map((json) => Puzzle.fromJson(json)).toList();
+  }
+
+  Future<int> updatePuzzle(Puzzle puzzle) async {
+    final db = await instance.database;
+
+    return db.update(
+      tablePuzzles,
+      puzzle.toJson(),
+      where: '${PuzzleFields.id} = ?',
+      whereArgs: [puzzle.id],
+    );  
+  }
+
+  Future<int> _deletePuzzle(int id) async {
+    final db = await instance.database;
+
+    return await db.delete(
+      tablePuzzles,
+      where: '${PuzzleFields.id} = ?',
+      whereArgs: [id],
+    );
   }
 }

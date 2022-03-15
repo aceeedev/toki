@@ -10,7 +10,10 @@ class LeaderboardPage extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          const PageTitle('Leaderboard'),
+          const PageTitle(
+            title: 'Leaderboard',
+            padding: true,
+          ),
           Expanded(
             child: Center(
               child: Text(

@@ -3,13 +3,13 @@ import 'package:notification_permissions/notification_permissions.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:toki/database_helpers.dart';
 import 'package:toki/model/alarm.dart';
-import 'widget/page_title.dart';
-import 'api/notification_api.dart';
-import 'page/alarm_page.dart';
-import 'page/leaderboard_page.dart';
-import 'page/settings_page.dart';
-import 'styles.dart';
-import 'puzzles/puzzle_helper.dart';
+import 'package:toki/widget/page_title.dart';
+import 'package:toki/api/notification_api.dart';
+import 'package:toki/page/leaderboard_page.dart';
+import 'package:toki/page/alarm_page.dart';
+import 'package:toki/page/puzzle_page.dart';
+import 'package:toki/styles.dart';
+import 'package:toki/puzzles/puzzle_helper.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -23,7 +23,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   final _pageOptions = const [
     LeaderboardPage(),
     AlarmPage(),
-    SettingsPage()
+    PuzzlePage(),
   ];
 
   late Future<String> allowedNotificationsPerm;
@@ -104,7 +104,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             return Scaffold(
               body: Column(
                 children: [
-                  const PageTitle('Notifications Error'),
+                  const PageTitle(
+                    title: 'Notifications Error', 
+                    padding: true,
+                    ),
                   Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: Text(
@@ -169,7 +172,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             label: 'Alarms'
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.settings_outlined), 
+            icon: const Icon(Icons.extension_outlined), 
             activeIcon: Container(
               decoration: BoxDecoration(
                 color: Styles.selectedAccentColor[100],
@@ -177,10 +180,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               ),
               child: const Padding(
                 padding: EdgeInsets.all(8.0),
-                child: Icon(Icons.settings_rounded),
+                child: Icon(Icons.extension)
               ), 
             ), 
-            label: 'Settings'
+            label: 'Puzzles'
           ),
         ],
         selectedItemColor: Styles.selectedAccentColor[700],

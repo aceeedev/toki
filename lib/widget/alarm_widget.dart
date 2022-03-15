@@ -191,7 +191,7 @@ class _ThreeDotsButtonState extends State<ThreeDotsButton> {
                 ),
                 onPressed: () {
                   // delete from db
-                  TokiDatabase.instance.delete(widget.alarm.id!);
+                  TokiDatabase.instance.deleteAlarm(widget.alarm.id!);
                   // delete and schedule next alarm if exists
                   NotificationApi.resetAlarm();
                   // refresh alarm page

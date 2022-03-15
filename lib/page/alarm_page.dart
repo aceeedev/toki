@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import '../styles.dart';
-import '../widget/page_title.dart';
-import '../widget/alarm_widget.dart';
-import 'create_alarm_page.dart';
-import '../model/alarm.dart';
+import 'package:toki/page/settings_page.dart';
+import 'package:toki/styles.dart';
+import 'package:toki/widget/page_title.dart';
+import 'package:toki/widget/alarm_widget.dart';
+import 'package:toki/page/create_alarm_page.dart';
+import 'package:toki/model/alarm.dart';
 import 'package:toki/database_helpers.dart';
 
 class AlarmPage extends StatefulWidget {
@@ -56,7 +57,35 @@ class _AlarmPageState extends State<AlarmPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        const PageTitle('Alarm'),
+        Row(
+          children: [
+            const PageTitle(
+              title: 'Alarm',
+              padding: true,
+            ),
+            Expanded(
+              child: Align(
+                alignment: Alignment.topRight,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0.0, 85.0, 20.0, 0.0),
+                  child: IconButton(
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute<void>(
+                        builder: (context) => const SettingsPage()
+                      ));
+                    },
+                    padding: EdgeInsets.zero,
+                    icon: Icon(
+                      Icons.settings,
+                      size: 48.0,
+                      color: Styles.selectedAccentColor,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
         Expanded(
           child: isLoading
             ? const Center(

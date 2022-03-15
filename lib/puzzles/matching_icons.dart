@@ -33,7 +33,10 @@ class _MatchingIconsState extends State<MatchingIcons> {
     return Scaffold(
       body: Column(
         children: [
-          const PageTitle('Matching Icons'),
+          const PageTitle(
+            title: 'Matching Icons',
+            padding: true,
+          ),
           EmergencyExitButton(alarm: widget.alarm),
           Row(
             children: [

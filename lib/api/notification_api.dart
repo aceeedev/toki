@@ -195,7 +195,7 @@ class NotificationApi {
 
     if (!alarm.currentAlarm) {
       Alarm updatedAlarm = updateCurrentAlarm(alarm, true, alarm.alarmOn);
-      TokiDatabase.instance.update(updatedAlarm);
+      TokiDatabase.instance.updateAlarm(updatedAlarm);
 
       final String title = '${DateFormat('h:mm a').format(alarm.time)} Alarm';
       const String body = 'Click this notification to turn off the alarm!';
@@ -229,7 +229,7 @@ class NotificationApi {
   static void cancelAlarm(Alarm alarm) async {
     if (alarm.currentAlarm) {
       Alarm updatedAlarm = updateCurrentAlarm(alarm, false, false);
-      TokiDatabase.instance.update(updatedAlarm);
+      TokiDatabase.instance.updateAlarm(updatedAlarm);
 
       resetAlarm();
     }

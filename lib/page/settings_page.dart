@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:toki/api/notification_api.dart';
+import 'package:toki/styles.dart';
 import 'package:toki/widget/page_title.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -11,7 +12,24 @@ class SettingsPage extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          const PageTitle('Settings'),
+          Align(
+            alignment: Alignment.topLeft,
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(10.0, 50.0, 0.0, 10.0),
+              child: IconButton(
+                onPressed: () => Navigator.pop(context), 
+                icon: Icon(
+                  Icons.arrow_back,
+                  size: 48.0,
+                  color: Styles.selectedAccentColor,
+                )
+              ),
+            ),
+          ),
+          const PageTitle(
+            title: 'Settings',
+            padding: false,
+          ),
           TextButton(
             child: const Text('Delete all notifications'),
             onPressed: () {

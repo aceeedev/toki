@@ -3,15 +3,16 @@ import '../styles.dart';
 
 class PageTitle extends StatelessWidget {
   final String title;
+  final bool padding;
 
-  const PageTitle(this.title, {Key? key}) : super(key: key);
+  const PageTitle( {Key? key, required this.title, required this.padding}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Align(
       alignment: Alignment.topLeft,
       child: Container(
-        padding: const EdgeInsets.fromLTRB(10.0, 80.0, 0.0, 0.0),
+        padding: padding ? const EdgeInsets.fromLTRB(10.0, 80.0, 0.0, 0.0) : const EdgeInsets.only(left: 10.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

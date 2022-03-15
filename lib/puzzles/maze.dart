@@ -16,7 +16,10 @@ class MazePuzzle extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          const PageTitle('Matching Icons'),
+          const PageTitle(
+            title: 'Matching Icons',
+            padding: true,
+          ),
           EmergencyExitButton(alarm: alarm),
           Expanded(
             child: Center(
