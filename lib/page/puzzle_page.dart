@@ -3,7 +3,7 @@ import 'package:toki/styles.dart';
 import 'package:toki/widget/page_title.dart';
 import 'package:toki/widget/puzzle_widget.dart';
 import 'package:toki/model/puzzle.dart';
-import 'package:toki/database_helpers.dart';
+import 'package:toki/backend/database_helpers.dart';
 
 class PuzzlePage extends StatefulWidget {
   const PuzzlePage({Key? key}) : super(key: key);

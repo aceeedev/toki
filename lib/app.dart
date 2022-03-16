@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:notification_permissions/notification_permissions.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:toki/database_helpers.dart';
+import 'package:toki/backend/database_helpers.dart';
 import 'package:toki/model/alarm.dart';
 import 'package:toki/widget/page_title.dart';
-import 'package:toki/api/notification_api.dart';
+import 'package:toki/backend/notification_api.dart';
 import 'package:toki/page/leaderboard_page.dart';
 import 'package:toki/page/alarm_page.dart';
 import 'package:toki/page/puzzle_page.dart';
@@ -53,10 +53,18 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     // get alarm from db
     Alarm alarm = await TokiDatabase.instance.readAlarm(int.parse(payload!));
 
+    List<dynamic> randomPuzzle = await PuzzleHelper().randomPuzzle(context);
+
     build(context);
 
     Navigator.of(context).push(MaterialPageRoute<void>(
-      builder: (context) => PuzzleHelper(alarm).randomPuzzle()
+      builder: (context) => PuzzleTemplate(
+        puzzleWidget: randomPuzzle[0],
+        alarm: alarm,
+        puzzleName: randomPuzzle[1],
+        test: false,
+        completePuzzle: PuzzleHelper.completePuzzle,
+      )
     ));
   }
 

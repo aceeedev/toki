@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:toki/api/notification_api.dart';
+import 'package:toki/backend/notification_api.dart';
 import 'package:toki/styles.dart';
 import 'package:toki/model/alarm.dart';
 
 class EmergencyExitButton extends StatelessWidget {
   bool clickedOff = true;
-  Alarm alarm;
+  final Alarm? alarm;
+  final Function completePuzzle;
+  final bool test;
 
-  EmergencyExitButton({Key? key, required this.alarm}) : super(key: key);
+  EmergencyExitButton({Key? key, this.alarm, required this.completePuzzle, required this.test}) : super(key: key);
   
   @override
   Widget build(BuildContext context) {
@@ -32,9 +34,7 @@ class EmergencyExitButton extends StatelessWidget {
             await Future.delayed(const Duration(seconds: 3));
 
             if (!clickedOff) {
-              print('exited');
-              NotificationApi.resetAlarm();
-              Navigator.pop(context);
+              completePuzzle(context, test);
             }
           },
           onFocusChange: (value) {

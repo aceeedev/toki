@@ -5,7 +5,7 @@ import 'package:toki/widget/page_title.dart';
 import 'package:toki/widget/alarm_widget.dart';
 import 'package:toki/page/create_alarm_page.dart';
 import 'package:toki/model/alarm.dart';
-import 'package:toki/database_helpers.dart';
+import 'package:toki/backend/database_helpers.dart';
 
 class AlarmPage extends StatefulWidget {
   const AlarmPage({Key? key}) : super(key: key);

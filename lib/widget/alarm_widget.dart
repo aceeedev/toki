@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:toki/api/notification_api.dart';
+import 'package:toki/backend/notification_api.dart';
 import '../styles.dart';
-import '../database_helpers.dart';
+import '../backend/database_helpers.dart';
 import '../model/alarm.dart';
 
 class AlarmWidget extends StatefulWidget {

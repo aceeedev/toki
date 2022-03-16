@@ -4,7 +4,7 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:intl/intl.dart';
-import 'package:toki/database_helpers.dart';
+import 'package:toki/backend/database_helpers.dart';
 import 'package:toki/model/alarm.dart';
 
 class NotificationApi {
@@ -109,7 +109,7 @@ class NotificationApi {
     int nextWeekdayAlarm = 0;
     for (int i = 0; i < alarmSelectedWeekdays.length; i++) {
       if (alarmSelectedWeekdays[i] >= todayWeekday) {
-        if (alarm.time.hour >= DateTime.now().hour || (alarm.time.hour == DateTime.now().hour && alarm.time.minute > DateTime.now().minute)) {
+        if ((alarm.time.hour > DateTime.now().hour || (alarm.time.hour == DateTime.now().hour && alarm.time.minute > DateTime.now().minute))) {
           nextWeekdayAlarm = alarmSelectedWeekdays[i];
         } else {
           nextWeekdayAlarm = alarmSelectedWeekdays[i + 1 <= alarmSelectedWeekdays.length - 1 ? i + 1 : 0];
@@ -125,7 +125,7 @@ class NotificationApi {
     int weekdaysBetweenNowAndNextAlarm;
     if (nextWeekdayAlarm == todayWeekday) {
       // if alarm time is less than now and today schedule for next week
-      if (alarm.time.hour < DateTime.now().hour || (alarm.time.hour == DateTime.now().hour && alarm.time.minute <= DateTime.now().minute)) {
+      if ((alarm.time.hour < DateTime.now().hour || (alarm.time.hour == DateTime.now().hour && alarm.time.minute <= DateTime.now().minute)) && alarmSelectedWeekdays.length == 1) {
         weekdaysBetweenNowAndNextAlarm = 7;
       } else {
         weekdaysBetweenNowAndNextAlarm = nextWeekdayAlarm - todayWeekday;
@@ -136,6 +136,8 @@ class NotificationApi {
       // if the next alarm is a weekday that is less than today's, aka next week
       weekdaysBetweenNowAndNextAlarm = (7 - todayWeekday) + nextWeekdayAlarm;
     }
+
+    print(weekdaysBetweenNowAndNextAlarm);
 
     return weekdaysBetweenNowAndNextAlarm;
   }

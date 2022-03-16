@@ -1,11 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:toki/api/notification_api.dart';
+import 'package:toki/backend/database_helpers.dart';
 import 'package:toki/model/puzzle.dart';
 import 'package:toki/styles.dart';
-import 'package:toki/database_helpers.dart';
-import 'package:toki/model/alarm.dart';
+import 'package:toki/puzzles/puzzle_helper.dart';
 
 class PuzzleWidget extends StatefulWidget {
   final Puzzle puzzle;
@@ -68,6 +66,17 @@ class _PuzzleState extends State<PuzzleWidget> {
                       ),
                     ],
                     onChanged: (value) {
+                      setState(() {
+                        if (value == 1) {
+                          dropDownValue = 'Easy';
+                        } else if (value == 2) {
+                          dropDownValue = 'Medium';
+                        } else if (value == 3) {
+                          dropDownValue = 'Hard';
+                        }
+                        print(dropDownValue);
+                      });
+
                       Puzzle updatedPuzzle = Puzzle(
                         id: widget.puzzle.id,
                         name: widget.puzzle.name,
@@ -86,10 +95,10 @@ class _PuzzleState extends State<PuzzleWidget> {
                 padding: const EdgeInsets.only(left: 10.0),
                 child: IconButton(
                   onPressed: () {
-
+                    PuzzleHelper.openTestPuzzle(context, widget.puzzle.name, true);
                   }, 
                   icon: Icon(
-                    Icons.play_arrow,
+                    Icons.play_circle_fill,
                     size: 48.0,
                     color: Styles.selectedAccentColor,
                   ),
@@ -103,21 +112,47 @@ class _PuzzleState extends State<PuzzleWidget> {
                   scale: 1.3,
                   child: Switch(
                     value: isSwitched,
-                    onChanged: (value) {
-                      setState(() {
-                        isSwitched = value;
+                    onChanged: (value) async {
+                      List<Puzzle> puzzles = await TokiDatabase.instance.readAllPuzzles();
 
-                        Puzzle updatedPuzzle = Puzzle(
-                          id: widget.puzzle.id,
-                          name: widget.puzzle.name,
-                          difficulty: widget.puzzle.difficulty,
-                          enabled: value,
+                      List<Puzzle> enabledPuzzles = [];
+                      for (Puzzle puzzle in puzzles) {
+                        if (puzzle.enabled) {
+                          enabledPuzzles.add(puzzle);
+                        }
+                      }
+
+                      // make sure at least 1 puzzle is enabled
+                      if (enabledPuzzles.length == 1 && !value) {
+                        showCupertinoDialog(
+                          context: context, 
+                          builder: (BuildContext context) => CupertinoAlertDialog(
+                            title: const Text('All puzzles are disabled'),
+                            content: const Text('There has to be at least one puzzle enabled or else there won\'t be a fun puzzle to complete when the alarm goes off.'),
+                            actions: <CupertinoDialogAction>[
+                              CupertinoDialogAction(
+                                child: const Text('Ok'),
+                                onPressed: () => Navigator.pop(context),
+                              ),
+                            ]
+                          ),
                         );
+                      } else {
+                        setState(() {
+                          isSwitched = value;
 
-                        TokiDatabase.instance.updatePuzzle(updatedPuzzle);
+                          Puzzle updatedPuzzle = Puzzle(
+                            id: widget.puzzle.id,
+                            name: widget.puzzle.name,
+                            difficulty: widget.puzzle.difficulty,
+                            enabled: value,
+                          );
 
-                        widget.refreshFunc;
-                      });
+                          TokiDatabase.instance.updatePuzzle(updatedPuzzle);
+
+                          widget.refreshFunc;
+                        });
+                      }
                     },
                     activeTrackColor: Styles.selectedAccentColor,
                     activeColor: Styles.selectedAccentColor[700],

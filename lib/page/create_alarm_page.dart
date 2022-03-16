@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
-import '../database_helpers.dart';
-import 'package:toki/api/notification_api.dart';
+import '../backend/database_helpers.dart';
+import 'package:toki/backend/notification_api.dart';
 import '../styles.dart';
 import '../model/alarm.dart';
 import '../widget/page_title.dart';
@@ -88,9 +88,18 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
             ),
           ),
           _StyledCard(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: dayButtons,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Selected Weekdays:',
+                  style: Styles.mediumTextDefault
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: dayButtons,
+                ),
+              ],
             ),
           ),
           _StyledCard(
@@ -182,31 +191,53 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
   }
 
   Future _addAlarm() async {
-    var selectedDays = {};
-    for (var element in dayButtons) {
+    Map<String, bool> selectedDays = {};
+    int numSelectedDays = 0;
+    for (DayButton element in dayButtons) {
       selectedDays[element.day] = element.selected;
+      if (element.selected) {
+        numSelectedDays++;
+      }
     }
+    print(numSelectedDays);
 
-    final alarm = Alarm(
-      time: time,
-      selectedSu: selectedDays['Su'],
-      selectedMo: selectedDays['Mo'],
-      selectedTu: selectedDays['Tu'],
-      selectedWe: selectedDays['We'],
-      selectedTh: selectedDays['Th'],
-      selectedFr: selectedDays['Fr'],
-      selectedSa: selectedDays['Sa'],
-      alarmName: alarmName,
-      alarmRingtone: alarmRingtone,
-      alarmOn: true,
-      currentAlarm: false,
-    );
+    // make sure at least one day is selected
+    if (numSelectedDays == 0) {
+      await showCupertinoDialog(
+        context: context, 
+        builder: (BuildContext context) => CupertinoAlertDialog(
+          title: const Text('No weekdays are selected'),
+          content: const Text('There has to be at least one weekday selected or else what is the point in setting an alarm that never goes off.'),
+          actions: <CupertinoDialogAction>[
+            CupertinoDialogAction(
+              child: const Text('Ok'),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ]
+        ),
+      );
+    } else {
+      final alarm = Alarm(
+        time: time,
+        selectedSu: selectedDays['Su']!,
+        selectedMo: selectedDays['Mo']!,
+        selectedTu: selectedDays['Tu']!,
+        selectedWe: selectedDays['We']!,
+        selectedTh: selectedDays['Th']!,
+        selectedFr: selectedDays['Fr']!,
+        selectedSa: selectedDays['Sa']!,
+        alarmName: alarmName,
+        alarmRingtone: alarmRingtone,
+        alarmOn: true,
+        currentAlarm: false,
+      );
 
-    await TokiDatabase.instance.createAlarm(alarm);
+      await TokiDatabase.instance.createAlarm(alarm);
 
-    NotificationApi.scheduleNotification();
+      NotificationApi.scheduleNotification();
 
-    print('added alarm');
+      print('added alarm');
+    }
   }
 }
 
@@ -234,7 +265,7 @@ class _StyledCard extends StatelessWidget {
 class DayButton extends StatefulWidget {
   final String day;
   // default to being selected
-  bool selected = true;
+  bool selected = false;
 
   DayButton(this.day, {Key? key}) : super(key: key);
 

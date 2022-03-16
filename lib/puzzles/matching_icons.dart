@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
-import 'package:toki/api/notification_api.dart';
 import 'package:toki/styles.dart';
-import 'package:toki/model/alarm.dart';
-import 'package:toki/widget/page_title.dart';
-import 'package:toki/widget/emergency_exit_button.dart';
 
 class MatchingIcons extends StatefulWidget {
-  final Alarm alarm;
+  final Function completePuzzle;
+  final int difficulty;
+  final bool test;
 
-  const MatchingIcons({Key? key, required this.alarm}) : super(key: key);
+  const MatchingIcons({Key? key, required this.completePuzzle, required this.difficulty, required this.test}) : super(key: key);
   
   @override
   State<MatchingIcons> createState() => _MatchingIconsState();
@@ -25,52 +23,66 @@ class _MatchingIconsState extends State<MatchingIcons> {
     Icons.mood_bad
   ];
 
-  late IconData correctIcon = getRandomIcon();
-  late List<SpecialIconButton> listofSpecialIconButtons = createListOfSpecialIconButtons(9);
+  late IconData correctIcon;
+  late List<SpecialIconButton> listofSpecialIconButtons;
+  late int numOfButtons;
+  late int crossAxisCount;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.difficulty == 1) {
+      numOfButtons = 9;
+    } else if (widget.difficulty == 2) {
+      numOfButtons = 15;
+    } else if (widget.difficulty == 3) {
+      numOfButtons = 20;
+    }
+
+    crossAxisCount = numOfButtons == 20 ? 4 : 3;
+    correctIcon = getRandomIcon();
+    listofSpecialIconButtons = createListOfSpecialIconButtons(numOfButtons);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          const PageTitle(
-            title: 'Matching Icons',
-            padding: true,
-          ),
-          EmergencyExitButton(alarm: widget.alarm),
-          Row(
-            children: [
-              Text(
-                'Click all the ',
-                style: Styles.largeTextDefault,
-              ),
-              Icon(
-                correctIcon,
-                size: 48.0,
-                color: Styles.selectedAccentColor,
-              ),
-              Text(
-                ' icons',
-                style: Styles.largeTextDefault,
-              ),
-            ],
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(30.0),
-              child: Center(
-                child: GridView.count(
-                  children: listofSpecialIconButtons,
-                  primary: true, 
-                  crossAxisCount: 3,
-                  crossAxisSpacing: 10.0,
-                  mainAxisSpacing: 10.0,
-                ),
+    return Column(
+      children: [
+        Row(
+          children: [
+            Text(
+              'Click all the ',
+              style: Styles.largeTextDefault,
+            ),
+            Icon(
+              correctIcon,
+              size: 48.0,
+              color: Styles.selectedAccentColor,
+            ),
+            Text(
+              ' icons',
+              style: Styles.largeTextDefault,
+            ),
+          ],
+        ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Center(
+              child: GridView.count(
+                children: listofSpecialIconButtons,
+                primary: true, 
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisCount: crossAxisCount,
+                crossAxisSpacing: 10.0,
+                mainAxisSpacing: 10.0,
+                childAspectRatio: 3/2,
               ),
             ),
           ),
-        ]
-      ),
+        ),
+      ]
     );
   }
 
@@ -82,16 +94,30 @@ class _MatchingIconsState extends State<MatchingIcons> {
 
   List<SpecialIconButton> createListOfSpecialIconButtons(int listLength) {
     List<SpecialIconButton> listOfSpecialIconButtons = [];
-    int numOfCorrectIcons = 2 + Random().nextInt(listLength-2);
+    int numOfCorrectIcons = 2 + Random().nextInt((listLength ~/ 2) - 2);
 
     // add the correct icons
     for (int i = 0; i < numOfCorrectIcons; i++) {
-      listOfSpecialIconButtons.add(SpecialIconButton(alarm: widget.alarm, correctIcon: correctIcon, isCorrectIcon: true, listOfIcons: listOfIcons, checkAllIconsFunc: checkAllIcons));
+      listOfSpecialIconButtons.add(SpecialIconButton(
+        correctIcon: correctIcon, 
+        isCorrectIcon: true, 
+        listOfIcons: listOfIcons, 
+        checkAllIconsFunc: checkAllIcons,
+        completePuzzle: widget.completePuzzle,
+        test: widget.test,
+      ));
     }
 
     // add random icons to the remaining space in the list
     for (int i = 0; i < listLength - numOfCorrectIcons; i++) {
-      listOfSpecialIconButtons.add(SpecialIconButton(alarm: widget.alarm, correctIcon: correctIcon, isCorrectIcon: false, listOfIcons: listOfIcons, checkAllIconsFunc: checkAllIcons));
+      listOfSpecialIconButtons.add(SpecialIconButton(
+        correctIcon: correctIcon, 
+        isCorrectIcon: false, 
+        listOfIcons: listOfIcons, 
+        checkAllIconsFunc: checkAllIcons,
+        completePuzzle: widget.completePuzzle,
+        test: widget.test,
+      ));
     }
 
     listOfSpecialIconButtons.shuffle();
@@ -110,12 +136,13 @@ class _MatchingIconsState extends State<MatchingIcons> {
 }
 
 class SpecialIconButton extends StatefulWidget {
-  final Alarm alarm;
   final IconData correctIcon;
   final bool isCorrectIcon;
   final List<IconData> listOfIcons;
   final Function checkAllIconsFunc;
-  SpecialIconButton({Key? key, required this.alarm, required this.correctIcon, required this.isCorrectIcon, required this.listOfIcons, required this.checkAllIconsFunc}) : super(key: key);
+  final Function completePuzzle;
+  final bool test;
+  SpecialIconButton({Key? key, required this.correctIcon, required this.isCorrectIcon, required this.listOfIcons, required this.checkAllIconsFunc, required this.completePuzzle, required this.test}) : super(key: key);
   
   bool pressed = false;
 
@@ -128,25 +155,42 @@ class _SpecialIconButtonState extends State<SpecialIconButton> {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        setState(() => widget.pressed = !widget.pressed);
+    return Align(
+      child: SizedBox(
+        width: 100,
+        height: 100,
+        child: ElevatedButton(
+          onPressed: () {
+            setState(() => widget.pressed = !widget.pressed);
 
-        if (widget.checkAllIconsFunc()) {
-          NotificationApi.resetAlarm();
-          Navigator.pop(context);
-        }
-      }, 
-      child: widget.isCorrectIcon ? Icon(widget.correctIcon, size: 48.0, color: Styles.selectedAccentColor) : Icon(randomNotCorrectIcon, size: 48.0, color: Styles.selectedAccentColor),
-      style: ElevatedButton.styleFrom(
-        elevation: 0.0,
-        primary: Styles.backgroundColor,
-        side: BorderSide(
-          width: 10.0,
-          color: widget.pressed ? Styles.selectedAccentColor : Styles.backgroundColor,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0)
+            if (widget.checkAllIconsFunc()) {
+              widget.completePuzzle(context,widget.test);
+            }
+          }, 
+          child: widget.isCorrectIcon 
+            ? Icon(
+              widget.correctIcon, 
+              size: 40.0, color: 
+              Styles.selectedAccentColor
+            ) 
+            : Icon(
+              randomNotCorrectIcon, 
+              size: 40.0, 
+              color: Styles.selectedAccentColor
+          ),
+          style: ElevatedButton.styleFrom(
+            elevation: 0.0,
+            primary: Styles.backgroundColor,
+            side: BorderSide(
+              width: 5.0,
+              color: widget.pressed ? Styles.selectedAccentColor : Styles.backgroundColor,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0)
+            ),
+            
+            padding: EdgeInsets.zero,
+          ),
         ),
       ),
     );

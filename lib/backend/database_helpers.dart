@@ -157,20 +157,39 @@ CREATE TABLE $tablePuzzles (
     return puzzle.copy(id: id);
   }
 
-  Future<Puzzle> readPuzzle(int id) async {
+  Future<Puzzle> readPuzzle(int? id, String? puzzleName) async {
     final db = await instance.database;
 
-    final maps = await db.query(
-      tableAlarms,
-      columns: PuzzleFields.values,
-      where: '${PuzzleFields.id} = ?',
-      whereArgs: [id],
-    );
+    if (id != null && puzzleName != null) {
+      throw Exception('Only have one parameter, either id or puzzleName');
+    } else if (id != null) {
+      final maps = await db.query(
+        tablePuzzles,
+        columns: PuzzleFields.values,
+        where: '${PuzzleFields.id} = ?',
+        whereArgs: [id],
+      );
 
-    if (maps.isNotEmpty) {
-      return Puzzle.fromJson(maps.first);
+      if (maps.isNotEmpty) {
+        return Puzzle.fromJson(maps.first);
+      } else {
+        throw Exception('ID $id not found');
+      }
+    } else if (puzzleName != null) {
+      final maps = await db.query(
+        tablePuzzles,
+        columns: PuzzleFields.values,
+        where: '${PuzzleFields.name} = ?',
+        whereArgs: [puzzleName],
+      );
+
+      if (maps.isNotEmpty) {
+        return Puzzle.fromJson(maps.first);
+      } else {
+        throw Exception('puzzleName $puzzleName not found');
+      }
     } else {
-      throw Exception('ID $id not found');
+      throw Exception('Both id and puzzleName are null');
     }
   }
 
@@ -193,15 +212,5 @@ CREATE TABLE $tablePuzzles (
       where: '${PuzzleFields.id} = ?',
       whereArgs: [puzzle.id],
     );  
-  }
-
-  Future<int> _deletePuzzle(int id) async {
-    final db = await instance.database;
-
-    return await db.delete(
-      tablePuzzles,
-      where: '${PuzzleFields.id} = ?',
-      whereArgs: [id],
-    );
   }
 }

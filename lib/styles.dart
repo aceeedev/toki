@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 
 class Styles {
   static const _textSizeLarge = 25.0;
+  static const _textSizeMedium = 18.0;
   static const _textSizeDefault = 16.0;
   static const _textSizePageTitle = 50.0;
 
   static final Color _textColorStrong = _createMaterialColor(const Color(0xff000000));
-  static final Color _textColorDefault = _createMaterialColor(const Color(0xff666666));
+  static final Color _textColorBlack = _createMaterialColor(const Color(0xff666666));
   static final MaterialColor colorLogoGreen = _createMaterialColor(const Color(0xffC6D57E));
   static final MaterialColor colorLogoRed = _createMaterialColor(const Color(0xffD57E7E));
   static final MaterialColor colorLogoBlue = _createMaterialColor(const Color(0xffA2CDCD));
@@ -19,6 +20,7 @@ class Styles {
   static const alarmFormCardWidth = 300.0;
 
   static final MaterialColor selectedAccentColor = colorLogoBlue;
+  static final Color _textColorDefault = _textColorBlack;
 
 
   static const pageTitle = TextStyle(
@@ -57,26 +59,40 @@ class Styles {
     color: _textColorDefault,
   );
 
+  static final mediumTextDefault = TextStyle(
+    fontFamily: _fontNameDefault,
+    fontSize: _textSizeMedium,
+    color: _textColorDefault,
+  );
+
   static final alarmFormButtonStyle = ElevatedButton.styleFrom(
     fixedSize: const Size(110.0, 30.0), 
     primary: selectedAccentColor,
   );
 
   static final dayButtonStyleSelected = TextButton.styleFrom(
-    minimumSize: const Size(5.0, 5.0),
+    minimumSize: const Size(3.0, 3.0),
     primary: selectedAccentColor[500],
     textStyle: const TextStyle(
       fontFamily: _fontNameDefault,
-      fontSize: 18.0,
-    )
+      fontSize: _textSizeMedium,
+    ),
+    side: BorderSide(
+      width: 2.0,
+      color: selectedAccentColor,
+    ),
   );
 
   static final dayButtonStyleNotSelected = TextButton.styleFrom(
-    minimumSize: const Size(5.0, 5.0),
+    minimumSize: const Size(3.0, 3.0),
     primary: Colors.grey[400],
     textStyle: const TextStyle(
       fontFamily: _fontNameDefault,
-      fontSize: 18.0,
+      fontSize: _textSizeMedium,
+    ),
+    side: BorderSide(
+      width: 2.0,
+      color: backgroundColor,
     )
   );
 
