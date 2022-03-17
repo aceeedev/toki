@@ -2,6 +2,7 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:toki/model/alarm.dart';
 import 'package:toki/model/puzzle.dart';
+import 'package:toki/model/setting.dart';
 
 class TokiDatabase {
   static final TokiDatabase instance = TokiDatabase._init();
@@ -63,6 +64,15 @@ CREATE TABLE $tablePuzzles (
   )
 ''');
 
+    // create setting table
+    await db.execute('''
+CREATE TABLE $tableSettings (
+  ${SettingFields.id} $idType,
+  ${SettingFields.name} $textType,
+  ${SettingFields.settingData} $textType
+  )
+''');
+
     // initalize puzzles 
     List<String> puzzleNames = ['Matching Icons', 'Maze'];
     for (String name in puzzleNames) {
@@ -73,6 +83,37 @@ CREATE TABLE $tablePuzzles (
       );
       _createPuzzle(puzzle);
     }
+
+    // initialize settings
+    List<Setting> settingList = const [
+      Setting(
+        name: 'Version',
+        settingData: '1.0.0',
+      ),
+      Setting(
+        name: 'Theme Color',
+        settingData: 'blue',
+      ),
+      Setting(
+        name: 'Nightmode',
+        settingData: 'false',
+      ),
+    ];
+    for (Setting setting in settingList) {
+      _createSetting(setting);
+    }
+    /*_createSetting(const Setting(
+      name: 'Version',
+      settingData: '1.0.0',
+    ));
+    _createSetting(const Setting(
+      name: 'Theme Color',
+      settingData: 'blue',
+    ));
+    _createSetting(const Setting(
+      name: 'Nightmode',
+      settingData: 'false',
+    ));*/
   }
 
   Future close() async {
@@ -81,6 +122,7 @@ CREATE TABLE $tablePuzzles (
     db.close();
   }
 
+  // alarm db functions
   Future<Alarm> createAlarm(Alarm alarm) async {
     final db = await instance.database;
 
@@ -107,7 +149,7 @@ CREATE TABLE $tablePuzzles (
 
   /// Returns a list of all the alarms in the database
   /// 
-  /// [orderBySelector] can be ['TIME ASC'] or ['Id ASC]
+  /// [orderBySelector] can be ['Time ASC'] or ['Id ASC]
   Future<List<Alarm>> readAllAlarms(String orderBySelector) async {
     final db = await instance.database;
 
@@ -150,6 +192,7 @@ CREATE TABLE $tablePuzzles (
     );
   }
 
+  // puzzle db functions
   Future<Puzzle> _createPuzzle(Puzzle puzzle) async {
     final db = await instance.database;
 
@@ -211,6 +254,72 @@ CREATE TABLE $tablePuzzles (
       puzzle.toJson(),
       where: '${PuzzleFields.id} = ?',
       whereArgs: [puzzle.id],
+    );  
+  }
+
+  // setting db functions
+  Future<Setting> _createSetting(Setting setting) async {
+    final db = await instance.database;
+
+    final id = await db.insert(tableSettings, setting.toJson());
+    return setting.copy(id: id);
+  }
+
+  /// read a setting from the datbase, either lookup the setting based on id or settingName
+  Future<Setting> readSetting(int? id, String? settingName) async {
+    final db = await instance.database;
+
+    if (id != null && settingName != null) {
+      throw Exception('Only have one parameter, either id or settingName');
+    } else if (id != null) {
+      final maps = await db.query(
+        tableSettings,
+        columns: SettingFields.values,
+        where: '${SettingFields.id} = ?',
+        whereArgs: [id],
+      );
+
+      if (maps.isNotEmpty) {
+        return Setting.fromJson(maps.first);
+      } else {
+        throw Exception('ID $id not found');
+      }
+    } else if (settingName != null) {
+      final maps = await db.query(
+        tableSettings,
+        columns: SettingFields.values,
+        where: '${SettingFields.name} = ?',
+        whereArgs: [settingName],
+      );
+
+      if (maps.isNotEmpty) {
+        return Setting.fromJson(maps.first);
+      } else {
+        throw Exception('settingName $settingName not found');
+      }
+    } else {
+      throw Exception('Both id and settingName are null');
+    }
+  }
+
+  Future<List<Setting>> readAllSettings() async {
+    final db = await instance.database;
+
+    String orderBy = '${SettingFields.id} ASC';
+
+    final result = await db.query(tableSettings, orderBy: orderBy);
+
+    return result.map((json) => Setting.fromJson(json)).toList();
+  }
+
+  Future<int> updateSetting(Setting setting) async {
+    final db = await instance.database;
+
+    return db.update(
+      tableSettings,
+      setting.toJson(),
+      where: '${SettingFields.id} = ?',
+      whereArgs: [setting.id],
     );  
   }
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:toki/backend/database_helpers.dart';
+import 'package:toki/model/setting.dart';
 
 class Styles {
   static const _textSizeLarge = 25.0;
@@ -12,15 +14,17 @@ class Styles {
   static final MaterialColor colorLogoRed = _createMaterialColor(const Color(0xffD57E7E));
   static final MaterialColor colorLogoBlue = _createMaterialColor(const Color(0xffA2CDCD));
   static final MaterialColor colorLogoTan = _createMaterialColor(const Color(0xffFFE1AF));
-  static final MaterialColor backgroundColor = _createMaterialColor(const Color(0xffFFFFFF));
+  static final MaterialColor whiteColor = _createMaterialColor(const Color(0xffFFFFFF));
+  static final MaterialColor darkColor = _createMaterialColor(const Color(0xff121212));
 
   static const String _fontNameDefault = 'M+ 1C';
 
   static const alarmFormCardHeight = 100.0;
   static const alarmFormCardWidth = 300.0;
 
-  static final MaterialColor selectedAccentColor = colorLogoBlue;
-  static final Color _textColorDefault = _textColorBlack;
+  static MaterialColor selectedAccentColor = colorLogoBlue;
+  static Color _textColorDefault = _textColorBlack;
+  static MaterialColor backgroundColor = whiteColor;
 
 
   static const pageTitle = TextStyle(
@@ -123,5 +127,39 @@ class Styles {
     }
 
     return MaterialColor(color.value, swatch);
+  }
+
+    static Future<void> setStyles() async {
+    List<Setting> listOfSettings = await TokiDatabase.instance.readAllSettings();
+
+    late Setting themeColor;
+    late Setting nightmodeSetting;
+    for (Setting setting in listOfSettings) {
+      if (setting.name == 'Theme Color') {
+        themeColor = setting;
+      } else if (setting.name == 'Nightmode') {
+        nightmodeSetting = setting;
+      }
+    }
+
+    if (themeColor.settingData == 'blue') {
+      selectedAccentColor = colorLogoBlue;
+    } else if (themeColor.settingData == 'green') {
+      selectedAccentColor = colorLogoGreen;
+    } else if (themeColor.settingData == 'red') {
+      selectedAccentColor = colorLogoRed;
+    } else if (themeColor.settingData == 'tan') {
+      selectedAccentColor = colorLogoTan;
+    } else {
+      Exception('Theme color ${themeColor.settingData} does not match logo colors');
+    }
+
+    if (nightmodeSetting.settingData == 'false') {
+      backgroundColor = whiteColor;
+    } else if (nightmodeSetting.settingData == 'true') {
+      backgroundColor = darkColor;
+    } else {
+      Exception('Nightmode setting ${nightmodeSetting.settingData} does not match true or false');
+    }
   }
 }

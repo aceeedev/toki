@@ -89,25 +89,28 @@ class PuzzleTemplate extends StatelessWidget {
  
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          PageTitle(
-            title: puzzleName,
-            padding: true,
-          ),
-          EmergencyExitButton(
-            alarm: alarm, 
-            completePuzzle: completePuzzle,
-            test: test
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        body: Column(
+          children: [
+            PageTitle(
+              title: puzzleName,
+              padding: true,
             ),
-          Expanded(
-            child: Center(
-              child: puzzleWidget,
+            EmergencyExitButton(
+              alarm: alarm, 
+              completePuzzle: completePuzzle,
+              test: test
+              ),
+            Expanded(
+              child: Center(
+                child: puzzleWidget,
+              ),
             ),
-          ),
-        ],
-      )
+          ],
+        ),
+      ),
     );
   }
 }

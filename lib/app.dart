@@ -3,6 +3,7 @@ import 'package:notification_permissions/notification_permissions.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:toki/backend/database_helpers.dart';
 import 'package:toki/model/alarm.dart';
+import 'package:toki/model/setting.dart';
 import 'package:toki/widget/page_title.dart';
 import 'package:toki/backend/notification_api.dart';
 import 'package:toki/page/leaderboard_page.dart';
@@ -33,6 +34,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     super.initState();
 
     asyncFunc();
+    checkForUpdate();
+    Styles.setStyles();
 
     NotificationApi.init(initScheduled: true);
     listenNotifications();
@@ -44,6 +47,25 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void asyncFunc() async {
     final dir = await getApplicationDocumentsDirectory();
     print(dir.path);
+  }
+
+  /// function runs when there has been an update to the app
+  Future checkForUpdate() async {
+    //Future.delayed(const Duration(seconds: 1));
+    String newVersion = '1.0.0';
+    Setting versionSetting = await TokiDatabase.instance.readSetting(null, 'Version');
+
+    if (newVersion != versionSetting.settingData) {
+      print('updated');
+      Setting updatedSetting = Setting(
+        id: versionSetting.id,
+        name: versionSetting.name,
+        settingData: newVersion,
+      );
+      TokiDatabase.instance.updateSetting(updatedSetting);
+
+      // put functions to run if updated here
+    }
   }
 
   void listenNotifications() =>
