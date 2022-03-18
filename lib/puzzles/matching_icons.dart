@@ -170,20 +170,20 @@ class _SpecialIconButtonState extends State<SpecialIconButton> {
           child: widget.isCorrectIcon 
             ? Icon(
               widget.correctIcon, 
-              size: 40.0, color: 
+              size: 48.0, color: 
               Styles.selectedAccentColor
             ) 
             : Icon(
               randomNotCorrectIcon, 
-              size: 40.0, 
+              size: 48.0, 
               color: Styles.selectedAccentColor
           ),
           style: ElevatedButton.styleFrom(
             elevation: 0.0,
-            primary: Styles.backgroundColor,
+            primary: Styles.secondBackgroundColor,
             side: BorderSide(
               width: 5.0,
-              color: widget.pressed ? Styles.selectedAccentColor : Styles.backgroundColor,
+              color: widget.pressed ? Styles.selectedAccentColor : Styles.secondBackgroundColor,
             ),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10.0)

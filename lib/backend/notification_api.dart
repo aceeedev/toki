@@ -36,11 +36,17 @@ class NotificationApi {
     }
   }
 
-  static Future _notificationDetails() async {
-    const sound = 'digital_alarm_sound.wav';
-    return const NotificationDetails(
-      android: AndroidNotificationDetails(
-        'channel id 1',
+  static Future _notificationDetails(Alarm alarm) async {
+    String soundName = alarm.alarmRingtone;
+    String sound = '';
+    if (soundName == 'Default Ringtone') {
+      sound = 'digital_alarm_sound.wav';
+    } else {
+      Exception('soundName $soundName does not match possible options');
+    }
+    return NotificationDetails(
+      android: const AndroidNotificationDetails(
+        'channel id',
         'channel name',
         //'channel description',
         importance: Importance.max,
@@ -212,7 +218,7 @@ class NotificationApi {
           title,
           body,
           scheduledTZDateTime.add(Duration(seconds: 30 * i)),
-          await _notificationDetails(),
+          await _notificationDetails(alarm),
           payload: payload,
           androidAllowWhileIdle: true,
           uiLocalNotificationDateInterpretation: 

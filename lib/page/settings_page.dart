@@ -6,7 +6,8 @@ import 'package:toki/widget/page_title.dart';
 import 'package:toki/model/setting.dart';
 
 class SettingsPage extends StatefulWidget {
-  const SettingsPage({Key? key}) : super(key: key);
+  final Function refreshAppearance;
+  const SettingsPage({Key? key, required this.refreshAppearance}) : super(key: key);
 
   @override
   State<SettingsPage> createState() => _SettingsPageState();
@@ -14,21 +15,38 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   late String appVersion = '';
+  late String themeColor = 'blue';
 
   @override
   void initState() {
     super.initState();
 
     getVersion();
+    getValues();
   }
 
   Future getVersion() async {
-    final String preAppVersion = (await TokiDatabase.instance.readSetting(null, 'Version')).settingData;
+    final String preAppVersion = await getValue('Version');
     if (mounted) {
       setState(() {
         appVersion = preAppVersion;
       });
     }
+  }
+
+  Future getValues() async {
+    final String preThemeColor = await getValue('Theme Color');
+    if (mounted) {
+      setState(() {
+        themeColor = preThemeColor;
+      });
+    } else {
+      print('not mounted');
+    }
+  }
+
+  Future<String> getValue(String settingName) async {
+    return (await TokiDatabase.instance.readSetting(null, settingName)).settingData;
   }
   
   @override
@@ -64,6 +82,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 settingRowDropdown(
                   titleName: 'Theme Color',
                   icon: Icons.color_lens,
+                  selectedValue: themeColor,
                   dropdownOptions: const <DropdownMenuItem<String>> [
                     DropdownMenuItem(
                       child: Text('Blue'),
@@ -82,7 +101,10 @@ class _SettingsPageState extends State<SettingsPage> {
                       value: 'tan',
                     ),
                   ],
-                  onSelectDropDown: (valueSelected) async {
+                  onSelectDropDown: (String valueSelected) async {
+                    setState(() {
+                        themeColor = valueSelected;
+                    });
                     Setting setting = await TokiDatabase.instance.readSetting(null, 'Theme Color');
                     Setting updatedSetting = Setting(
                       id: setting.id,
@@ -91,33 +113,10 @@ class _SettingsPageState extends State<SettingsPage> {
                     );
 
                     TokiDatabase.instance.updateSetting(updatedSetting);
-                    await Styles.setStyles();
-                  }
-                ),
-                settingDivider(),
-                settingRowDropdown(
-                  titleName: 'Nightmode / Lightmode', 
-                  icon: Icons.light_mode, 
-                  dropdownOptions:  const <DropdownMenuItem<String>> [
-                    DropdownMenuItem(
-                      child: Text('Light Mode'),
-                      value: 'false',
-                    ),
-                    DropdownMenuItem(
-                      child: Text('Night mode'),
-                      value: 'true',
-                    ),
-                  ],
-                  onSelectDropDown: (valueSelected) async {
-                    Setting setting = await TokiDatabase.instance.readSetting(null, 'Theme Color');
-                    Setting updatedSetting = Setting(
-                      id: setting.id,
-                      name: setting.name,
-                      settingData: valueSelected,
-                    );
-
-                    TokiDatabase.instance.updateSetting(updatedSetting);
-                    await Styles.setStyles();
+                    setState(() {
+                      Styles.setStyles();
+                    });
+                    widget.refreshAppearance();
                   }
                 ),
                 settingDivider(),
@@ -154,6 +153,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget settingRowDropdown({
     required String titleName, 
     required IconData icon, 
+    required String selectedValue,
     required List<DropdownMenuItem<String>> dropdownOptions, 
     required Function onSelectDropDown}) {
     return Row(
@@ -170,6 +170,7 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
         DropdownButton(
           items: dropdownOptions, 
+          value: selectedValue,
           onChanged: (value) => onSelectDropDown(value),
         ),
       ]

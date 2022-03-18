@@ -15,6 +15,7 @@ class Styles {
   static final MaterialColor colorLogoBlue = _createMaterialColor(const Color(0xffA2CDCD));
   static final MaterialColor colorLogoTan = _createMaterialColor(const Color(0xffFFE1AF));
   static final MaterialColor whiteColor = _createMaterialColor(const Color(0xffFFFFFF));
+  static final MaterialColor lightColor = _createMaterialColor(const Color(0xffFAFAFA));
   static final MaterialColor darkColor = _createMaterialColor(const Color(0xff121212));
 
   static const String _fontNameDefault = 'M+ 1C';
@@ -24,7 +25,8 @@ class Styles {
 
   static MaterialColor selectedAccentColor = colorLogoBlue;
   static Color _textColorDefault = _textColorBlack;
-  static MaterialColor backgroundColor = whiteColor;
+  static MaterialColor secondBackgroundColor = whiteColor;
+  static MaterialColor backgroundColor = lightColor;
 
 
   static const pageTitle = TextStyle(
@@ -132,34 +134,25 @@ class Styles {
     static Future<void> setStyles() async {
     List<Setting> listOfSettings = await TokiDatabase.instance.readAllSettings();
 
-    late Setting themeColor;
-    late Setting nightmodeSetting;
-    for (Setting setting in listOfSettings) {
-      if (setting.name == 'Theme Color') {
-        themeColor = setting;
-      } else if (setting.name == 'Nightmode') {
-        nightmodeSetting = setting;
+    if (listOfSettings.isNotEmpty) {
+      late Setting themeColor;
+      for (Setting setting in listOfSettings) {
+        if (setting.name == 'Theme Color') {
+          themeColor = setting;
+        }
       }
-    }
 
-    if (themeColor.settingData == 'blue') {
-      selectedAccentColor = colorLogoBlue;
-    } else if (themeColor.settingData == 'green') {
-      selectedAccentColor = colorLogoGreen;
-    } else if (themeColor.settingData == 'red') {
-      selectedAccentColor = colorLogoRed;
-    } else if (themeColor.settingData == 'tan') {
-      selectedAccentColor = colorLogoTan;
-    } else {
-      Exception('Theme color ${themeColor.settingData} does not match logo colors');
-    }
-
-    if (nightmodeSetting.settingData == 'false') {
-      backgroundColor = whiteColor;
-    } else if (nightmodeSetting.settingData == 'true') {
-      backgroundColor = darkColor;
-    } else {
-      Exception('Nightmode setting ${nightmodeSetting.settingData} does not match true or false');
+      if (themeColor.settingData == 'blue') {
+        selectedAccentColor = colorLogoBlue;
+      } else if (themeColor.settingData == 'green') {
+        selectedAccentColor = colorLogoGreen;
+      } else if (themeColor.settingData == 'red') {
+        selectedAccentColor = colorLogoRed;
+      } else if (themeColor.settingData == 'tan') {
+        selectedAccentColor = colorLogoTan;
+      } else {
+        Exception('Theme color ${themeColor.settingData} does not match logo colors');
+      }
     }
   }
 }

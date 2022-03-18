@@ -72,48 +72,38 @@ CREATE TABLE $tableSettings (
   ${SettingFields.settingData} $textType
   )
 ''');
+  }
 
-    // initalize puzzles 
-    List<String> puzzleNames = ['Matching Icons', 'Maze'];
-    for (String name in puzzleNames) {
-      Puzzle puzzle = Puzzle(
-        name: name,
-        difficulty: 2,
-        enabled: true,
-      );
-      _createPuzzle(puzzle);
-    }
+  Future initializeInsert() async {
+    try {
+      await readSetting(null, 'Version');
+    } catch (e) {
+      // initialize settings
+      List<Setting> settingList = const [
+        Setting(
+          name: 'Version',
+          settingData: '1.0.0',
+        ),
+        Setting(
+          name: 'Theme Color',
+          settingData: 'blue',
+        ),
+      ];
+      for (Setting setting in settingList) {
+        _createSetting(setting);
+      }
 
-    // initialize settings
-    List<Setting> settingList = const [
-      Setting(
-        name: 'Version',
-        settingData: '1.0.0',
-      ),
-      Setting(
-        name: 'Theme Color',
-        settingData: 'blue',
-      ),
-      Setting(
-        name: 'Nightmode',
-        settingData: 'false',
-      ),
-    ];
-    for (Setting setting in settingList) {
-      _createSetting(setting);
+      // initalize puzzles 
+      List<String> puzzleNames = ['Matching Icons', 'Maze'];
+      for (String name in puzzleNames) {
+        Puzzle puzzle = Puzzle(
+          name: name,
+          difficulty: 2,
+          enabled: true,
+        );
+        _createPuzzle(puzzle);
+      }
     }
-    /*_createSetting(const Setting(
-      name: 'Version',
-      settingData: '1.0.0',
-    ));
-    _createSetting(const Setting(
-      name: 'Theme Color',
-      settingData: 'blue',
-    ));
-    _createSetting(const Setting(
-      name: 'Nightmode',
-      settingData: 'false',
-    ));*/
   }
 
   Future close() async {

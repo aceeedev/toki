@@ -51,6 +51,12 @@ class _AlarmPageState extends State<AlarmPage> {
     }
   }
 
+  Future refreshAppearance() async {
+    setState(() {
+      Styles.setStyles();
+    });
+  }
+
   @override
   Widget build(BuildContext context) => Scaffold(
     body: Column(
@@ -71,8 +77,8 @@ class _AlarmPageState extends State<AlarmPage> {
                   child: IconButton(
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute<void>(
-                        builder: (context) => const SettingsPage()
-                      ));
+                        builder: (context) => SettingsPage(refreshAppearance: refreshAppearance)
+                      )).then((_) => setState(() {}));
                     },
                     padding: EdgeInsets.zero,
                     icon: Icon(

@@ -22,7 +22,16 @@ class _PuzzleState extends State<PuzzleWidget> {
   @override
   void initState() {
     isSwitched = widget.puzzle.enabled;
-    dropDownValue = widget.puzzle.difficulty.toString();
+
+    int difficulty = widget.puzzle.difficulty;
+    if (difficulty == 1) {
+      dropDownValue = 'Easy';
+    } else if (difficulty == 2) {
+      dropDownValue = 'Medium';
+    } else if (difficulty == 3) {
+      dropDownValue = 'Hard';
+    }
+
     super.initState();
   }
 
@@ -54,38 +63,43 @@ class _PuzzleState extends State<PuzzleWidget> {
                     items: const [
                       DropdownMenuItem(
                         child: Text('Easy'),
-                        value: '1',
+                        value: 'Easy',
                       ),
                       DropdownMenuItem(
                         child: Text('Medium'),
-                        value: '2',
+                        value: 'Medium',
                       ),
                       DropdownMenuItem(
                         child: Text('Hard'),
-                        value: '3',
+                        value: 'Hard',
                       ),
                     ],
-                    onChanged: (value) {
+                    onChanged: (pressedValue) {
                       setState(() {
-                        if (value == 1) {
-                          dropDownValue = 'Easy';
-                        } else if (value == 2) {
-                          dropDownValue = 'Medium';
-                        } else if (value == 3) {
-                          dropDownValue = 'Hard';
-                        }
-                        print(dropDownValue);
+                        dropDownValue = pressedValue.toString();
                       });
+
+                      int newDifficulty = 0;
+                      if (pressedValue == 'Easy') {
+                        newDifficulty = 1;
+                      } else if (pressedValue == 'Medium') {
+                        newDifficulty = 2;
+                      } else if (pressedValue == 'Hard') {
+                        newDifficulty = 3;
+                      } else {
+                        Exception('pressedValue $pressedValue is not Easy, Medium, or Hard');
+                      }
+                
 
                       Puzzle updatedPuzzle = Puzzle(
                         id: widget.puzzle.id,
                         name: widget.puzzle.name,
-                        difficulty: int.parse(value.toString()),
+                        difficulty: newDifficulty,
                         enabled: widget.puzzle.enabled,
                       );
                       TokiDatabase.instance.updatePuzzle(updatedPuzzle);
 
-                      widget.refreshFunc();
+                      widget.refreshFunc;
                     },
                   ),
                 ],

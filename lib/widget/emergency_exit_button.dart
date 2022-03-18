@@ -31,15 +31,14 @@ class EmergencyExitButton extends StatelessWidget {
           onPressed: () async {
             clickedOff = false;
 
-            await Future.delayed(const Duration(seconds: 3));
+            await Future.delayed(const Duration(seconds: 10));
 
             if (!clickedOff) {
               completePuzzle(context, test);
             }
           },
-          onFocusChange: (value) {
-            print(value);
-            clickedOff = true;
+          onLongPress: () {
+
           },
         ),
       ),

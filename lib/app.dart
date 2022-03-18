@@ -33,9 +33,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void initState() {
     super.initState();
 
-    asyncFunc();
     checkForUpdate();
-    Styles.setStyles();
+    asyncFunc();
 
     NotificationApi.init(initScheduled: true);
     listenNotifications();
@@ -51,6 +50,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   /// function runs when there has been an update to the app
   Future checkForUpdate() async {
+    await TokiDatabase.instance.initializeInsert();
     //Future.delayed(const Duration(seconds: 1));
     String newVersion = '1.0.0';
     Setting versionSetting = await TokiDatabase.instance.readSetting(null, 'Version');
@@ -116,6 +116,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       body: FutureBuilder(
         future: allowedNotificationsPerm,
         builder: (context, snapshot) {
+          Styles.setStyles();
+
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(),
@@ -220,7 +222,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         iconSize: 35.0,
         elevation: 0.0,
         selectedFontSize: 0.0,
-        unselectedItemColor: Styles.selectedAccentColor, /*Colors.grey[400],*/
+        unselectedItemColor: Styles.selectedAccentColor,
         currentIndex: selectedPage,
         onTap: (index){
           setState(() {

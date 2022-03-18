@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
+import 'package:audioplayers/audioplayers.dart';
 import '../backend/database_helpers.dart';
 import 'package:toki/backend/notification_api.dart';
 import '../styles.dart';
@@ -35,11 +36,31 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
 
   String alarmName = "";
   String alarmRingtone = "";
+  late List<RingToneListTile> ringtoneListTiles;
+
+  Future setRingtone(String ringtone) async {
+    if (mounted) {
+      setState(() {
+        alarmRingtone = ringtone;
+      });
+    }
+  }
+
+  List<RingToneListTile> createRingtoneListTiles() {
+    return [
+      RingToneListTile(
+        title: 'Default Ringtone',
+        sound: 'digital_alarm_sound.wav',
+        setRingtone: setRingtone,
+      ),
+    ];
+  }
 
 
   @override
   void initState() {
-    alarmRingtone = ringtones[0].data.toString();
+    ringtoneListTiles = createRingtoneListTiles();
+    alarmRingtone = ringtoneListTiles.first.title;
 
     _controller = TextEditingController();
     _controller.addListener(() { 
@@ -115,14 +136,42 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
           ),
           _StyledCard(
             child: CupertinoButton(
-              onPressed: () => _showDialog(
-                CupertinoPicker(
-                  children: ringtones,
-                  itemExtent: 30.0,
-                  onSelectedItemChanged: (value) {
-                    setState(() => alarmRingtone = ringtones[value].data.toString());
-                  },
-                ),
+              onPressed: () => showDialog(
+                context: context, 
+                builder: (BuildContext context) {
+                  return Card(
+                    child: Column(
+                      children: [
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: Container(
+                            padding: const EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 10.0),
+                            child: IconButton(
+                              onPressed: () => Navigator.pop(context), 
+                              icon: Icon(
+                                Icons.arrow_back,
+                                size: 48.0,
+                                color: Styles.selectedAccentColor,
+                              )
+                            ),
+                          ),
+                        ),
+                        const Text(
+                          'Ringtones',
+                          style: Styles.pageTitle,
+                          ),
+                        ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          itemCount: 1,
+                          itemBuilder: (context, index) {
+                            return ringtoneListTiles[index];
+                          },
+                        )
+                      ],
+                    )
+                  );
+                }
               ),
               child: Text(
                 'Ringtone: $alarmRingtone',
@@ -286,6 +335,42 @@ class _DayButtonState extends State<DayButton> {
         child: Text(widget.day),
         style: widget.selected ? Styles.dayButtonStyleSelected : Styles.dayButtonStyleNotSelected,
       ),
+    );
+  }
+}
+
+class RingToneListTile extends StatefulWidget {
+  final String title;
+  final String sound;
+  final Function setRingtone;
+  AudioCache player = AudioCache(prefix: 'assets/audios/');
+
+  RingToneListTile({Key? key, required this.title, required this.sound, required this.setRingtone}) : super(key: key);
+
+  @override
+  State<RingToneListTile> createState() => _RingToneListTileState();
+}
+
+class _RingToneListTileState extends State<RingToneListTile> {
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: TextButton(
+        child: Text(
+          widget.title,
+          style: Styles.largeTextDefault,
+        ),
+        onPressed: () {
+          widget.setRingtone(widget.title);
+        },
+      ),
+      trailing: IconButton(
+        iconSize: 48.0,
+        icon:  const Icon(Icons.play_circle_fill),
+        onPressed: () async {
+          await widget.player.play(widget.sound);
+        },
+      )
     );
   }
 }
