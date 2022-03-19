@@ -37,13 +37,8 @@ class NotificationApi {
   }
 
   static Future _notificationDetails(Alarm alarm) async {
-    String soundName = alarm.alarmRingtone;
-    String sound = '';
-    if (soundName == 'Default Ringtone') {
-      sound = 'digital_alarm_sound.wav';
-    } else {
-      Exception('soundName $soundName does not match possible options');
-    }
+    String sound = alarm.alarmRingtone;
+
     return NotificationDetails(
       android: const AndroidNotificationDetails(
         'channel id',

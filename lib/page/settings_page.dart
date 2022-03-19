@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-
+import 'package:provider/provider.dart';
 import 'package:toki/backend/database_helpers.dart';
-import 'package:toki/styles.dart';
+import 'package:toki/providers/styles.dart';
 import 'package:toki/widget/page_title.dart';
 import 'package:toki/model/setting.dart';
 
 class SettingsPage extends StatefulWidget {
-  final Function refreshAppearance;
-  const SettingsPage({Key? key, required this.refreshAppearance}) : super(key: key);
+  const SettingsPage({Key? key}) : super(key: key);
 
   @override
   State<SettingsPage> createState() => _SettingsPageState();
@@ -64,7 +63,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 icon: Icon(
                   Icons.arrow_back,
                   size: 48.0,
-                  color: Styles.selectedAccentColor,
+                  color: context.watch<Styles>().selectedAccentColor,
                 )
               ),
             ),
@@ -113,10 +112,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     );
 
                     TokiDatabase.instance.updateSetting(updatedSetting);
-                    setState(() {
-                      Styles.setStyles();
-                    });
-                    widget.refreshAppearance();
+                    context.read<Styles>().setStyles();
                   }
                 ),
                 settingDivider(),
@@ -124,7 +120,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   alignment: Alignment.bottomCenter,
                   child: Text(
                     'Version: $appVersion',
-                    style: Styles.mediumTextDefault,
+                    style: context.watch<Styles>().mediumTextDefault,
                   ),
                 ),
               ],
@@ -138,7 +134,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget settingTitle(String title) {
     return Text(
       title,
-      style: Styles.largeTextDefault
+      style: context.watch<Styles>().largeTextDefault
     );
   }
 
@@ -162,11 +158,11 @@ class _SettingsPageState extends State<SettingsPage> {
         Icon(
           icon,
           size: 48.0,
-          color: Styles.selectedAccentColor,
+          color: context.watch<Styles>().selectedAccentColor,
         ),
         Text(
           titleName,
-          style: Styles.mediumTextDefault,
+          style: context.watch<Styles>().mediumTextDefault,
         ),
         DropdownButton(
           items: dropdownOptions, 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:toki/styles.dart';
+import 'package:provider/provider.dart';
+import 'package:toki/providers/styles.dart';
 import 'package:toki/widget/page_title.dart';
 import 'package:toki/widget/puzzle_widget.dart';
 import 'package:toki/model/puzzle.dart';
@@ -64,7 +65,7 @@ class _PuzzlePageState extends State<PuzzlePage> {
               ? Center(
                   child: Text(
                     'No Puzzles',
-                    style: Styles.largeTextDefault,
+                    style: context.watch<Styles>().largeTextDefault,
                   ),
                 )
               : buildPuzzles(),

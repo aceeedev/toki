@@ -1,15 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:toki/backend/notification_api.dart';
-import 'package:toki/styles.dart';
+import 'dart:async';
+import 'package:provider/provider.dart';
+import 'package:toki/providers/styles.dart';
 import 'package:toki/model/alarm.dart';
 
-class EmergencyExitButton extends StatelessWidget {
-  bool clickedOff = true;
+class EmergencyExitButton extends StatefulWidget {
   final Alarm? alarm;
   final Function completePuzzle;
   final bool test;
 
-  EmergencyExitButton({Key? key, this.alarm, required this.completePuzzle, required this.test}) : super(key: key);
+  const EmergencyExitButton({Key? key, this.alarm, required this.completePuzzle, required this.test}) : super(key: key);
+
+  @override
+  State<EmergencyExitButton> createState() => _EmergencyExitButtonState();
+}
+
+class _EmergencyExitButtonState extends State<EmergencyExitButton> {
+  Timer? _timer;
+
+  @override
+  void dispose() {
+    var f = _timer;
+    if (f != null) {
+      _timer!.cancel();
+    }
+    super.dispose();
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -17,28 +33,27 @@ class EmergencyExitButton extends StatelessWidget {
       padding: const EdgeInsets.all(10.0),
       child: Align(
         alignment: Alignment.topRight,
-        child: ElevatedButton(
-          child: Icon(
-            Icons.warning,
-            size: 48.0,
-            color: Styles.colorLogoRed[900],
+        child: GestureDetector(
+          child: Container(
+            height: 60.0,
+            width: 60.0,
+            child: Icon(
+              Icons.warning,
+              size: 48.0,
+              color: context.watch<Styles>().colorLogoRed[900],
+            ),
+            decoration: BoxDecoration(
+              color: context.watch<Styles>().colorLogoRed,
+              shape: BoxShape.circle
+            ),
           ),
-          style: ElevatedButton.styleFrom(
-            shape: const CircleBorder(),
-            padding: const EdgeInsets.all(8.0),
-            primary: Styles.colorLogoRed,
-          ),
-          onPressed: () async {
-            clickedOff = false;
-
-            await Future.delayed(const Duration(seconds: 10));
-
-            if (!clickedOff) {
-              completePuzzle(context, test);
-            }
+          onTapUp: (_) => {
+            _timer!.cancel()
           },
-          onLongPress: () {
-
+          onTapDown: (_) => {
+            _timer = Timer(const Duration(seconds: 10), () {
+              widget.completePuzzle(context, widget.test);
+            })
           },
         ),
       ),

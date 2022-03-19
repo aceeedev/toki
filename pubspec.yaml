@@ -43,6 +43,7 @@ dependencies:
   notification_permissions: ^0.6.1
   maze: ^3.0.0
   audioplayers: ^0.20.1
+  provider: ^6.0.2
 
 dev_dependencies:
   flutter_test:
@@ -87,6 +88,10 @@ flutter:
     - assets/images/finish_flag.png
     - assets/images/smile.png
     - assets/audios/digital_alarm_sound.wav
+    - assets/audios/alarm_melody.wav
+    - assets/audios/beeping_alarm.wav
+    - assets/audios/bell_alarm.wav
+    - assets/audios/fast_beeping.wav
 
   # To add assets to your application, add an assets section, like this:
   # assets:

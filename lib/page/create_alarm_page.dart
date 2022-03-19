@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:audioplayers/audioplayers.dart';
-import '../backend/database_helpers.dart';
+import 'package:toki/backend/database_helpers.dart';
 import 'package:toki/backend/notification_api.dart';
-import '../styles.dart';
-import '../model/alarm.dart';
-import '../widget/page_title.dart';
+import 'package:toki/providers/styles.dart';
+import 'package:toki/model/alarm.dart';
+import 'package:toki/widget/page_title.dart';
 
 class StatefulAlarmPage extends StatefulWidget {
   const StatefulAlarmPage({Key? key}) : super(key: key);
@@ -18,12 +19,7 @@ class StatefulAlarmPage extends StatefulWidget {
 class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
   DateTime time = DateTime.now();
   late TextEditingController _controller;
-
-  List<Text> ringtones = const [
-    Text('ringtone 1'),
-    Text('ringtone 2'),
-    Text('ringtone 3'),
-  ];
+  
   List<DayButton> dayButtons = [
     DayButton('Su'),
     DayButton('Mo'),
@@ -36,13 +32,16 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
 
   String alarmName = "";
   String alarmRingtone = "";
+  String alarmRingtoneName = "";
   late List<RingToneListTile> ringtoneListTiles;
 
-  Future setRingtone(String ringtone) async {
+  Future setRingtone(String ringtoneName, String ringtone) async {
     if (mounted) {
       setState(() {
-        alarmRingtone = ringtone;
+        alarmRingtoneName = ringtoneName;
       });
+
+      alarmRingtone = ringtone;
     }
   }
 
@@ -53,6 +52,26 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
         sound: 'digital_alarm_sound.wav',
         setRingtone: setRingtone,
       ),
+      RingToneListTile(
+        title: 'Beeping Ringtone',
+        sound: 'beeping_alarm.wav',
+        setRingtone: setRingtone,
+      ),
+      RingToneListTile(
+        title: 'Fast Beeping Ringtone',
+        sound: 'fast_beeping.wav',
+        setRingtone: setRingtone,
+      ),
+      RingToneListTile(
+        title: 'Melody Ringtone',
+        sound: 'alarm_melody.wav',
+        setRingtone: setRingtone,
+      ),
+      RingToneListTile(
+        title: 'Bell Ringtone',
+        sound: 'bell_alarm.wav',
+        setRingtone: setRingtone,
+      ),
     ];
   }
 
@@ -60,7 +79,7 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
   @override
   void initState() {
     ringtoneListTiles = createRingtoneListTiles();
-    alarmRingtone = ringtoneListTiles.first.title;
+    alarmRingtoneName = ringtoneListTiles.first.title;
 
     _controller = TextEditingController();
     _controller.addListener(() { 
@@ -104,7 +123,7 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
               ),
               child: Text(
                 'Time: ${DateFormat('hh:mm a').format(time)}',
-                style: Styles.selectTimeText
+                style: context.watch<Styles>().selectTimeText
               ),
             ),
           ),
@@ -114,7 +133,7 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
               children: [
                 Text(
                   'Selected Weekdays:',
-                  style: Styles.mediumTextDefault
+                  style: context.watch<Styles>().mediumTextDefault
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -151,19 +170,19 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
                               icon: Icon(
                                 Icons.arrow_back,
                                 size: 48.0,
-                                color: Styles.selectedAccentColor,
+                                color: context.watch<Styles>().selectedAccentColor,
                               )
                             ),
                           ),
                         ),
-                        const Text(
+                        Text(
                           'Ringtones',
-                          style: Styles.pageTitle,
+                          style: context.watch<Styles>().pageTitle,
                           ),
                         ListView.builder(
                           scrollDirection: Axis.vertical,
                           shrinkWrap: true,
-                          itemCount: 1,
+                          itemCount: ringtoneListTiles.length,
                           itemBuilder: (context, index) {
                             return ringtoneListTiles[index];
                           },
@@ -174,8 +193,8 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
                 }
               ),
               child: Text(
-                'Ringtone: $alarmRingtone',
-                style: Styles.selectTimeText
+                'Ringtone: $alarmRingtoneName',
+                style: context.watch<Styles>().selectTimeText
               ),
             ),
           ),
@@ -193,7 +212,7 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
                     },
                     icon: const Icon(Icons.arrow_back),
                     label: const Text('Back'),
-                    style: Styles.alarmFormButtonStyle,
+                    style: context.watch<Styles>().alarmFormButtonStyle,
                   ),
                   Container(
                     padding: const EdgeInsets.only(left: 20.0),
@@ -204,7 +223,7 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
                       },
                       icon: const Icon(Icons.check),
                       label: const Text('Create'),
-                      style: Styles.alarmFormButtonStyle,
+                      style: context.watch<Styles>().alarmFormButtonStyle,
                     ),
                   )
                   ],
@@ -299,8 +318,8 @@ class _StyledCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: Styles.alarmFormCardHeight,
-      width: Styles.alarmFormCardWidth,
+      height: context.watch<Styles>().alarmFormCardHeight,
+      width: context.watch<Styles>().alarmFormCardWidth,
       child: Card(
         child: child,
         shape: RoundedRectangleBorder(
@@ -333,7 +352,7 @@ class _DayButtonState extends State<DayButton> {
           });
         },
         child: Text(widget.day),
-        style: widget.selected ? Styles.dayButtonStyleSelected : Styles.dayButtonStyleNotSelected,
+        style: widget.selected ? context.watch<Styles>().dayButtonStyleSelected : context.watch<Styles>().dayButtonStyleNotSelected,
       ),
     );
   }
@@ -343,7 +362,7 @@ class RingToneListTile extends StatefulWidget {
   final String title;
   final String sound;
   final Function setRingtone;
-  AudioCache player = AudioCache(prefix: 'assets/audios/');
+  AudioCache cache = AudioCache(prefix: 'assets/audios/');
 
   RingToneListTile({Key? key, required this.title, required this.sound, required this.setRingtone}) : super(key: key);
 
@@ -358,17 +377,20 @@ class _RingToneListTileState extends State<RingToneListTile> {
       title: TextButton(
         child: Text(
           widget.title,
-          style: Styles.largeTextDefault,
+          style: context.watch<Styles>().largeTextDefault,
         ),
         onPressed: () {
-          widget.setRingtone(widget.title);
+          widget.setRingtone(widget.title, widget.sound);
+          Navigator.of(context).pop();
         },
       ),
       trailing: IconButton(
         iconSize: 48.0,
         icon:  const Icon(Icons.play_circle_fill),
         onPressed: () async {
-          await widget.player.play(widget.sound);
+          AudioPlayer player = await widget.cache.play(widget.sound);
+          await Future.delayed(const Duration(seconds: 5));
+          player.stop();
         },
       )
     );

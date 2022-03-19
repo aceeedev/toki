@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:toki/backend/database_helpers.dart';
 import 'package:toki/model/puzzle.dart';
-import 'package:toki/styles.dart';
+import 'package:toki/providers/styles.dart';
 import 'package:toki/puzzles/puzzle_helper.dart';
 
 class PuzzleWidget extends StatefulWidget {
@@ -56,7 +57,7 @@ class _PuzzleState extends State<PuzzleWidget> {
                 children: [
                   Text(
                     widget.puzzle.name.contains(' ') ? widget.puzzle.name.split(' ').join('\n') : widget.puzzle.name,
-                    style: Styles.alarmTitle,
+                    style: context.watch<Styles>().alarmTitle,
                   ),
                   DropdownButton(
                     value: dropDownValue,
@@ -114,7 +115,7 @@ class _PuzzleState extends State<PuzzleWidget> {
                   icon: Icon(
                     Icons.play_circle_fill,
                     size: 48.0,
-                    color: Styles.selectedAccentColor,
+                    color: context.watch<Styles>().selectedAccentColor,
                   ),
                   padding: EdgeInsets.zero,
                 ),
@@ -168,8 +169,8 @@ class _PuzzleState extends State<PuzzleWidget> {
                         });
                       }
                     },
-                    activeTrackColor: Styles.selectedAccentColor,
-                    activeColor: Styles.selectedAccentColor[700],
+                    activeTrackColor: context.watch<Styles>().selectedAccentColor,
+                    activeColor: context.watch<Styles>().selectedAccentColor[700],
                   ),
                 ),
               ),

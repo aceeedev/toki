@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:notification_permissions/notification_permissions.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:toki/backend/database_helpers.dart';
 import 'package:toki/model/alarm.dart';
 import 'package:toki/model/setting.dart';
@@ -9,7 +10,7 @@ import 'package:toki/backend/notification_api.dart';
 import 'package:toki/page/leaderboard_page.dart';
 import 'package:toki/page/alarm_page.dart';
 import 'package:toki/page/puzzle_page.dart';
-import 'package:toki/styles.dart';
+import 'package:toki/providers/styles.dart';
 import 'package:toki/puzzles/puzzle_helper.dart';
 
 class MyApp extends StatefulWidget {
@@ -21,11 +22,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   int selectedPage = 1;
-  final _pageOptions = const [
-    LeaderboardPage(),
-    AlarmPage(),
-    PuzzlePage(),
-  ];
+  late List _pageOptions;
 
   late Future<String> allowedNotificationsPerm;
 
@@ -33,7 +30,14 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void initState() {
     super.initState();
 
+    _pageOptions = const [
+      LeaderboardPage(),
+      AlarmPage(),
+      PuzzlePage(),
+    ];
+
     checkForUpdate();
+    context.read<Styles>().setStyles();
     asyncFunc();
 
     NotificationApi.init(initScheduled: true);
@@ -43,6 +47,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     WidgetsBinding.instance?.addObserver(this);
   }
 
+  /*@override
+  void didUpdateWidget(oldWidget) {
+    Styles.setStyles();
+    super.didUpdateWidget(oldWidget);
+  }*/
   void asyncFunc() async {
     final dir = await getApplicationDocumentsDirectory();
     print(dir.path);
@@ -116,8 +125,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       body: FutureBuilder(
         future: allowedNotificationsPerm,
         builder: (context, snapshot) {
-          Styles.setStyles();
-
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(),
@@ -144,7 +151,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                     padding: const EdgeInsets.all(10.0),
                     child: Text(
                       'Please enable notifications in order to use Toki',
-                        style: Styles.largeTextDefault,
+                        style: context.watch<Styles>().largeTextDefault,
                     ),
                   ),
                   TextButton(
@@ -159,10 +166,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                     }, 
                     child: Text(
                       'Go to notifications settings',
-                      style: Styles.textDefault,
+                      style: context.watch<Styles>().textDefault,
                     ),
                     style: TextButton.styleFrom(
-                      backgroundColor: Styles.selectedAccentColor
+                      backgroundColor: context.watch<Styles>().selectedAccentColor
                     )
                   )
                 ]
@@ -179,7 +186,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             icon: const Icon(Icons.assessment_outlined), 
             activeIcon: Container(
               decoration: BoxDecoration(
-                color: Styles.selectedAccentColor[100],
+                color: context.watch<Styles>().selectedAccentColor[100],
                 shape: BoxShape.circle,
               ),
               child: const Padding(
@@ -193,7 +200,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             icon: const Icon(Icons.alarm_outlined), 
             activeIcon: Container(
               decoration: BoxDecoration(
-                color: Styles.selectedAccentColor[100],
+                color: context.watch<Styles>().selectedAccentColor[100],
                 shape: BoxShape.circle,
               ),
               child: const Padding(
@@ -207,7 +214,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             icon: const Icon(Icons.extension_outlined), 
             activeIcon: Container(
               decoration: BoxDecoration(
-                color: Styles.selectedAccentColor[100],
+                color: context.watch<Styles>().selectedAccentColor[100],
                 shape: BoxShape.circle,
               ),
               child: const Padding(
@@ -218,11 +225,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             label: 'Puzzles'
           ),
         ],
-        selectedItemColor: Styles.selectedAccentColor[700],
+        selectedItemColor: context.watch<Styles>().selectedAccentColor[700],
         iconSize: 35.0,
         elevation: 0.0,
         selectedFontSize: 0.0,
-        unselectedItemColor: Styles.selectedAccentColor,
+        unselectedItemColor: context.watch<Styles>().selectedAccentColor,
         currentIndex: selectedPage,
         onTap: (index){
           setState(() {

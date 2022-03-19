@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:maze/maze.dart';
-import 'package:toki/styles.dart';
+import 'package:toki/providers/styles.dart';
 
 class MazePuzzle extends StatelessWidget { 
   final Function completePuzzle;
@@ -11,15 +12,25 @@ class MazePuzzle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Maze(
-      player: MazeItem('assets/images/smile.png', ImageType.asset),
-      finish: MazeItem('assets/images/finish_flag.png', ImageType.asset),
-      columns: _getNumOfColumns(),
-      rows: _getNumOfRows(),
-      wallColor: Styles.selectedAccentColor,
-      onFinish: () {
-        completePuzzle(context, test);
-      },
+    return Column(
+      children: [
+        Text(
+          'Complete the maze',
+          style: context.watch<Styles>().largeTextDefault,
+        ),
+        Expanded(
+          child: Maze(
+            player: MazeItem('assets/images/smile.png', ImageType.asset),
+            finish: MazeItem('assets/images/finish_flag.png', ImageType.asset),
+            columns: _getNumOfColumns(),
+            rows: _getNumOfRows(),
+            wallColor: context.watch<Styles>().selectedAccentColor,
+            onFinish: () {
+              completePuzzle(context, test);
+            },
+          ),
+        ),
+      ],
     );
   }
 

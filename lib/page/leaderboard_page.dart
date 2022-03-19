@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:toki/styles.dart';
-import '../widget/page_title.dart';
+import 'package:provider/provider.dart';
+import 'package:toki/providers/styles.dart';
+import 'package:toki/widget/page_title.dart';
 
 class LeaderboardPage extends StatelessWidget {
   const LeaderboardPage({Key? key}) : super(key: key);
@@ -18,7 +19,7 @@ class LeaderboardPage extends StatelessWidget {
             child: Center(
               child: Text(
                 'Coming Soon',
-                style: Styles.largeTextDefault,
+                style: context.watch<Styles>().largeTextDefault,
               ),
             ),
           ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../styles.dart';
+import 'package:provider/provider.dart';
+import 'package:toki/providers/styles.dart';
 
 class PageTitle extends StatelessWidget {
   final String title;
@@ -19,14 +20,14 @@ class PageTitle extends StatelessWidget {
             Text(
               title,
               textAlign: TextAlign.left,
-              style: Styles.pageTitle
+              style: context.watch<Styles>().pageTitle
             ),
             SizedBox(
               width: title.length.toDouble() * 30,
               height: 7.0,
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  color: Styles.selectedAccentColor,
+                  color: context.watch<Styles>().selectedAccentColor,
                 )
               ),
             ),

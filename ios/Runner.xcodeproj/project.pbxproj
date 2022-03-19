@@ -9,7 +9,11 @@
 /* Begin PBXBuildFile section */
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
-		49D04D6227E4313900D3B350 /* digital_alarm_sound.wav in Resources */ = {isa = PBXBuildFile; fileRef = 49D04D6127E4313900D3B350 /* digital_alarm_sound.wav */; };
+		495BA10827E66535000B3741 /* digital_alarm_sound.wav in Resources */ = {isa = PBXBuildFile; fileRef = 495BA10327E66535000B3741 /* digital_alarm_sound.wav */; };
+		495BA10927E66535000B3741 /* bell_alarm.wav in Resources */ = {isa = PBXBuildFile; fileRef = 495BA10427E66535000B3741 /* bell_alarm.wav */; };
+		495BA10A27E66535000B3741 /* beeping_alarm.wav in Resources */ = {isa = PBXBuildFile; fileRef = 495BA10527E66535000B3741 /* beeping_alarm.wav */; };
+		495BA10B27E66535000B3741 /* fast_beeping.wav in Resources */ = {isa = PBXBuildFile; fileRef = 495BA10627E66535000B3741 /* fast_beeping.wav */; };
+		495BA10C27E66535000B3741 /* alarm_melody.wav in Resources */ = {isa = PBXBuildFile; fileRef = 495BA10727E66535000B3741 /* alarm_melody.wav */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
@@ -36,7 +40,11 @@
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
 		2695E768147992A985C3A675 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
-		49D04D6127E4313900D3B350 /* digital_alarm_sound.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = digital_alarm_sound.wav; path = ../../../../../Downloads/digital_alarm_sound.wav; sourceTree = "<group>"; };
+		495BA10327E66535000B3741 /* digital_alarm_sound.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = digital_alarm_sound.wav; path = "../../../../../Downloads/drive-download-20220319T192255Z-001/digital_alarm_sound.wav"; sourceTree = "<group>"; };
+		495BA10427E66535000B3741 /* bell_alarm.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = bell_alarm.wav; path = "../../../../../Downloads/drive-download-20220319T192255Z-001/bell_alarm.wav"; sourceTree = "<group>"; };
+		495BA10527E66535000B3741 /* beeping_alarm.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = beeping_alarm.wav; path = "../../../../../Downloads/drive-download-20220319T192255Z-001/beeping_alarm.wav"; sourceTree = "<group>"; };
+		495BA10627E66535000B3741 /* fast_beeping.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = fast_beeping.wav; path = "../../../../../Downloads/drive-download-20220319T192255Z-001/fast_beeping.wav"; sourceTree = "<group>"; };
+		495BA10727E66535000B3741 /* alarm_melody.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = alarm_melody.wav; path = "../../../../../Downloads/drive-download-20220319T192255Z-001/alarm_melody.wav"; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
@@ -66,7 +74,11 @@
 		4905DF4E27D6C6EA0011D68F /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				49D04D6127E4313900D3B350 /* digital_alarm_sound.wav */,
+				495BA10727E66535000B3741 /* alarm_melody.wav */,
+				495BA10527E66535000B3741 /* beeping_alarm.wav */,
+				495BA10427E66535000B3741 /* bell_alarm.wav */,
+				495BA10327E66535000B3741 /* digital_alarm_sound.wav */,
+				495BA10627E66535000B3741 /* fast_beeping.wav */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -200,8 +212,12 @@
 			files = (
 				97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */,
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
-				49D04D6227E4313900D3B350 /* digital_alarm_sound.wav in Resources */,
+				495BA10827E66535000B3741 /* digital_alarm_sound.wav in Resources */,
+				495BA10C27E66535000B3741 /* alarm_melody.wav in Resources */,
+				495BA10B27E66535000B3741 /* fast_beeping.wav in Resources */,
+				495BA10927E66535000B3741 /* bell_alarm.wav in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
+				495BA10A27E66535000B3741 /* beeping_alarm.wav in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

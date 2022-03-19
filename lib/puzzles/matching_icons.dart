@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
-import 'package:toki/styles.dart';
+import 'package:provider/provider.dart';
+import 'package:toki/providers/styles.dart';
 
 class MatchingIcons extends StatefulWidget {
   final Function completePuzzle;
@@ -50,19 +51,20 @@ class _MatchingIconsState extends State<MatchingIcons> {
     return Column(
       children: [
         Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
               'Click all the ',
-              style: Styles.largeTextDefault,
+              style: context.watch<Styles>().largeTextDefault,
             ),
             Icon(
               correctIcon,
               size: 48.0,
-              color: Styles.selectedAccentColor,
+              color: context.watch<Styles>().selectedAccentColor,
             ),
             Text(
               ' icons',
-              style: Styles.largeTextDefault,
+              style: context.watch<Styles>().largeTextDefault,
             ),
           ],
         ),
@@ -170,20 +172,20 @@ class _SpecialIconButtonState extends State<SpecialIconButton> {
           child: widget.isCorrectIcon 
             ? Icon(
               widget.correctIcon, 
-              size: 48.0, color: 
-              Styles.selectedAccentColor
+              size: 48.0, 
+              color: context.watch<Styles>().selectedAccentColor
             ) 
             : Icon(
               randomNotCorrectIcon, 
               size: 48.0, 
-              color: Styles.selectedAccentColor
+              color: context.watch<Styles>().selectedAccentColor
           ),
           style: ElevatedButton.styleFrom(
             elevation: 0.0,
-            primary: Styles.secondBackgroundColor,
+            primary: context.watch<Styles>().secondBackgroundColor,
             side: BorderSide(
               width: 5.0,
-              color: widget.pressed ? Styles.selectedAccentColor : Styles.secondBackgroundColor,
+              color: widget.pressed ? context.watch<Styles>().selectedAccentColor : context.watch<Styles>().secondBackgroundColor,
             ),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10.0)

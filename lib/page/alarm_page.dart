@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:toki/page/settings_page.dart';
-import 'package:toki/styles.dart';
+import 'package:toki/providers/styles.dart';
 import 'package:toki/widget/page_title.dart';
 import 'package:toki/widget/alarm_widget.dart';
 import 'package:toki/page/create_alarm_page.dart';
@@ -51,12 +52,6 @@ class _AlarmPageState extends State<AlarmPage> {
     }
   }
 
-  Future refreshAppearance() async {
-    setState(() {
-      Styles.setStyles();
-    });
-  }
-
   @override
   Widget build(BuildContext context) => Scaffold(
     body: Column(
@@ -77,14 +72,14 @@ class _AlarmPageState extends State<AlarmPage> {
                   child: IconButton(
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute<void>(
-                        builder: (context) => SettingsPage(refreshAppearance: refreshAppearance)
-                      )).then((_) => setState(() {}));
+                        builder: (context) => const SettingsPage()
+                      ));
                     },
                     padding: EdgeInsets.zero,
                     icon: Icon(
                       Icons.settings,
                       size: 48.0,
-                      color: Styles.selectedAccentColor,
+                      color: context.watch<Styles>().selectedAccentColor,
                     ),
                   ),
                 ),
@@ -101,7 +96,7 @@ class _AlarmPageState extends State<AlarmPage> {
               ? Center(
                   child: Text(
                     'No Alarms',
-                    style: Styles.largeTextDefault,
+                    style: context.watch<Styles>().largeTextDefault,
                   ),
                 )
               : buildAlarms(),
@@ -110,7 +105,7 @@ class _AlarmPageState extends State<AlarmPage> {
     ),
     floatingActionButton: FloatingActionButton(
       child: const Icon(Icons.add),
-      backgroundColor: Styles.selectedAccentColor,
+      backgroundColor: context.watch<Styles>().selectedAccentColor,
       onPressed: () async {
         await Navigator.push(context, MaterialPageRoute(builder: (context) => const StatefulAlarmPage()))
         .then((value) => refreshAlarms());
