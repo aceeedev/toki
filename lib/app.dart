@@ -12,6 +12,7 @@ import 'package:toki/page/alarm_page.dart';
 import 'package:toki/page/puzzle_page.dart';
 import 'package:toki/providers/styles.dart';
 import 'package:toki/puzzles/puzzle_helper.dart';
+import 'package:toki/main.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -86,7 +87,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
     List<dynamic> randomPuzzle = await PuzzleHelper().randomPuzzle(context);
 
-    build(context);
+    //build(context);
+    main();
 
     Navigator.of(context).push(MaterialPageRoute<void>(
       builder: (context) => PuzzleTemplate(

@@ -19,14 +19,14 @@ class StatefulAlarmPage extends StatefulWidget {
 class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
   DateTime time = DateTime.now();
   late TextEditingController _controller;
-  
+
   List<DayButton> dayButtons = [
     DayButton('Su'),
     DayButton('Mo'),
     DayButton('Tu'),
     DayButton('We'),
     DayButton('Th'),
-    DayButton('Fr'),                  
+    DayButton('Fr'),
     DayButton('Sa'),
   ];
 
@@ -34,6 +34,8 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
   String alarmRingtone = "";
   String alarmRingtoneName = "";
   late List<RingToneListTile> ringtoneListTiles;
+
+  late List<Widget> listOfListViewWidgets;
 
   Future setRingtone(String ringtoneName, String ringtone) async {
     if (mounted) {
@@ -75,17 +77,142 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
     ];
   }
 
+  List<Widget> createListOfListViewWidgets() {
+    return [
+      _StyledCard(
+        child: CupertinoButton(
+          onPressed: () => _showDialog(
+            CupertinoDatePicker(
+              initialDateTime: time,
+              mode: CupertinoDatePickerMode.time,
+              use24hFormat: false,
+              onDateTimeChanged: (DateTime newTime) {
+                setState(() => time = newTime);
+              },
+            ),
+          ),
+          child: Text('Time: ${DateFormat('hh:mm a').format(time)}',
+              style: context.watch<Styles>().selectTimeText),
+        ),
+      ),
+      _StyledCard(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Selected Weekdays:',
+                style: context.watch<Styles>().mediumTextDefault),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: dayButtons,
+            ),
+          ],
+        ),
+      ),
+      _StyledCard(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: CupertinoTextField(
+              controller: _controller,
+              placeholder: 'Optional: Alarm Name',
+            ),
+          ),
+        ),
+      ),
+      _StyledCard(
+        child: CupertinoButton(
+          onPressed: () => showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return Card(
+                    child: Column(
+                  children: [
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Container(
+                        padding:
+                            const EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 10.0),
+                        child: IconButton(
+                            onPressed: () => Navigator.pop(context),
+                            icon: Icon(
+                              Icons.arrow_back,
+                              size: 48.0,
+                              color:
+                                  context.watch<Styles>().selectedAccentColor,
+                            )),
+                      ),
+                    ),
+                    Text(
+                      'Ringtones',
+                      style: context.watch<Styles>().pageTitle,
+                    ),
+                    ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      itemCount: ringtoneListTiles.length,
+                      itemBuilder: (context, index) {
+                        return ringtoneListTiles[index];
+                      },
+                    )
+                  ],
+                ));
+              }),
+          child: Text('Ringtone: $alarmRingtoneName',
+              style: context.watch<Styles>().selectTimeText),
+        ),
+      ),
+      Align(
+        alignment: Alignment.bottomCenter,
+        child: Container(
+          padding: const EdgeInsets.only(bottom: 50.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: const Icon(Icons.arrow_back),
+                label: const Text('Back'),
+                style: context.watch<Styles>().alarmFormButtonStyle,
+              ),
+              Container(
+                padding: const EdgeInsets.only(left: 20.0),
+                child: ElevatedButton.icon(
+                  onPressed: () async {
+                    await _addAlarm();
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(Icons.check),
+                  label: const Text('Create'),
+                  style: context.watch<Styles>().alarmFormButtonStyle,
+                ),
+              )
+            ],
+          ),
+        ),
+      )
+    ];
+  }
 
   @override
   void initState() {
     ringtoneListTiles = createRingtoneListTiles();
     alarmRingtoneName = ringtoneListTiles.first.title;
+    alarmRingtone = ringtoneListTiles.first.sound;
 
     _controller = TextEditingController();
-    _controller.addListener(() { 
+    _controller.addListener(() {
       alarmName = _controller.text;
     });
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    listOfListViewWidgets = createListOfListViewWidgets();
   }
 
   @override
@@ -97,150 +224,32 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
   @override
   Widget build(BuildContext context) {
     return Hero(
-    tag: 'createAlarm', 
-    child: Scaffold(
-      body: Column(
-        children: [
+      tag: 'createAlarm',
+      child: Scaffold(
+        body: Column(children: [
           const PageTitle(
             title: 'Create Alarm',
             padding: true,
           ),
           Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _StyledCard(
-            child: CupertinoButton(
-              onPressed: () => _showDialog(
-                CupertinoDatePicker(
-                  initialDateTime: time,
-                  mode: CupertinoDatePickerMode.time,
-                  use24hFormat: false,
-                  onDateTimeChanged: (DateTime newTime) {
-                    setState(() => time = newTime);
-                  },
-                ),
-              ),
-              child: Text(
-                'Time: ${DateFormat('hh:mm a').format(time)}',
-                style: context.watch<Styles>().selectTimeText
-              ),
-            ),
-          ),
-          _StyledCard(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Selected Weekdays:',
-                  style: context.watch<Styles>().mediumTextDefault
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: dayButtons,
-                ),
-              ],
-            ),
-          ),
-          _StyledCard(
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: CupertinoTextField(
-                  controller: _controller,
-                  placeholder: 'Optional: Alarm Name',
-                ),
-              ),
-            ),
-          ),
-          _StyledCard(
-            child: CupertinoButton(
-              onPressed: () => showDialog(
-                context: context, 
-                builder: (BuildContext context) {
-                  return Card(
-                    child: Column(
-                      children: [
-                        Align(
-                          alignment: Alignment.topLeft,
-                          child: Container(
-                            padding: const EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 10.0),
-                            child: IconButton(
-                              onPressed: () => Navigator.pop(context), 
-                              icon: Icon(
-                                Icons.arrow_back,
-                                size: 48.0,
-                                color: context.watch<Styles>().selectedAccentColor,
-                              )
-                            ),
-                          ),
-                        ),
-                        Text(
-                          'Ringtones',
-                          style: context.watch<Styles>().pageTitle,
-                          ),
-                        ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          itemCount: ringtoneListTiles.length,
-                          itemBuilder: (context, index) {
-                            return ringtoneListTiles[index];
-                          },
-                        )
-                      ],
-                    )
-                  );
-                }
-              ),
-              child: Text(
-                'Ringtone: $alarmRingtoneName',
-                style: context.watch<Styles>().selectTimeText
-              ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              padding: const EdgeInsets.only(bottom: 50.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: const Icon(Icons.arrow_back),
-                    label: const Text('Back'),
-                    style: context.watch<Styles>().alarmFormButtonStyle,
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(left: 20.0),
-                    child: ElevatedButton.icon(
-                      onPressed: () async {
-                        await _addAlarm();
-                        Navigator.pop(context);
-                      },
-                      icon: const Icon(Icons.check),
-                      label: const Text('Create'),
-                      style: context.watch<Styles>().alarmFormButtonStyle,
-                    ),
-                  )
-                  ],
-                ),
-              ),
-            ),
-              ],
-            )
-          ),
-          ],
-        ),
+            child: ListView.separated(
+                physics: const NeverScrollableScrollPhysics(),
+                itemBuilder: (context, index) {
+                  return Padding(
+                      padding: const EdgeInsets.only(left: 25, right: 25),
+                      child: listOfListViewWidgets[index]);
+                },
+                separatorBuilder: (context, index) {
+                  return const SizedBox(height: 30);
+                },
+                itemCount: 5),
+          )
+        ]),
       ),
     );
   }
 
-
-  void _showDialog(Widget child) { 
+  void _showDialog(Widget child) {
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => Container(
@@ -272,17 +281,17 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
     // make sure at least one day is selected
     if (numSelectedDays == 0) {
       await showCupertinoDialog(
-        context: context, 
+        context: context,
         builder: (BuildContext context) => CupertinoAlertDialog(
-          title: const Text('No weekdays are selected'),
-          content: const Text('There has to be at least one weekday selected or else what is the point in setting an alarm that never goes off.'),
-          actions: <CupertinoDialogAction>[
-            CupertinoDialogAction(
-              child: const Text('Ok'),
-              onPressed: () => Navigator.pop(context),
-            ),
-          ]
-        ),
+            title: const Text('No weekdays are selected'),
+            content: const Text(
+                'There has to be at least one weekday selected or else what is the point in setting an alarm that never goes off.'),
+            actions: <CupertinoDialogAction>[
+              CupertinoDialogAction(
+                child: const Text('Ok'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ]),
       );
     } else {
       final alarm = Alarm(
@@ -309,7 +318,6 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
   }
 }
 
-
 class _StyledCard extends StatelessWidget {
   const _StyledCard({required this.child});
 
@@ -322,11 +330,10 @@ class _StyledCard extends StatelessWidget {
       width: context.watch<Styles>().alarmFormCardWidth,
       child: Card(
         child: child,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0)
-          ),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
       ),
-    ); 
+    );
   }
 }
 
@@ -352,7 +359,9 @@ class _DayButtonState extends State<DayButton> {
           });
         },
         child: Text(widget.day),
-        style: widget.selected ? context.watch<Styles>().dayButtonStyleSelected : context.watch<Styles>().dayButtonStyleNotSelected,
+        style: widget.selected
+            ? context.watch<Styles>().dayButtonStyleSelected
+            : context.watch<Styles>().dayButtonStyleNotSelected,
       ),
     );
   }
@@ -364,7 +373,12 @@ class RingToneListTile extends StatefulWidget {
   final Function setRingtone;
   AudioCache cache = AudioCache(prefix: 'assets/audios/');
 
-  RingToneListTile({Key? key, required this.title, required this.sound, required this.setRingtone}) : super(key: key);
+  RingToneListTile(
+      {Key? key,
+      required this.title,
+      required this.sound,
+      required this.setRingtone})
+      : super(key: key);
 
   @override
   State<RingToneListTile> createState() => _RingToneListTileState();
@@ -374,25 +388,24 @@ class _RingToneListTileState extends State<RingToneListTile> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: TextButton(
-        child: Text(
-          widget.title,
-          style: context.watch<Styles>().largeTextDefault,
+        title: TextButton(
+          child: Text(
+            widget.title,
+            style: context.watch<Styles>().largeTextDefault,
+          ),
+          onPressed: () {
+            widget.setRingtone(widget.title, widget.sound);
+            Navigator.of(context).pop();
+          },
         ),
-        onPressed: () {
-          widget.setRingtone(widget.title, widget.sound);
-          Navigator.of(context).pop();
-        },
-      ),
-      trailing: IconButton(
-        iconSize: 48.0,
-        icon:  const Icon(Icons.play_circle_fill),
-        onPressed: () async {
-          AudioPlayer player = await widget.cache.play(widget.sound);
-          await Future.delayed(const Duration(seconds: 5));
-          player.stop();
-        },
-      )
-    );
+        trailing: IconButton(
+          iconSize: 48.0,
+          icon: const Icon(Icons.play_circle_fill),
+          onPressed: () async {
+            AudioPlayer player = await widget.cache.play(widget.sound);
+            await Future.delayed(const Duration(seconds: 5));
+            player.stop();
+          },
+        ));
   }
 }

@@ -61,7 +61,7 @@ class Styles with ChangeNotifier{
     color: Colors.grey[400],
   );
 
-  static final _selectTimeText = TextStyle(
+  TextStyle _selectTimeText = TextStyle(
     fontFamily: _fontNameDefault,
     fontSize: _textSizeLarge,
     color: _selectedAccentColor,
@@ -85,7 +85,7 @@ class Styles with ChangeNotifier{
     color: _textColorDefault,
   );
 
-  static final _alarmFormButtonStyle = ElevatedButton.styleFrom(
+  ButtonStyle _alarmFormButtonStyle = ElevatedButton.styleFrom(
     fixedSize: const Size(110.0, 30.0), 
     primary: _selectedAccentColor,
   );
@@ -181,6 +181,12 @@ class Styles with ChangeNotifier{
       } else {
         Exception('Theme color ${themeColor.settingData} does not match logo colors');
       }
+
+      _selectTimeText = _selectTimeText.copyWith(color: _selectedAccentColor);
+      _alarmFormButtonStyle = ElevatedButton.styleFrom(
+        fixedSize: const Size(110.0, 30.0), 
+        primary: _selectedAccentColor
+      );
     }
 
     notifyListeners();

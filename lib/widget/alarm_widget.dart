@@ -44,7 +44,38 @@ class _AlarmState extends State<AlarmWidget> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                children: widget.alarm.alarmName != ""
+                  ? [
+                    Padding(
+                      padding: EdgeInsets.all(columnPadding),
+                      child: Flexible(
+                        child: Text(
+                          widget.alarm.alarmName.length >= 11 ? '${widget.alarm.alarmName.substring(0, 11)}...' : widget.alarm.alarmName,
+                          style: context.watch<Styles>().alarmTitle,
+                          overflow: TextOverflow.fade,
+                          maxLines: 1,
+                          softWrap: false,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(columnPadding),
+                      child: Text(
+                        DateFormat('h:mm a').format(widget.alarm.time),
+                        style: context.watch<Styles>().largeTextDefault
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(columnPadding),
+                      child: RichText(
+                        text: TextSpan(
+                          style: context.watch<Styles>().textDefault,
+                          children: formatSelectedDays(widget.alarm),
+                        ),
+                      ),
+                    ),
+                  ]
+                : [
                   Padding(
                     padding: EdgeInsets.all(columnPadding),
                     child: Text(
@@ -53,23 +84,14 @@ class _AlarmState extends State<AlarmWidget> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.all(columnPadding),
-                    child: RichText(
-                      text: TextSpan(
-                        style: context.watch<Styles>().textDefault,
-                        children: formatSelectedDays(widget.alarm),
+                      padding: EdgeInsets.all(columnPadding),
+                      child: RichText(
+                        text: TextSpan(
+                          style: context.watch<Styles>().textDefault,
+                          children: formatSelectedDays(widget.alarm),
+                        ),
                       ),
                     ),
-                  ),
-                  widget.alarm.alarmName != ""
-                  ? Padding(
-                      padding: EdgeInsets.all(columnPadding),
-                      child: Text(
-                        widget.alarm.alarmName,
-                        style: context.watch<Styles>().textDefault
-                      ),
-                    )
-                  : const SizedBox.shrink()
                 ],
               ),
               Container(
@@ -154,11 +176,11 @@ class _ThreeDotsButtonState extends State<ThreeDotsButton> {
             children: [
               Icon(
                 Icons.delete,
-                color: context.watch<Styles>().colorLogoRed,
+                color: context.read<Styles>().colorLogoRed,
                 ),
               Text(
                 ' Delete',
-                style: context.watch<Styles>().textDefaultRed
+                style: context.read<Styles>().textDefaultRed
               ),
             ],
           ),
