@@ -51,82 +51,84 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Align(
-            alignment: Alignment.topLeft,
-            child: Container(
-              padding: const EdgeInsets.fromLTRB(10.0, 50.0, 0.0, 10.0),
-              child: IconButton(
-                onPressed: () => Navigator.pop(context), 
-                icon: Icon(
-                  Icons.arrow_back,
-                  size: 48.0,
-                  color: context.watch<Styles>().selectedAccentColor,
-                )
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Align(
+              alignment: Alignment.topLeft,
+              child: Container(
+                padding: const EdgeInsets.only(left: 10.0, bottom: 10.0),
+                child: IconButton(
+                  onPressed: () => Navigator.pop(context), 
+                  icon: Icon(
+                    Icons.arrow_back,
+                    size: 48.0,
+                    color: context.watch<Styles>().selectedAccentColor,
+                  )
+                ),
               ),
             ),
-          ),
-          const PageTitle(
-            title: 'Settings',
-            padding: false,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 10.0, top: 10.0, right: 10.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                settingTitle('Appearance'),
-                settingRowDropdown(
-                  titleName: 'Theme Color',
-                  icon: Icons.color_lens,
-                  selectedValue: themeColor,
-                  dropdownOptions: const <DropdownMenuItem<String>> [
-                    DropdownMenuItem(
-                      child: Text('Blue'),
-                      value: 'blue',
-                    ),
-                    DropdownMenuItem(
-                      child: Text('Green'),
-                      value: 'green',
-                    ),
-                    DropdownMenuItem(
-                      child: Text('Red'),
-                      value: 'red',
-                    ),
-                    DropdownMenuItem(
-                      child: Text('Tan'),
-                      value: 'tan',
-                    ),
-                  ],
-                  onSelectDropDown: (String valueSelected) async {
-                    setState(() {
-                        themeColor = valueSelected;
-                    });
-                    Setting setting = await TokiDatabase.instance.readSetting(null, 'Theme Color');
-                    Setting updatedSetting = Setting(
-                      id: setting.id,
-                      name: setting.name,
-                      settingData: valueSelected,
-                    );
-
-                    TokiDatabase.instance.updateSetting(updatedSetting);
-                    context.read<Styles>().setStyles();
-                  }
-                ),
-                settingDivider(),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Text(
-                    'Version: $appVersion',
-                    style: context.watch<Styles>().mediumTextDefault,
+            const PageTitle(
+              title: 'Settings',
+              padding: false,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 10.0, top: 10.0, right: 10.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  settingTitle('Appearance'),
+                  settingRowDropdown(
+                    titleName: 'Theme Color',
+                    icon: Icons.color_lens,
+                    selectedValue: themeColor,
+                    dropdownOptions: const <DropdownMenuItem<String>> [
+                      DropdownMenuItem(
+                        child: Text('Blue'),
+                        value: 'blue',
+                      ),
+                      DropdownMenuItem(
+                        child: Text('Green'),
+                        value: 'green',
+                      ),
+                      DropdownMenuItem(
+                        child: Text('Red'),
+                        value: 'red',
+                      ),
+                      DropdownMenuItem(
+                        child: Text('Tan'),
+                        value: 'tan',
+                      ),
+                    ],
+                    onSelectDropDown: (String valueSelected) async {
+                      setState(() {
+                          themeColor = valueSelected;
+                      });
+                      Setting setting = await TokiDatabase.instance.readSetting(null, 'Theme Color');
+                      Setting updatedSetting = Setting(
+                        id: setting.id,
+                        name: setting.name,
+                        settingData: valueSelected,
+                      );
+      
+                      TokiDatabase.instance.updateSetting(updatedSetting);
+                      context.read<Styles>().setStyles();
+                    }
                   ),
-                ),
-              ],
-            )
-          ),
-        ]
+                  settingDivider(),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Text(
+                      'Version: $appVersion',
+                      style: context.watch<Styles>().mediumTextDefault,
+                    ),
+                  ),
+                ],
+              )
+            ),
+          ]
+        ),
       ),
     );
   }

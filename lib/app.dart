@@ -124,64 +124,66 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder(
-        future: allowedNotificationsPerm,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-
-          if (snapshot.hasError) {
-            return Text('error while retrieving status: ${snapshot.error}');
-          }
-
-          if (snapshot.hasData) {
-            if (snapshot.data == 'granted') {
-              return _pageOptions[selectedPage];
+      body: SafeArea(
+        child: FutureBuilder(
+          future: allowedNotificationsPerm,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
             }
-
-            return Scaffold(
-              body: Column(
-                children: [
-                  const PageTitle(
-                    title: 'Notifications Error', 
-                    padding: true,
+      
+            if (snapshot.hasError) {
+              return Text('error while retrieving status: ${snapshot.error}');
+            }
+      
+            if (snapshot.hasData) {
+              if (snapshot.data == 'granted') {
+                return _pageOptions[selectedPage];
+              }
+      
+              return Scaffold(
+                body: Column(
+                  children: [
+                    const PageTitle(
+                      title: 'Notifications Error', 
+                      padding: true,
+                      ),
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Text(
+                        'Please enable notifications in order to use Toki',
+                          style: context.watch<Styles>().largeTextDefault,
+                      ),
                     ),
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Text(
-                      'Please enable notifications in order to use Toki',
-                        style: context.watch<Styles>().largeTextDefault,
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      NotificationPermissions.requestNotificationPermissions(
-                        iosSettings: const NotificationSettingsIos(
-                          sound: true,
-                          badge: true,
-                          alert: true
-                        )
-                      ).then((value) => allowedNotificationsPerm = getAllowedNotificationsPerm());
-                    }, 
-                    child: Text(
-                      'Go to notifications settings',
-                      style: context.watch<Styles>().textDefault,
-                    ),
-                    style: TextButton.styleFrom(
-                      backgroundColor: context.watch<Styles>().selectedAccentColor
+                    TextButton(
+                      onPressed: () {
+                        NotificationPermissions.requestNotificationPermissions(
+                          iosSettings: const NotificationSettingsIos(
+                            sound: true,
+                            badge: true,
+                            alert: true
+                          )
+                        ).then((value) => allowedNotificationsPerm = getAllowedNotificationsPerm());
+                      }, 
+                      child: Text(
+                        'Go to notifications settings',
+                        style: context.watch<Styles>().textDefault,
+                      ),
+                      style: TextButton.styleFrom(
+                        backgroundColor: context.watch<Styles>().selectedAccentColor
+                      )
                     )
-                  )
-                ]
-              ),
-            );
-          }
-
-        return const Text('No permission status yet');
-
-        }),
+                  ]
+                ),
+              );
+            }
+      
+          return const Text('No permission status yet');
+      
+          }),
+      ),
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(

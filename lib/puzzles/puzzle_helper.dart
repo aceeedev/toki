@@ -92,23 +92,25 @@ class PuzzleTemplate extends StatelessWidget {
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
-        body: Column(
-          children: [
-            PageTitle(
-              title: puzzleName,
-              padding: true,
-            ),
-            EmergencyExitButton(
-              alarm: alarm, 
-              completePuzzle: completePuzzle,
-              test: test
+        body: SafeArea(
+          child: Column(
+            children: [
+              PageTitle(
+                title: puzzleName,
+                padding: true,
               ),
-            Expanded(
-              child: Center(
-                child: puzzleWidget,
+              EmergencyExitButton(
+                alarm: alarm, 
+                completePuzzle: completePuzzle,
+                test: test
+                ),
+              Expanded(
+                child: Center(
+                  child: puzzleWidget,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

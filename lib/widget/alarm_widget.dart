@@ -48,14 +48,9 @@ class _AlarmState extends State<AlarmWidget> {
                   ? [
                     Padding(
                       padding: EdgeInsets.all(columnPadding),
-                      child: Flexible(
-                        child: Text(
-                          widget.alarm.alarmName.length >= 11 ? '${widget.alarm.alarmName.substring(0, 11)}...' : widget.alarm.alarmName,
+                      child: Text(
+                          widget.alarm.alarmName.length >= 9 ? '${widget.alarm.alarmName.substring(0, 9)}...' : widget.alarm.alarmName,
                           style: context.watch<Styles>().alarmTitle,
-                          overflow: TextOverflow.fade,
-                          maxLines: 1,
-                          softWrap: false,
-                        ),
                       ),
                     ),
                     Padding(

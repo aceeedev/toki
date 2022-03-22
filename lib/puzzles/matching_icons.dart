@@ -79,7 +79,7 @@ class _MatchingIconsState extends State<MatchingIcons> {
                 crossAxisCount: crossAxisCount,
                 crossAxisSpacing: 10.0,
                 mainAxisSpacing: 10.0,
-                childAspectRatio: 3/2,
+                childAspectRatio: numOfButtons == 15 ? 2 : 1.5,
               ),
             ),
           ),

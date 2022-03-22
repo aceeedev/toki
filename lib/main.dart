@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toki/providers/styles.dart';
+import 'package:toki/providers/create_form.dart';
 import 'package:toki/app.dart';
 
 void main() {
@@ -10,9 +11,11 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => Styles()),
+        ChangeNotifierProvider(create: (_) => CreateForm()),
       ],
       child: const MaterialApp(
         home: MyApp(),
+        debugShowCheckedModeBanner: false,
       ),
     ),
   );

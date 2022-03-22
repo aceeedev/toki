@@ -54,54 +54,56 @@ class _AlarmPageState extends State<AlarmPage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    body: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            const PageTitle(
-              title: 'Alarm',
-              padding: true,
-            ),
-            Expanded(
-              child: Align(
-                alignment: Alignment.topRight,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0.0, 85.0, 20.0, 0.0),
-                  child: IconButton(
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute<void>(
-                        builder: (context) => const SettingsPage()
-                      ));
-                    },
-                    padding: EdgeInsets.zero,
-                    icon: Icon(
-                      Icons.settings,
-                      size: 48.0,
-                      color: context.watch<Styles>().selectedAccentColor,
+    body: SafeArea(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const PageTitle(
+                title: 'Alarm',
+                padding: true,
+              ),
+              Expanded(
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 20.0),
+                    child: IconButton(
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute<void>(
+                          builder: (context) => const SettingsPage()
+                        ));
+                      },
+                      padding: EdgeInsets.zero,
+                      icon: Icon(
+                        Icons.settings,
+                        size: 48.0,
+                        color: context.watch<Styles>().selectedAccentColor,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
-        ),
-        Expanded(
-          child: isLoading
-            ? const Center(
-                child: CircularProgressIndicator()
-              )
-            : alarms.isEmpty
-              ? Center(
-                  child: Text(
-                    'No Alarms',
-                    style: context.watch<Styles>().largeTextDefault,
-                  ),
+            ],
+          ),
+          Expanded(
+            child: isLoading
+              ? const Center(
+                  child: CircularProgressIndicator()
                 )
-              : buildAlarms(),
-        ),
-      ]
+              : alarms.isEmpty
+                ? Center(
+                    child: Text(
+                      'No Alarms',
+                      style: context.watch<Styles>().largeTextDefault,
+                    ),
+                  )
+                : buildAlarms(),
+          ),
+        ]
+      ),
     ),
     floatingActionButton: FloatingActionButton(
       child: const Icon(Icons.add),
