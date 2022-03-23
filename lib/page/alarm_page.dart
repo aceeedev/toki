@@ -94,11 +94,20 @@ class _AlarmPageState extends State<AlarmPage> {
                   child: CircularProgressIndicator()
                 )
               : alarms.isEmpty
-                ? Center(
-                    child: Text(
-                      'No Alarms',
-                      style: context.watch<Styles>().largeTextDefault,
-                    ),
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        'No Alarms',
+                        style: context.watch<Styles>().largeTextDefault,
+                      ),
+                      Text(
+                        'Toki works best when your phone is off and your ringer is on.',
+                        style: context.watch<Styles>().mediumTextDefault,
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
                   )
                 : buildAlarms(),
           ),

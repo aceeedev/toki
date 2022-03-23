@@ -3,10 +3,10 @@ import 'package:toki/backend/database_helpers.dart';
 import 'package:toki/model/setting.dart';
 
 class Styles with ChangeNotifier{
-  static const _textSizeLarge = 25.0;
-  static const _textSizeMedium = 18.0;
-  static const _textSizeDefault = 16.0;
-  static const _textSizePageTitle = 50.0;
+  static const _textSizeLarge = 18.0;
+  static const _textSizeMedium = 13.0;
+  static const _textSizeDefault = 11.0;
+  static const _textSizePageTitle = 30.0;
 
   static final Color _textColorStrong = _createMaterialColor(const Color(0xff000000));
   static final Color _textColorBlack = _createMaterialColor(const Color(0xff666666));
@@ -21,7 +21,8 @@ class Styles with ChangeNotifier{
   static const String _fontNameDefault = 'M+ 1C';
 
   static const double _alarmFormCardHeight = 100.0;
-  static const double _alarmFormCardWidth = 300.0;
+  static const double _alarmFormCardWidth = 350.0;
+  static const Size _alarmFormButtonFixedSize = Size(125.0, 30.0);
 
   double get alarmFormCardHeight => _alarmFormCardHeight;
   double get alarmFormCardWidth => _alarmFormCardWidth;
@@ -86,7 +87,7 @@ class Styles with ChangeNotifier{
   );
 
   ButtonStyle _alarmFormButtonStyle = ElevatedButton.styleFrom(
-    fixedSize: const Size(110.0, 30.0), 
+    fixedSize: _alarmFormButtonFixedSize, 
     primary: _selectedAccentColor,
   );
 
@@ -108,7 +109,7 @@ class Styles with ChangeNotifier{
     primary: Colors.grey[400],
     textStyle: const TextStyle(
       fontFamily: _fontNameDefault,
-      fontSize: _textSizeMedium,
+      fontSize: _textSizeDefault,
     ),
     side: BorderSide(
       width: 2.0,
@@ -184,7 +185,7 @@ class Styles with ChangeNotifier{
 
       _selectTimeText = _selectTimeText.copyWith(color: _selectedAccentColor);
       _alarmFormButtonStyle = ElevatedButton.styleFrom(
-        fixedSize: const Size(110.0, 30.0), 
+        fixedSize: _alarmFormButtonFixedSize, 
         primary: _selectedAccentColor
       );
     }
