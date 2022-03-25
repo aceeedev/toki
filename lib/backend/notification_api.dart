@@ -230,12 +230,16 @@ class NotificationApi {
   }
 
   static void cancelAlarm(Alarm alarm) async {
+    Alarm updatedAlarm;
     if (alarm.currentAlarm) {
-      Alarm updatedAlarm = updateCurrentAlarm(alarm, false, false);
-      TokiDatabase.instance.updateAlarm(updatedAlarm);
-
-      resetAlarm();
+      updatedAlarm = updateCurrentAlarm(alarm, false, false);
+    } else { 
+      updatedAlarm = updateCurrentAlarm(alarm, alarm.currentAlarm, false);
     }
+
+    TokiDatabase.instance.updateAlarm(updatedAlarm);
+
+    resetAlarm();
   }
 
   static void cancel(int id) => _notifications.cancel(id);

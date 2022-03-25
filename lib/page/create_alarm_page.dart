@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:toki/backend/database_helpers.dart';
 import 'package:toki/backend/notification_api.dart';
 import 'package:toki/providers/create_form.dart';
@@ -34,7 +33,6 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
 
   late List<RingToneListTile> ringtoneListTiles;
   late List<Widget> listOfListViewWidgets;
-
 
   List<RingToneListTile> createRingtoneListTiles() {
     return [
@@ -116,7 +114,10 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
                         padding:
                             const EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 10.0),
                         child: IconButton(
-                            onPressed: () => Navigator.pop(context),
+                            onPressed: () {
+                              context.read<CreateForm>().stopSound();
+                              Navigator.pop(context);
+                              },
                             icon: Icon(
                               Icons.arrow_back,
                               size: 48.0,
@@ -144,38 +145,35 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
               style: context.watch<Styles>().selectTimeText),
         ),
       ),
-      Align(
-        alignment: Alignment.bottomCenter,
-        child: Container(
-          padding: const EdgeInsets.only(bottom: 50.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              ElevatedButton.icon(
-                onPressed: () {
+      Container(
+        padding: const EdgeInsets.only(bottom: 50.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: const Icon(Icons.arrow_back),
+              label: const Text('Back'),
+              style: context.watch<Styles>().alarmFormButtonStyle,
+            ),
+            Container(
+              padding: const EdgeInsets.only(left: 20.0),
+              child: ElevatedButton.icon(
+                onPressed: () async {
+                  await _addAlarm();
                   Navigator.pop(context);
                 },
-                icon: const Icon(Icons.arrow_back),
-                label: const Text('Back'),
+                icon: const Icon(Icons.check),
+                label: const Text('Create'),
                 style: context.watch<Styles>().alarmFormButtonStyle,
               ),
-              Container(
-                padding: const EdgeInsets.only(left: 20.0),
-                child: ElevatedButton.icon(
-                  onPressed: () async {
-                    await _addAlarm();
-                    Navigator.pop(context);
-                  },
-                  icon: const Icon(Icons.check),
-                  label: const Text('Create'),
-                  style: context.watch<Styles>().alarmFormButtonStyle,
-                ),
-              )
-            ],
-          ),
+            )
+          ],
         ),
-      )
+      ),
     ]; 
   }
 
@@ -214,11 +212,9 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
           child: Column(children: [
             const PageTitle(
               title: 'Create Alarm',
-              padding: true,
             ),
             Expanded(
               child: ListView.separated(
-                  physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
                     return Padding(
                         padding: const EdgeInsets.only(left: 25, right: 25),
@@ -356,9 +352,8 @@ class _DayButtonState extends State<DayButton> {
 class RingToneListTile extends StatefulWidget {
   final String title;
   final String sound;
-  AudioCache cache = AudioCache(prefix: 'assets/audios/');
 
-  RingToneListTile(
+  const RingToneListTile(
       {Key? key,
       required this.title,
       required this.sound})
@@ -387,9 +382,7 @@ class _RingToneListTileState extends State<RingToneListTile> {
           iconSize: 48.0,
           icon: const Icon(Icons.play_circle_fill),
           onPressed: () async {
-            AudioPlayer player = await widget.cache.play(widget.sound);
-            await Future.delayed(const Duration(seconds: 5));
-            player.stop();
+            context.read<CreateForm>().playSound(widget.sound);
           },
         ));
   }

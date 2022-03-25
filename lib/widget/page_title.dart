@@ -4,9 +4,8 @@ import 'package:toki/providers/styles.dart';
 
 class PageTitle extends StatelessWidget {
   final String title;
-  final bool padding;
 
-  const PageTitle( {Key? key, required this.title, required this.padding}) : super(key: key);
+  const PageTitle( {Key? key, required this.title}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

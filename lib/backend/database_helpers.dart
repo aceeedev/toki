@@ -1,5 +1,6 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:toki/config.dart';
 import 'package:toki/model/alarm.dart';
 import 'package:toki/model/puzzle.dart';
 import 'package:toki/model/setting.dart';
@@ -79,12 +80,12 @@ CREATE TABLE $tableSettings (
       await readSetting(null, 'Version');
     } catch (e) {
       // initialize settings
-      List<Setting> settingList = const [
+      List<Setting> settingList = [
         Setting(
           name: 'Version',
-          settingData: '1.0.0',
+          settingData: Config().version,
         ),
-        Setting(
+        const Setting(
           name: 'Theme Color',
           settingData: 'blue',
         ),

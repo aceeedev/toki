@@ -95,12 +95,13 @@ class _AlarmState extends State<AlarmWidget> {
                   scale: 1.3,
                   child: Switch(
                     value: isSwitched,
-                    onChanged: (value) {
+                    onChanged: (bool value) {
                       setState(() {
                         isSwitched = value;
+                        if (value) {
+                          Alarm updatedAlarm = NotificationApi.updateCurrentAlarm(widget.alarm, widget.alarm.currentAlarm, true);
+                          TokiDatabase.instance.updateAlarm(updatedAlarm);
 
-                        if (isSwitched) {
-                          NotificationApi.updateCurrentAlarm(widget.alarm, widget.alarm.currentAlarm, true);
                           NotificationApi.scheduleNotification();
                         } else {
                           NotificationApi.cancelAlarm(widget.alarm);
@@ -203,10 +204,8 @@ class _ThreeDotsButtonState extends State<ThreeDotsButton> {
                 onPressed: () => Navigator.pop(context),
               ),
               CupertinoDialogAction(
-                child: Text(
-                  'Yes',
-                  style: context.watch<Styles>().textDefaultRed
-                ),
+                isDestructiveAction: true,
+                child: const Text('Yes'),
                 onPressed: () {
                   // delete from db
                   TokiDatabase.instance.deleteAlarm(widget.alarm.id!);

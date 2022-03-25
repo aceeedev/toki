@@ -55,7 +55,6 @@ class _PuzzlePageState extends State<PuzzlePage> {
         children: [
           const PageTitle(
             title: 'Puzzles',
-            padding: true,
           ),
           Expanded(
             child: isLoading

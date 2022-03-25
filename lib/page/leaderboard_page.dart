@@ -14,7 +14,6 @@ class LeaderboardPage extends StatelessWidget {
           children: [
             const PageTitle(
               title: 'Leaderboard',
-              padding: true,
             ),
             Expanded(
               child: Center(

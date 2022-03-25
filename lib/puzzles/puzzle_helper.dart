@@ -97,7 +97,6 @@ class PuzzleTemplate extends StatelessWidget {
             children: [
               PageTitle(
                 title: puzzleName,
-                padding: true,
               ),
               EmergencyExitButton(
                 alarm: alarm, 

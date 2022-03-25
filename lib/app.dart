@@ -13,6 +13,7 @@ import 'package:toki/page/puzzle_page.dart';
 import 'package:toki/providers/styles.dart';
 import 'package:toki/puzzles/puzzle_helper.dart';
 import 'package:toki/main.dart';
+import 'package:toki/config.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -62,7 +63,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   Future checkForUpdate() async {
     await TokiDatabase.instance.initializeInsert();
     //Future.delayed(const Duration(seconds: 1));
-    String newVersion = '1.0.0';
+    String newVersion = Config().version;
     Setting versionSetting = await TokiDatabase.instance.readSetting(null, 'Version');
 
     if (newVersion != versionSetting.settingData) {
@@ -148,7 +149,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                   children: [
                     const PageTitle(
                       title: 'Notifications Error', 
-                      padding: true,
                       ),
                     Padding(
                       padding: const EdgeInsets.all(10.0),

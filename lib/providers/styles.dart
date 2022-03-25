@@ -6,7 +6,7 @@ class Styles with ChangeNotifier{
   static const _textSizeLarge = 18.0;
   static const _textSizeMedium = 13.0;
   static const _textSizeDefault = 11.0;
-  static const _textSizePageTitle = 30.0;
+  static const _textSizePageTitle = 40.0;
 
   static final Color _textColorStrong = _createMaterialColor(const Color(0xff000000));
   static final Color _textColorBlack = _createMaterialColor(const Color(0xff666666));

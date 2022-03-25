@@ -63,7 +63,6 @@ class _AlarmPageState extends State<AlarmPage> {
             children: [
               const PageTitle(
                 title: 'Alarm',
-                padding: true,
               ),
               Expanded(
                 child: Align(
@@ -94,21 +93,24 @@ class _AlarmPageState extends State<AlarmPage> {
                   child: CircularProgressIndicator()
                 )
               : alarms.isEmpty
-                ? Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        'No Alarms',
-                        style: context.watch<Styles>().largeTextDefault,
-                      ),
-                      Text(
-                        'Toki works best when your phone is off and your ringer is on.',
-                        style: context.watch<Styles>().mediumTextDefault,
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  )
+                ? Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          'No Alarms',
+                          style: context.watch<Styles>().largeTextDefault,
+                        ),
+                        Text(
+                          'Toki works best when your phone is off and your ringer is on.',
+                          style: context.watch<Styles>().mediumTextDefault,
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                )
                 : buildAlarms(),
           ),
         ]

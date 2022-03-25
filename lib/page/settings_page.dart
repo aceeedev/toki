@@ -39,8 +39,6 @@ class _SettingsPageState extends State<SettingsPage> {
       setState(() {
         themeColor = preThemeColor;
       });
-    } else {
-      print('not mounted');
     }
   }
 
@@ -71,7 +69,6 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             const PageTitle(
               title: 'Settings',
-              padding: false,
             ),
             Padding(
               padding: const EdgeInsets.only(left: 10.0, top: 10.0, right: 10.0),
