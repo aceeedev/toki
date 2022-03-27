@@ -17,6 +17,8 @@ class EmergencyExitButton extends StatefulWidget {
 
 class _EmergencyExitButtonState extends State<EmergencyExitButton> {
   Timer? _timer;
+  String countDownText = '';
+  bool clickedOff = true;
 
   @override
   void dispose() {
@@ -31,31 +33,52 @@ class _EmergencyExitButtonState extends State<EmergencyExitButton> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
-      child: Align(
-        alignment: Alignment.topRight,
-        child: GestureDetector(
-          child: Container(
-            height: 60.0,
-            width: 60.0,
-            child: Icon(
-              Icons.warning,
-              size: 48.0,
-              color: context.watch<Styles>().colorLogoRed[900],
-            ),
-            decoration: BoxDecoration(
-              color: context.watch<Styles>().colorLogoRed,
-              shape: BoxShape.circle
-            ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            countDownText,
+            style: context.watch<Styles>().mediumTextDefault,
           ),
-          onTapUp: (_) => {
-            _timer!.cancel()
-          },
-          onTapDown: (_) => {
-            _timer = Timer(const Duration(seconds: 10), () {
-              widget.completePuzzle(context, widget.test);
-            })
-          },
-        ),
+          GestureDetector(
+            child: Container(
+              height: 60.0,
+              width: 60.0,
+              child: Icon(
+                Icons.warning,
+                size: 48.0,
+                color: context.watch<Styles>().colorLogoRed[900],
+              ),
+              decoration: BoxDecoration(
+                color: clickedOff ? context.watch<Styles>().colorLogoRed : context.watch<Styles>().colorLogoRed[700],
+                shape: BoxShape.circle
+              ),
+            ),
+            onTapUp: (_) {
+              setState(() {
+                clickedOff = true;
+                countDownText = '';
+              });
+              
+              _timer!.cancel();
+            },
+            onTapDown: (_) {
+              setState(() => clickedOff = false);
+              int i = 10;
+              setState(() => countDownText = 'Emergency exit in $i seconds...');
+          
+              _timer = Timer.periodic(const Duration(seconds: 1), (timer) { 
+                i--;
+                setState(() => countDownText = i != 1 ? 'Emergency exit in $i seconds...' : 'Emergency exit in $i second...');
+
+                if (i == 1) {
+                  widget.completePuzzle(context, widget.test);
+                  _timer!.cancel();
+                }
+              });
+            },
+          ),
+        ],
       ),
     );
   }

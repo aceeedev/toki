@@ -33,6 +33,7 @@ class _AlarmState extends State<AlarmWidget> {
         height: 150,
         width: 300,
         child: Card(
+          color: context.watch<Styles>().secondBackgroundColor,
           elevation: 2.0,
           margin: const EdgeInsets.all(10.0),
           shape: RoundedRectangleBorder(
@@ -152,7 +153,11 @@ class _ThreeDotsButtonState extends State<ThreeDotsButton> {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
-      icon: const Icon(Icons.more_vert),
+      color: context.watch<Styles>().secondBackgroundColor,
+      icon: Icon(
+        Icons.more_vert,
+        color: context.watch<Styles>().selectedAccentColor,
+      ),
       iconSize: 30.0,
       itemBuilder: (BuildContext context) => [
         /*PopupMenuItem(

@@ -9,6 +9,7 @@ class LeaderboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: context.read<Styles>().backgroundColor,
       body: SafeArea(
         child: Column(
           children: [

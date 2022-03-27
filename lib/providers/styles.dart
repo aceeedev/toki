@@ -8,15 +8,16 @@ class Styles with ChangeNotifier{
   static const _textSizeDefault = 11.0;
   static const _textSizePageTitle = 40.0;
 
-  static final Color _textColorStrong = _createMaterialColor(const Color(0xff000000));
-  static final Color _textColorBlack = _createMaterialColor(const Color(0xff666666));
+  static final MaterialColor _colorBlack = _createMaterialColor(const Color(0xff111111));
+  static final MaterialColor _colorWhite = _createMaterialColor(const Color(0xffaaaaaa));
   static final MaterialColor _colorLogoGreen = _createMaterialColor(const Color(0xffC6D57E));
   static final MaterialColor _colorLogoRed = _createMaterialColor(const Color(0xffD57E7E));
   static final MaterialColor _colorLogoBlue = _createMaterialColor(const Color(0xffA2CDCD));
   static final MaterialColor _colorLogoTan = _createMaterialColor(const Color(0xffFFE1AF));
   static final MaterialColor _whiteColor = _createMaterialColor(const Color(0xffFFFFFF));
+  static final MaterialColor _blackColor = _createMaterialColor(const Color(0xff000000));
   static final MaterialColor _lightColor = _createMaterialColor(const Color(0xffFAFAFA));
-  static final MaterialColor _darkColor = _createMaterialColor(const Color(0xff121212));
+  static final MaterialColor _nightColor = _createMaterialColor(const Color(0xff121212));
 
   static const String _fontNameDefault = 'M+ 1C';
 
@@ -29,14 +30,14 @@ class Styles with ChangeNotifier{
 
 
   static MaterialColor _selectedAccentColor = _colorLogoBlue;
-  static Color _textColorDefault = _textColorBlack;
+  static MaterialColor _textColorDefault = _colorBlack;
   static MaterialColor _secondBackgroundColor = _whiteColor;
   static MaterialColor _backgroundColor = _lightColor;
 
   MaterialColor get selectedAccentColor => _selectedAccentColor;
-  Color get textColorDefault => _textColorBlack;
-  MaterialColor get secondBackgroundColor => _whiteColor;
-  MaterialColor get backgroundColor => _lightColor;
+  MaterialColor get textColorDefault => _textColorDefault;
+  MaterialColor get secondBackgroundColor => _secondBackgroundColor;
+  MaterialColor get backgroundColor => _backgroundColor;
 
   MaterialColor get colorLogoGreen => _colorLogoGreen;
   MaterialColor get colorLogoRed => _colorLogoRed;
@@ -44,22 +45,24 @@ class Styles with ChangeNotifier{
   MaterialColor get colorLogoTan => _colorLogoTan;
 
 
-  static const _pageTitle = TextStyle(
+  TextStyle _pageTitle = TextStyle(
     fontFamily: _fontNameDefault,
     fontSize: _textSizePageTitle,
     fontWeight: FontWeight.w700,
+    color: _textColorDefault,
   );
 
-  static const _alarmTitle = TextStyle(
+  TextStyle _alarmTitle = TextStyle(
     fontFamily: _fontNameDefault,
     fontSize: _textSizeLarge,
     fontWeight: FontWeight.w700,
+    color: _textColorDefault,
   );
 
-  final TextStyle _alarmDateUnselected = TextStyle(
+  TextStyle _alarmDateUnselected = TextStyle(
     fontFamily: _fontNameDefault,
     fontSize: _textSizeDefault,
-    color: Colors.grey[400],
+    color: _textColorDefault[200],
   );
 
   TextStyle _selectTimeText = TextStyle(
@@ -68,19 +71,19 @@ class Styles with ChangeNotifier{
     color: _selectedAccentColor,
   );
 
-  static final _textDefault = TextStyle(
+  TextStyle _textDefault = TextStyle(
     fontFamily: _fontNameDefault,
     fontSize: _textSizeDefault,
     color: _textColorDefault,
   );
 
-  static final _largeTextDefault = TextStyle(
+  TextStyle _largeTextDefault = TextStyle(
     fontFamily: _fontNameDefault,
     fontSize: _textSizeLarge,
     color: _textColorDefault,
   );
 
-  static final _mediumTextDefault = TextStyle(
+  TextStyle _mediumTextDefault = TextStyle(
     fontFamily: _fontNameDefault,
     fontSize: _textSizeMedium,
     color: _textColorDefault,
@@ -165,12 +168,17 @@ class Styles with ChangeNotifier{
 
     if (listOfSettings.isNotEmpty) {
       late Setting themeColor;
+      late Setting lightNightMode;
+
       for (Setting setting in listOfSettings) {
         if (setting.name == 'Theme Color') {
           themeColor = setting;
+        } else if (setting.name == 'Light/Night Mode') {
+          lightNightMode = setting;
         }
       }
 
+      // change theme color
       if (themeColor.settingData == 'blue') {
         _selectedAccentColor = _colorLogoBlue;
       } else if (themeColor.settingData == 'green') {
@@ -188,8 +196,33 @@ class Styles with ChangeNotifier{
         fixedSize: _alarmFormButtonFixedSize, 
         primary: _selectedAccentColor
       );
-    }
 
-    notifyListeners();
+      // change light/night mode
+      if (lightNightMode.settingData == 'light') {
+        _backgroundColor = _lightColor;
+        _secondBackgroundColor = _whiteColor;
+        _textColorDefault = _colorBlack;
+
+        _alarmDateUnselected = _alarmDateUnselected.copyWith(color: _textColorDefault[200]);
+      } else if (lightNightMode.settingData == 'night') {
+        _backgroundColor = _nightColor;
+        _secondBackgroundColor = _blackColor;
+        _textColorDefault = _colorWhite;
+
+        _alarmDateUnselected = _alarmDateUnselected.copyWith(color: _textColorDefault[800]);
+      } else {
+        Exception('Light/Night Mode ${lightNightMode.settingData} does not match light or night');
+      }
+
+      _pageTitle = _pageTitle.copyWith(color: _textColorDefault);
+      _alarmTitle = _alarmTitle.copyWith(color: _textColorDefault);
+      _textDefault = _textDefault.copyWith(color: _textColorDefault);
+      _largeTextDefault = _largeTextDefault.copyWith(color: _textColorDefault);
+      _mediumTextDefault = _mediumTextDefault.copyWith(color: _textColorDefault);
+
+
+      
+       notifyListeners();
+    }
   }
 }

@@ -35,7 +35,7 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
   late List<Widget> listOfListViewWidgets;
 
   List<RingToneListTile> createRingtoneListTiles() {
-    return [
+    return const [
       RingToneListTile(
         title: 'Default Ringtone',
         sound: 'digital_alarm_sound.wav',
@@ -106,6 +106,7 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
               context: context,
               builder: (BuildContext context) {
                 return Card(
+                    color: context.watch<Styles>().backgroundColor,
                     child: Column(
                   children: [
                     Align(
@@ -208,6 +209,7 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
     return Hero(
       tag: 'createAlarm',
       child: Scaffold(
+        backgroundColor: context.read<Styles>().backgroundColor,
         body: SafeArea(
           child: Column(children: [
             const PageTitle(
@@ -311,6 +313,7 @@ class _StyledCard extends StatelessWidget {
       height: context.watch<Styles>().alarmFormCardHeight,
       width: context.watch<Styles>().alarmFormCardWidth,
       child: Card(
+        color: context.watch<Styles>().secondBackgroundColor,
         child: child,
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
@@ -380,7 +383,10 @@ class _RingToneListTileState extends State<RingToneListTile> {
         ),
         trailing: IconButton(
           iconSize: 48.0,
-          icon: const Icon(Icons.play_circle_fill),
+          icon: Icon(
+            Icons.play_circle_fill,
+            color: context.watch<Styles>().selectedAccentColor,
+          ),
           onPressed: () async {
             context.read<CreateForm>().playSound(widget.sound);
           },

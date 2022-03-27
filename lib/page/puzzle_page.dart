@@ -48,6 +48,7 @@ class _PuzzlePageState extends State<PuzzlePage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
+    backgroundColor: context.read<Styles>().backgroundColor,
     body: SafeArea(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

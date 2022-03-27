@@ -40,8 +40,6 @@ class CreateForm with ChangeNotifier{
     player = await cache.play(sound);
     await Future.delayed(const Duration(seconds: 5));
     stopSound();
-
-    //player = null;
   }
 
   void stopSound() {

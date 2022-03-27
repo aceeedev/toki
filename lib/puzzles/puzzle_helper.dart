@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:toki/backend/database_helpers.dart';
 import 'dart:math';
+import 'package:provider/provider.dart';
+import 'package:toki/providers/styles.dart';
 import 'package:toki/backend/notification_api.dart';
 import 'package:toki/model/alarm.dart';
 import 'package:toki/widget/page_title.dart';
@@ -92,6 +94,7 @@ class PuzzleTemplate extends StatelessWidget {
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
+        backgroundColor: context.watch<Styles>().backgroundColor,
         body: SafeArea(
           child: Column(
             children: [

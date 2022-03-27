@@ -39,7 +39,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     ];
 
     checkForUpdate();
-    context.read<Styles>().setStyles();
     asyncFunc();
 
     NotificationApi.init(initScheduled: true);
@@ -49,11 +48,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     WidgetsBinding.instance?.addObserver(this);
   }
 
-  /*@override
-  void didUpdateWidget(oldWidget) {
-    Styles.setStyles();
-    super.didUpdateWidget(oldWidget);
-  }*/
   void asyncFunc() async {
     final dir = await getApplicationDocumentsDirectory();
     print(dir.path);
@@ -62,7 +56,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   /// function runs when there has been an update to the app
   Future checkForUpdate() async {
     await TokiDatabase.instance.initializeInsert();
-    //Future.delayed(const Duration(seconds: 1));
+
     String newVersion = Config().version;
     Setting versionSetting = await TokiDatabase.instance.readSetting(null, 'Version');
 
@@ -76,7 +70,14 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       TokiDatabase.instance.updateSetting(updatedSetting);
 
       // put functions to run if updated here
+      Setting lightNightModeSetting = const Setting(
+          name: 'Light/Night Mode',
+          settingData: 'light',
+      );
+      await TokiDatabase.instance.createSetting(lightNightModeSetting);
     }
+
+    context.read<Styles>().setStyles();
   }
 
   void listenNotifications() =>
@@ -125,6 +126,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: context.read<Styles>().backgroundColor,
       body: SafeArea(
         child: FutureBuilder(
           future: allowedNotificationsPerm,
@@ -145,6 +147,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               }
       
               return Scaffold(
+                backgroundColor: context.read<Styles>().backgroundColor,
                 body: Column(
                   children: [
                     const PageTitle(
@@ -185,6 +188,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           }),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: context.watch<Styles>().backgroundColor,
         items: [
           BottomNavigationBarItem(
             icon: const Icon(Icons.assessment_outlined), 

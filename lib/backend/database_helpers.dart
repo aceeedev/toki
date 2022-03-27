@@ -89,9 +89,13 @@ CREATE TABLE $tableSettings (
           name: 'Theme Color',
           settingData: 'blue',
         ),
+        const Setting(
+          name: 'Light/Night Mode',
+          settingData: 'light',
+        ),
       ];
       for (Setting setting in settingList) {
-        _createSetting(setting);
+        createSetting(setting);
       }
 
       // initalize puzzles 
@@ -102,7 +106,7 @@ CREATE TABLE $tableSettings (
           difficulty: 2,
           enabled: true,
         );
-        _createPuzzle(puzzle);
+        createPuzzle(puzzle);
       }
     }
   }
@@ -184,7 +188,7 @@ CREATE TABLE $tableSettings (
   }
 
   // puzzle db functions
-  Future<Puzzle> _createPuzzle(Puzzle puzzle) async {
+  Future<Puzzle> createPuzzle(Puzzle puzzle) async {
     final db = await instance.database;
 
     final id = await db.insert(tablePuzzles, puzzle.toJson());
@@ -249,7 +253,7 @@ CREATE TABLE $tableSettings (
   }
 
   // setting db functions
-  Future<Setting> _createSetting(Setting setting) async {
+  Future<Setting> createSetting(Setting setting) async {
     final db = await instance.database;
 
     final id = await db.insert(tableSettings, setting.toJson());

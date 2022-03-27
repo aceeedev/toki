@@ -43,6 +43,7 @@ class _PuzzleState extends State<PuzzleWidget> {
         height: 150,
         width: 300,
         child: Card(
+          color: context.watch<Styles>().secondBackgroundColor,
           elevation: 2.0,
           margin: const EdgeInsets.all(10.0),
           shape: RoundedRectangleBorder(
@@ -59,49 +60,63 @@ class _PuzzleState extends State<PuzzleWidget> {
                     widget.puzzle.name.contains(' ') ? widget.puzzle.name.split(' ').join('\n') : widget.puzzle.name,
                     style: context.watch<Styles>().alarmTitle,
                   ),
-                  DropdownButton(
-                    value: dropDownValue,
-                    items: const [
-                      DropdownMenuItem(
-                        child: Text('Easy'),
-                        value: 'Easy',
-                      ),
-                      DropdownMenuItem(
-                        child: Text('Medium'),
-                        value: 'Medium',
-                      ),
-                      DropdownMenuItem(
-                        child: Text('Hard'),
-                        value: 'Hard',
-                      ),
-                    ],
-                    onChanged: (pressedValue) {
-                      setState(() {
-                        dropDownValue = pressedValue.toString();
-                      });
-
-                      int newDifficulty = 0;
-                      if (pressedValue == 'Easy') {
-                        newDifficulty = 1;
-                      } else if (pressedValue == 'Medium') {
-                        newDifficulty = 2;
-                      } else if (pressedValue == 'Hard') {
-                        newDifficulty = 3;
-                      } else {
-                        Exception('pressedValue $pressedValue is not Easy, Medium, or Hard');
-                      }
-                
-
-                      Puzzle updatedPuzzle = Puzzle(
-                        id: widget.puzzle.id,
-                        name: widget.puzzle.name,
-                        difficulty: newDifficulty,
-                        enabled: widget.puzzle.enabled,
-                      );
-                      TokiDatabase.instance.updatePuzzle(updatedPuzzle);
-
-                      widget.refreshFunc;
-                    },
+                  Theme(
+                    data: ThemeData(
+                      canvasColor: context.watch<Styles>().secondBackgroundColor
+                    ),
+                    child: DropdownButton(
+                      value: dropDownValue,
+                      items: [
+                        DropdownMenuItem(
+                          child: Text(
+                            'Easy',
+                            style: context.watch<Styles>().textDefault,
+                          ),
+                          value: 'Easy',
+                        ),
+                        DropdownMenuItem(
+                          child: Text(
+                            'Medium',
+                            style: context.watch<Styles>().textDefault,
+                          ),
+                          value: 'Medium',
+                        ),
+                        DropdownMenuItem(
+                          child: Text(
+                            'Hard',
+                            style: context.watch<Styles>().textDefault,
+                          ),
+                          value: 'Hard',
+                        ),
+                      ],
+                      onChanged: (pressedValue) {
+                        setState(() {
+                          dropDownValue = pressedValue.toString();
+                        });
+                  
+                        int newDifficulty = 0;
+                        if (pressedValue == 'Easy') {
+                          newDifficulty = 1;
+                        } else if (pressedValue == 'Medium') {
+                          newDifficulty = 2;
+                        } else if (pressedValue == 'Hard') {
+                          newDifficulty = 3;
+                        } else {
+                          Exception('pressedValue $pressedValue is not Easy, Medium, or Hard');
+                        }
+                                  
+                  
+                        Puzzle updatedPuzzle = Puzzle(
+                          id: widget.puzzle.id,
+                          name: widget.puzzle.name,
+                          difficulty: newDifficulty,
+                          enabled: widget.puzzle.enabled,
+                        );
+                        TokiDatabase.instance.updatePuzzle(updatedPuzzle);
+                  
+                        widget.refreshFunc;
+                      },
+                    ),
                   ),
                 ],
               ),

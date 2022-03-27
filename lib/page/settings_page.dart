@@ -15,6 +15,7 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   late String appVersion = '';
   late String themeColor = 'blue';
+  late String lightNightMode = 'light';
 
   @override
   void initState() {
@@ -35,9 +36,11 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Future getValues() async {
     final String preThemeColor = await getValue('Theme Color');
+    final String preLightNightMode = await getValue('Light/Night Mode');
     if (mounted) {
       setState(() {
         themeColor = preThemeColor;
+        lightNightMode = preLightNightMode;
       });
     }
   }
@@ -49,6 +52,7 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: context.read<Styles>().backgroundColor,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,21 +84,33 @@ class _SettingsPageState extends State<SettingsPage> {
                     titleName: 'Theme Color',
                     icon: Icons.color_lens,
                     selectedValue: themeColor,
-                    dropdownOptions: const <DropdownMenuItem<String>> [
+                    dropdownOptions: <DropdownMenuItem<String>> [
                       DropdownMenuItem(
-                        child: Text('Blue'),
+                        child: Text(
+                          'Blue',
+                          style: context.watch<Styles>().textDefault,
+                        ),
                         value: 'blue',
                       ),
                       DropdownMenuItem(
-                        child: Text('Green'),
+                        child: Text(
+                          'Green',
+                          style: context.watch<Styles>().textDefault,
+                        ),
                         value: 'green',
                       ),
                       DropdownMenuItem(
-                        child: Text('Red'),
+                        child: Text(
+                          'Red',
+                          style: context.watch<Styles>().textDefault,
+                        ),
                         value: 'red',
                       ),
                       DropdownMenuItem(
-                        child: Text('Tan'),
+                        child: Text(
+                          'Tan',
+                          style: context.watch<Styles>().textDefault,
+                        ),
                         value: 'tan',
                       ),
                     ],
@@ -103,6 +119,41 @@ class _SettingsPageState extends State<SettingsPage> {
                           themeColor = valueSelected;
                       });
                       Setting setting = await TokiDatabase.instance.readSetting(null, 'Theme Color');
+                      Setting updatedSetting = Setting(
+                        id: setting.id,
+                        name: setting.name,
+                        settingData: valueSelected,
+                      );
+      
+                      TokiDatabase.instance.updateSetting(updatedSetting);
+                      context.read<Styles>().setStyles();
+                    }
+                  ),
+                  settingRowDropdown(
+                    titleName: 'Light/Night Mode',
+                    icon: lightNightMode == 'light' ? Icons.light_mode : Icons.dark_mode,
+                    selectedValue: lightNightMode,
+                    dropdownOptions: <DropdownMenuItem<String>> [
+                      DropdownMenuItem(
+                        child: Text(
+                          'Light Mode',
+                          style: context.watch<Styles>().textDefault,
+                        ),
+                        value: 'light',
+                      ),
+                      DropdownMenuItem(
+                        child: Text(
+                          'Night Mode',
+                          style: context.watch<Styles>().textDefault,
+                        ),
+                        value: 'night',
+                      ),
+                    ],
+                    onSelectDropDown: (String valueSelected) async {
+                      setState(() {
+                          lightNightMode = valueSelected;
+                      });
+                      Setting setting = await TokiDatabase.instance.readSetting(null, 'Light/Night Mode');
                       Setting updatedSetting = Setting(
                         id: setting.id,
                         name: setting.name,
@@ -137,11 +188,12 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  /// creates a divider. type could be same or new (changes thickness)
   Widget settingDivider() {
     return const Divider(
       indent: 20.0,
       endIndent: 20.0,
-      thickness: 2.0,
+      thickness:2.0,
     );
   }
 
@@ -163,10 +215,15 @@ class _SettingsPageState extends State<SettingsPage> {
           titleName,
           style: context.watch<Styles>().mediumTextDefault,
         ),
-        DropdownButton(
-          items: dropdownOptions, 
-          value: selectedValue,
-          onChanged: (value) => onSelectDropDown(value),
+        Theme(
+          data: ThemeData(
+            canvasColor: context.watch<Styles>().secondBackgroundColor
+          ),
+          child: DropdownButton(
+            items: dropdownOptions, 
+            value: selectedValue,
+            onChanged: (value) => onSelectDropDown(value),
+          ),
         ),
       ]
     );
