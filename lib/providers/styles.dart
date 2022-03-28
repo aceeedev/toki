@@ -59,10 +59,10 @@ class Styles with ChangeNotifier{
     color: _textColorDefault,
   );
 
-  TextStyle _alarmDateUnselected = TextStyle(
+  TextStyle _alarmDateSelected = TextStyle(
     fontFamily: _fontNameDefault,
     fontSize: _textSizeDefault,
-    color: _textColorDefault[200],
+    color: _selectedAccentColor,
   );
 
   TextStyle _selectTimeText = TextStyle(
@@ -141,7 +141,7 @@ class Styles with ChangeNotifier{
 
   TextStyle get pageTitle => _pageTitle;
   TextStyle get alarmTitle => _alarmTitle;
-  TextStyle get alarmDateUnselected => _alarmDateUnselected;
+  TextStyle get alarmDateSelected => _alarmDateSelected;
   TextStyle get selectTimeText => _selectTimeText;
   TextStyle get textDefault => _textDefault;
   TextStyle get largeTextDefault => _largeTextDefault;
@@ -209,20 +209,17 @@ class Styles with ChangeNotifier{
         fixedSize: _alarmFormButtonFixedSize, 
         primary: _selectedAccentColor
       );
+      _alarmDateSelected = _alarmDateSelected.copyWith(color: _selectedAccentColor);
 
       // change light/night mode
       if (lightNightMode.settingData == 'light') {
         _backgroundColor = _lightColor;
         _secondBackgroundColor = _whiteColor;
         _textColorDefault = _colorBlack;
-
-        _alarmDateUnselected = _alarmDateUnselected.copyWith(color: _textColorDefault[200]);
       } else if (lightNightMode.settingData == 'night') {
         _backgroundColor = _nightColor;
         _secondBackgroundColor = _blackColor;
         _textColorDefault = _colorWhite;
-
-        _alarmDateUnselected = _alarmDateUnselected.copyWith(color: _textColorDefault[800]);
       } else {
         Exception('Light/Night Mode ${lightNightMode.settingData} does not match light or night');
       }

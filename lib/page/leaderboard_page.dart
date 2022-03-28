@@ -19,19 +19,6 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
   };
 
   @override
-  void initState() {
-    super.initState();
-
-    checkIfSignedInThenSignIn();
-  }
-
-  void checkIfSignedInThenSignIn() async {
-    if (!(await GamesServices.isSignedIn)) {
-      GamesServices.signIn();
-    }
-  }
-  
-  @override
   Widget build(BuildContext context) {
     return FutureBuilder<bool>(
       future: GamesServices.isSignedIn,
@@ -126,6 +113,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                           child: TextButton(
                             onPressed: () async {
                               await GamesServices.signIn();
+                              setState(() {});
                             },
                             child: Padding(
                               padding: const EdgeInsets.all(10.0),

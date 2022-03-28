@@ -206,15 +206,19 @@ class _SettingsPageState extends State<SettingsPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Icon(
-          icon,
-          size: 48.0,
-          color: context.watch<Styles>().selectedAccentColor,
+        Padding(
+          padding: const EdgeInsets.only(right: 10.0),
+          child: Icon(
+            icon,
+            size: 48.0,
+            color: context.watch<Styles>().selectedAccentColor,
+          ),
         ),
         Text(
           titleName,
           style: context.watch<Styles>().mediumTextDefault,
         ),
+        const Spacer(),
         Theme(
           data: ThemeData(
             canvasColor: context.watch<Styles>().secondBackgroundColor

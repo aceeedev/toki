@@ -92,13 +92,15 @@ class PuzzleHelper {
     return (stopwatch!.elapsed.inMilliseconds / 10).round();
   }
 
-  static void addScoreToLeaderboard(String iOSLeaderboardID, int score) {
-    GamesServices.submitScore(
-      score: Score(
-        iOSLeaderboardID: iOSLeaderboardID,
-        value: score,
-      )
-    );
+  static void addScoreToLeaderboard(String iOSLeaderboardID, int score) async {
+    if (await GamesServices.isSignedIn) {
+      GamesServices.submitScore(
+        score: Score(
+          iOSLeaderboardID: iOSLeaderboardID,
+          value: score,
+        )
+      );
+    }
   }
 }
 

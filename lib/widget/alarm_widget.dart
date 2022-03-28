@@ -118,13 +118,13 @@ class _AlarmState extends State<AlarmWidget> {
 
   List<TextSpan> formatSelectedDays(Alarm alarm) {
     return <TextSpan>[
-      alarm.selectedSu ? const TextSpan(text: 'Su ') : TextSpan(text: 'Su ', style: context.watch<Styles>().alarmDateUnselected),
-      alarm.selectedMo ? const TextSpan(text: 'Mo ') : TextSpan(text: 'Mo ', style: context.watch<Styles>().alarmDateUnselected),
-      alarm.selectedTu ? const TextSpan(text: 'Tu ') : TextSpan(text: 'Tu ', style: context.watch<Styles>().alarmDateUnselected),
-      alarm.selectedWe ? const TextSpan(text: 'We ') : TextSpan(text: 'We ', style: context.watch<Styles>().alarmDateUnselected),
-      alarm.selectedTh ? const TextSpan(text: 'Th ') : TextSpan(text: 'Th ', style: context.watch<Styles>().alarmDateUnselected),
-      alarm.selectedFr ? const TextSpan(text: 'Fr ') : TextSpan(text: 'Fr ', style: context.watch<Styles>().alarmDateUnselected),
-      alarm.selectedSa ? const TextSpan(text: 'Sa') : TextSpan(text: 'Sa', style: context.watch<Styles>().alarmDateUnselected),
+      alarm.selectedSu ? TextSpan(text: 'Su ', style: context.watch<Styles>().alarmDateSelected) : const TextSpan(text: 'Su '),
+      alarm.selectedMo ? TextSpan(text: 'Mo ', style: context.watch<Styles>().alarmDateSelected) : const TextSpan(text: 'Mo '),
+      alarm.selectedTu ? TextSpan(text: 'Tu ', style: context.watch<Styles>().alarmDateSelected) : const TextSpan(text: 'Tu '),
+      alarm.selectedWe ? TextSpan(text: 'We ', style: context.watch<Styles>().alarmDateSelected) : const TextSpan(text: 'We '),
+      alarm.selectedTh ? TextSpan(text: 'Th ', style: context.watch<Styles>().alarmDateSelected) : const TextSpan(text: 'Th '),
+      alarm.selectedFr ? TextSpan(text: 'Fr ', style: context.watch<Styles>().alarmDateSelected) : const TextSpan(text: 'Fr '),
+      alarm.selectedSa ? TextSpan(text: 'Sa', style: context.watch<Styles>().alarmDateSelected) : const TextSpan(text: 'Sa'),
     ];
   }
 }
