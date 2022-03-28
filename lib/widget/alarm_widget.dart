@@ -6,6 +6,7 @@ import 'package:toki/backend/notification_api.dart';
 import 'package:toki/providers/styles.dart';
 import 'package:toki/backend/database_helpers.dart';
 import 'package:toki/model/alarm.dart';
+import 'package:toki/widget/card_widget.dart';
 
 class AlarmWidget extends StatefulWidget {
   final Alarm alarm;
@@ -28,101 +29,89 @@ class _AlarmState extends State<AlarmWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Align( // you have to wrap in an align because it they are in another container, needed to change size
-      child: SizedBox( 
-        height: 150,
-        width: 300,
-        child: Card(
-          color: context.watch<Styles>().secondBackgroundColor,
-          elevation: 2.0,
-          margin: const EdgeInsets.all(10.0),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0)
-          ),
-          child: Row(
+    return CardWidget(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: widget.alarm.alarmName != ""
-                  ? [
-                    Padding(
-                      padding: EdgeInsets.all(columnPadding),
-                      child: Text(
-                          widget.alarm.alarmName.length >= 9 ? '${widget.alarm.alarmName.substring(0, 9)}...' : widget.alarm.alarmName,
-                          style: context.watch<Styles>().alarmTitle,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(columnPadding),
-                      child: Text(
-                        DateFormat('h:mm a').format(widget.alarm.time),
-                        style: context.watch<Styles>().largeTextDefault
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(columnPadding),
-                      child: RichText(
-                        text: TextSpan(
-                          style: context.watch<Styles>().textDefault,
-                          children: formatSelectedDays(widget.alarm),
-                        ),
-                      ),
-                    ),
-                  ]
-                : [
-                  Padding(
-                    padding: EdgeInsets.all(columnPadding),
-                    child: Text(
-                      DateFormat('h:mm a').format(widget.alarm.time),
-                      style: context.watch<Styles>().alarmTitle
-                    ),
-                  ),
-                  Padding(
-                      padding: EdgeInsets.all(columnPadding),
-                      child: RichText(
-                        text: TextSpan(
-                          style: context.watch<Styles>().textDefault,
-                          children: formatSelectedDays(widget.alarm),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-              Container(
-                alignment: Alignment.centerRight,
-                child: Transform.scale(
-                  scale: 1.3,
-                  child: Switch(
-                    value: isSwitched,
-                    onChanged: (bool value) {
-                      setState(() {
-                        isSwitched = value;
-                        if (value) {
-                          Alarm updatedAlarm = NotificationApi.updateCurrentAlarm(widget.alarm, widget.alarm.currentAlarm, true);
-                          TokiDatabase.instance.updateAlarm(updatedAlarm);
-
-                          NotificationApi.scheduleNotification();
-                        } else {
-                          NotificationApi.cancelAlarm(widget.alarm);
-                        }
-
-                        widget.refreshFunc;
-                      });
-                    },
-                    activeTrackColor: context.watch<Styles>().selectedAccentColor,
-                    activeColor: context.watch<Styles>().selectedAccentColor[700],
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: widget.alarm.alarmName != ""
+              ? [
+                Padding(
+                  padding: EdgeInsets.all(columnPadding),
+                  child: Text(
+                      widget.alarm.alarmName.length >= 9 ? '${widget.alarm.alarmName.substring(0, 9)}...' : widget.alarm.alarmName,
+                      style: context.watch<Styles>().alarmTitle,
                   ),
                 ),
+                Padding(
+                  padding: EdgeInsets.all(columnPadding),
+                  child: Text(
+                    DateFormat('h:mm a').format(widget.alarm.time),
+                    style: context.watch<Styles>().largeTextDefault
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(columnPadding),
+                  child: RichText(
+                    text: TextSpan(
+                      style: context.watch<Styles>().textDefault,
+                      children: formatSelectedDays(widget.alarm),
+                    ),
+                  ),
+                ),
+              ]
+            : [
+              Padding(
+                padding: EdgeInsets.all(columnPadding),
+                child: Text(
+                  DateFormat('h:mm a').format(widget.alarm.time),
+                  style: context.watch<Styles>().alarmTitle
+                ),
               ),
-              Container(
-                alignment: Alignment.topRight,
-                child: ThreeDotsButton(alarm: widget.alarm, refreshFunc: widget.refreshFunc),
-              ), 
+              Padding(
+                  padding: EdgeInsets.all(columnPadding),
+                  child: RichText(
+                    text: TextSpan(
+                      style: context.watch<Styles>().textDefault,
+                      children: formatSelectedDays(widget.alarm),
+                    ),
+                  ),
+                ),
             ],
           ),
-        ),
+          Container(
+            alignment: Alignment.centerRight,
+            child: Transform.scale(
+              scale: 1.3,
+              child: Switch(
+                value: isSwitched,
+                onChanged: (bool value) {
+                  setState(() {
+                    isSwitched = value;
+                    if (value) {
+                      Alarm updatedAlarm = NotificationApi.updateCurrentAlarm(widget.alarm, widget.alarm.currentAlarm, true);
+                      TokiDatabase.instance.updateAlarm(updatedAlarm);
+
+                      NotificationApi.scheduleNotification();
+                    } else {
+                      NotificationApi.cancelAlarm(widget.alarm);
+                    }
+
+                    widget.refreshFunc;
+                  });
+                },
+                activeTrackColor: context.watch<Styles>().selectedAccentColor,
+                activeColor: context.watch<Styles>().selectedAccentColor[700],
+              ),
+            ),
+          ),
+          Container(
+            alignment: Alignment.topRight,
+            child: ThreeDotsButton(alarm: widget.alarm, refreshFunc: widget.refreshFunc),
+          ), 
+        ],
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:toki/backend/database_helpers.dart';
 import 'dart:math';
 import 'package:provider/provider.dart';
+import 'package:games_services/games_services.dart';
 import 'package:toki/providers/styles.dart';
 import 'package:toki/backend/notification_api.dart';
 import 'package:toki/model/alarm.dart';
@@ -11,6 +12,7 @@ import 'package:toki/puzzles/matching_icons.dart';
 import 'package:toki/puzzles/maze.dart';
 
 class PuzzleHelper {
+  static Stopwatch? stopwatch;
 
   Future<List<Map<String, Widget>>> createPuzzleList(BuildContext context) async {
     return [
@@ -78,6 +80,25 @@ class PuzzleHelper {
     } else {
       throw Exception('The puzzleWidget is null'); 
     }
+  }
+
+  static void startStopwatch() {
+    stopwatch = Stopwatch();
+    stopwatch!.start();
+  }
+
+  static int stopStopwatch() {
+    stopwatch!.stop();
+    return (stopwatch!.elapsed.inMilliseconds / 10).round();
+  }
+
+  static void addScoreToLeaderboard(String iOSLeaderboardID, int score) {
+    GamesServices.submitScore(
+      score: Score(
+        iOSLeaderboardID: iOSLeaderboardID,
+        value: score,
+      )
+    );
   }
 }
 

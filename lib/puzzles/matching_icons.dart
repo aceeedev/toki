@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:provider/provider.dart';
 import 'package:toki/providers/styles.dart';
+import 'package:toki/puzzles/puzzle_helper.dart';
 
 class MatchingIcons extends StatefulWidget {
   final Function completePuzzle;
@@ -28,6 +29,7 @@ class _MatchingIconsState extends State<MatchingIcons> {
   late List<SpecialIconButton> listofSpecialIconButtons;
   late int numOfButtons;
   late int crossAxisCount;
+  late String diff;
 
   @override
   void initState() {
@@ -35,15 +37,19 @@ class _MatchingIconsState extends State<MatchingIcons> {
 
     if (widget.difficulty == 1) {
       numOfButtons = 9;
+      diff = 'Easy';
     } else if (widget.difficulty == 2) {
       numOfButtons = 15;
+      diff = 'Medium';
     } else if (widget.difficulty == 3) {
       numOfButtons = 20;
+      diff = 'Hard';
     }
 
     crossAxisCount = numOfButtons == 20 ? 4 : 3;
     correctIcon = getRandomIcon();
     listofSpecialIconButtons = createListOfSpecialIconButtons(numOfButtons);
+    PuzzleHelper.startStopwatch();
   }
 
   @override
@@ -107,6 +113,7 @@ class _MatchingIconsState extends State<MatchingIcons> {
         checkAllIconsFunc: checkAllIcons,
         completePuzzle: widget.completePuzzle,
         test: widget.test,
+        diff: diff,
       ));
     }
 
@@ -119,6 +126,7 @@ class _MatchingIconsState extends State<MatchingIcons> {
         checkAllIconsFunc: checkAllIcons,
         completePuzzle: widget.completePuzzle,
         test: widget.test,
+        diff: diff,
       ));
     }
 
@@ -144,7 +152,8 @@ class SpecialIconButton extends StatefulWidget {
   final Function checkAllIconsFunc;
   final Function completePuzzle;
   final bool test;
-  SpecialIconButton({Key? key, required this.correctIcon, required this.isCorrectIcon, required this.listOfIcons, required this.checkAllIconsFunc, required this.completePuzzle, required this.test}) : super(key: key);
+  final String diff;
+  SpecialIconButton({Key? key, required this.correctIcon, required this.isCorrectIcon, required this.listOfIcons, required this.checkAllIconsFunc, required this.completePuzzle, required this.test, required this.diff}) : super(key: key);
   
   bool pressed = false;
 
@@ -166,7 +175,12 @@ class _SpecialIconButtonState extends State<SpecialIconButton> {
             setState(() => widget.pressed = !widget.pressed);
 
             if (widget.checkAllIconsFunc()) {
-              widget.completePuzzle(context,widget.test);
+              if (!widget.test) {
+                int elapsedTime = PuzzleHelper.stopStopwatch();
+                PuzzleHelper.addScoreToLeaderboard('matchingIcons${widget.diff}', elapsedTime);
+              }
+
+              widget.completePuzzle(context, widget.test);
             }
           }, 
           child: widget.isCorrectIcon 

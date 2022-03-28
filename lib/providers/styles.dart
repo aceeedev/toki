@@ -126,6 +126,18 @@ class Styles with ChangeNotifier{
     color: _colorLogoRed,
   );
 
+  static ButtonStyle _leaderboardButton = TextButton.styleFrom(
+    primary: _textColorDefault,
+    textStyle: const TextStyle(
+      fontFamily: _fontNameDefault,
+      fontSize: _textSizeDefault,
+    ),
+    side: BorderSide(
+      width: 2.0,
+      color: _selectedAccentColor,
+    )
+  );
+
 
   TextStyle get pageTitle => _pageTitle;
   TextStyle get alarmTitle => _alarmTitle;
@@ -138,6 +150,7 @@ class Styles with ChangeNotifier{
   ButtonStyle get dayButtonStyleSelected => _dayButtonStyleSelected;
   ButtonStyle get dayButtonStyleNotSelected => _dayButtonStyleNotSelected;
   TextStyle get textDefaultRed => _textDefaultRed;
+  ButtonStyle get leaderboardButton => _leaderboardButton;
 
 
 
@@ -219,6 +232,18 @@ class Styles with ChangeNotifier{
       _textDefault = _textDefault.copyWith(color: _textColorDefault);
       _largeTextDefault = _largeTextDefault.copyWith(color: _textColorDefault);
       _mediumTextDefault = _mediumTextDefault.copyWith(color: _textColorDefault);
+      
+      _leaderboardButton = TextButton.styleFrom(
+        primary: _textColorDefault,
+        textStyle: const TextStyle(
+          fontFamily: _fontNameDefault,
+          fontSize: _textSizeDefault,
+        ),
+        side: BorderSide(
+          width: 2.0,
+          color: _selectedAccentColor,
+        )
+      );
 
 
       
