@@ -181,6 +181,7 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  /// creates a title. [title] is the text of the title
   Widget settingTitle(String title) {
     return Text(
       title,
@@ -188,7 +189,7 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  /// creates a divider. type could be same or new (changes thickness)
+  /// creates a divider
   Widget settingDivider() {
     return const Divider(
       indent: 20.0,
@@ -228,6 +229,35 @@ class _SettingsPageState extends State<SettingsPage> {
             value: selectedValue,
             onChanged: (value) => onSelectDropDown(value),
           ),
+        ),
+      ]
+    );
+  }
+
+  Widget settingButton({
+    required String titleName, 
+    required IconData icon, 
+    required String text,
+    required Function onPressed}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(right: 10.0),
+          child: Icon(
+            icon,
+            size: 48.0,
+            color: context.watch<Styles>().selectedAccentColor,
+          ),
+        ),
+        Text(
+          titleName,
+          style: context.watch<Styles>().mediumTextDefault,
+        ),
+        const Spacer(),
+        TextButton(
+          onPressed: () => onPressed(),
+          child: Text(text),
         ),
       ]
     );

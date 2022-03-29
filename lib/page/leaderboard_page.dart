@@ -110,19 +110,25 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                       ),
                       Expanded(
                         child: Center(
-                          child: TextButton(
-                            onPressed: () async {
-                              await GamesServices.signIn();
-                              setState(() {});
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Text(
-                                'Sign in to game center to access the leaderboard',
-                                style: context.watch<Styles>().largeTextDefault,
+                          child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: TextButton(
+                              onPressed: () async {
+                                await GamesServices.signIn();
+                                if (await GamesServices.isSignedIn && mounted) {
+                                  setState(() {});
+                                }
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Text(
+                                  'Sign in to game center to access the leaderboard',
+                                  style: context.watch<Styles>().largeTextDefault,
+                                  textAlign: TextAlign.center,
+                                ),
                               ),
+                              style: context.watch<Styles>().leaderboardButton,
                             ),
-                            style: context.watch<Styles>().leaderboardButton,
                           ),
                         ),
                       ),
