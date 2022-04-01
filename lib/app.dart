@@ -26,8 +26,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   int selectedPage = 1;
   late List _pageOptions;
 
-  late Future<String> allowedNotificationsPerm;
-
   @override
   void initState() {
     super.initState();
@@ -44,7 +42,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     NotificationApi.init(initScheduled: true);
     listenNotifications();
 
-    allowedNotificationsPerm = getAllowedNotificationsPerm();
     WidgetsBinding.instance?.addObserver(this);
   }
 
@@ -103,90 +100,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     ));
   }
 
-  Future<String> getAllowedNotificationsPerm() {
-    return NotificationPermissions.getNotificationPermissionStatus()
-      .then((status) {
-        if (status == PermissionStatus.granted) {
-          return 'granted';
-        } else {
-          return 'not granted';
-        }
-      });
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      setState(() {
-        allowedNotificationsPerm = getAllowedNotificationsPerm();
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: context.read<Styles>().backgroundColor,
-      body: SafeArea(
-        child: FutureBuilder(
-          future: allowedNotificationsPerm,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-      
-            if (snapshot.hasError) {
-              return Text('error while retrieving status: ${snapshot.error}');
-            }
-      
-            if (snapshot.hasData) {
-              if (snapshot.data == 'granted') {
-                return _pageOptions[selectedPage];
-              }
-      
-              return Scaffold(
-                backgroundColor: context.read<Styles>().backgroundColor,
-                body: Column(
-                  children: [
-                    const PageTitle(
-                      title: 'Notifications Error', 
-                      ),
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Text(
-                        'Please enable notifications in order to use Toki',
-                          style: context.watch<Styles>().largeTextDefault,
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        NotificationPermissions.requestNotificationPermissions(
-                          iosSettings: const NotificationSettingsIos(
-                            sound: true,
-                            badge: true,
-                            alert: true
-                          )
-                        ).then((value) => allowedNotificationsPerm = getAllowedNotificationsPerm());
-                      }, 
-                      child: Text(
-                        'Go to notifications settings',
-                        style: context.watch<Styles>().textDefault,
-                      ),
-                      style: TextButton.styleFrom(
-                        backgroundColor: context.watch<Styles>().selectedAccentColor
-                      )
-                    )
-                  ]
-                ),
-              );
-            }
-      
-          return const Text('No permission status yet');
-      
-          }),
-      ),
+      body: _pageOptions[selectedPage],
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: context.watch<Styles>().backgroundColor,
         items: [

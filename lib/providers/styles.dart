@@ -123,7 +123,7 @@ class Styles with ChangeNotifier{
   static final _textDefaultRed = TextStyle(
     fontFamily: _fontNameDefault,
     fontSize: _textSizeDefault,
-    color: _colorLogoRed,
+    color: Colors.red[900],
   );
 
   static ButtonStyle _leaderboardButton = TextButton.styleFrom(

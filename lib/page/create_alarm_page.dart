@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:notification_permissions/notification_permissions.dart';
 import 'package:toki/backend/database_helpers.dart';
 import 'package:toki/backend/notification_api.dart';
+import 'package:toki/page/alarm_page.dart';
 import 'package:toki/providers/create_form.dart';
 import 'package:toki/providers/styles.dart';
 import 'package:toki/model/alarm.dart';
@@ -63,16 +65,17 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
     return [
       _StyledCard(
         child: CupertinoButton(
-          onPressed: () =>
-            _showDialog(
-              CupertinoDatePicker(
-                initialDateTime: context.read<CreateForm>().time,
-                mode: CupertinoDatePickerMode.time,
-                use24hFormat: false,
-                onDateTimeChanged: (DateTime newTime) => context.read<CreateForm>().setTime(newTime),
-              ),
+          onPressed: () => _showDialog(
+            CupertinoDatePicker(
+              initialDateTime: context.read<CreateForm>().time,
+              mode: CupertinoDatePickerMode.time,
+              use24hFormat: false,
+              onDateTimeChanged: (DateTime newTime) =>
+                  context.read<CreateForm>().setTime(newTime),
             ),
-          child: Text('Time: ${DateFormat('hh:mm a').format(context.watch<CreateForm>().time)}',
+          ),
+          child: Text(
+              'Time: ${DateFormat('hh:mm a').format(context.watch<CreateForm>().time)}',
               style: context.watch<Styles>().selectTimeText),
         ),
       ),
@@ -108,39 +111,40 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
                 return Card(
                     color: context.watch<Styles>().backgroundColor,
                     child: Column(
-                  children: [
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: Container(
-                        padding:
-                            const EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 10.0),
-                        child: IconButton(
-                            onPressed: () {
-                              context.read<CreateForm>().stopSound();
-                              Navigator.pop(context);
-                              },
-                            icon: Icon(
-                              Icons.arrow_back,
-                              size: 48.0,
-                              color:
-                                  context.watch<Styles>().selectedAccentColor,
-                            )),
-                      ),
-                    ),
-                    Text(
-                      'Ringtones',
-                      style: context.watch<Styles>().pageTitle,
-                    ),
-                    ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      itemCount: ringtoneListTiles.length,
-                      itemBuilder: (context, index) {
-                        return ringtoneListTiles[index];
-                      },
-                    )
-                  ],
-                ));
+                      children: [
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: Container(
+                            padding:
+                                const EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 10.0),
+                            child: IconButton(
+                                onPressed: () {
+                                  context.read<CreateForm>().stopSound();
+                                  Navigator.pop(context);
+                                },
+                                icon: Icon(
+                                  Icons.arrow_back,
+                                  size: 48.0,
+                                  color: context
+                                      .watch<Styles>()
+                                      .selectedAccentColor,
+                                )),
+                          ),
+                        ),
+                        Text(
+                          'Ringtones',
+                          style: context.watch<Styles>().pageTitle,
+                        ),
+                        ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          itemCount: ringtoneListTiles.length,
+                          itemBuilder: (context, index) {
+                            return ringtoneListTiles[index];
+                          },
+                        )
+                      ],
+                    ));
               }),
           child: Text('Ringtone: ${context.read<CreateForm>().ringtoneName}',
               style: context.watch<Styles>().selectTimeText),
@@ -175,15 +179,20 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
           ],
         ),
       ),
-    ]; 
+    ];
   }
+
+  late Future<String> allowedNotificationsPerm;
+  String skipNotifications = 'No';
 
   @override
   void initState() {
     WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
       context.read<CreateForm>().resetTime();
       context.read<CreateForm>().setRingtoneName(ringtoneListTiles.first.title);
-      context.read<CreateForm>().setRingtoneSound(ringtoneListTiles.first.sound);
+      context
+          .read<CreateForm>()
+          .setRingtoneSound(ringtoneListTiles.first.sound);
     });
 
     ringtoneListTiles = createRingtoneListTiles();
@@ -193,7 +202,29 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
       alarmName = _controller.text;
     });
 
+    allowedNotificationsPerm = getAllowedNotificationsPerm();
+
     super.initState();
+  }
+
+  Future<String> getAllowedNotificationsPerm() {
+    return NotificationPermissions.getNotificationPermissionStatus()
+        .then((status) {
+      if (status == PermissionStatus.granted) {
+        return 'granted';
+      } else {
+        return 'not granted';
+      }
+    });
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      setState(() {
+        allowedNotificationsPerm = getAllowedNotificationsPerm();
+      });
+    }
   }
 
   @override
@@ -205,32 +236,117 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
   @override
   Widget build(BuildContext context) {
     listOfListViewWidgets = createListOfListViewWidgets();
-    
+
     return Hero(
-      tag: 'createAlarm',
-      child: Scaffold(
-        backgroundColor: context.read<Styles>().backgroundColor,
-        body: SafeArea(
-          child: Column(children: [
-            const PageTitle(
-              title: 'Create Alarm',
-            ),
-            Expanded(
-              child: ListView.separated(
-                  itemBuilder: (context, index) {
-                    return Padding(
-                        padding: const EdgeInsets.only(left: 25, right: 25),
-                        child: listOfListViewWidgets[index]);
-                  },
-                  separatorBuilder: (context, index) {
-                    return const SizedBox(height: 30);
-                  },
-                  itemCount: 5),
-            )
-          ]),
-        ),
+        tag: 'createAlarm',
+        child: Scaffold(
+          backgroundColor: context.read<Styles>().backgroundColor,
+          body: SafeArea(
+            child: skipNotifications == 'Yes' ? CreateAlarmPage() : FutureBuilder(
+                future: allowedNotificationsPerm,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+
+                  if (snapshot.hasError) {
+                    return Text(
+                        'error while retrieving status: ${snapshot.error}');
+                  }
+
+                  if (snapshot.hasData) {
+                    if (snapshot.data == 'granted') {
+                      return CreateAlarmPage();
+                    }
+
+                    return Scaffold(
+                      backgroundColor: context.read<Styles>().backgroundColor,
+                      body: Center(
+                        child: Column(children: [
+                          const PageTitle(
+                            title: 'Notifications Warning',
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Text(
+                              'Alarms on Toki Alarm will only work if push notifications are enabled',
+                              style: context.watch<Styles>().largeTextDefault,
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(right: 10.0),
+                                child: TextButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      skipNotifications = 'Yes';
+                                    });
+                                  },
+                                  child: Text(
+                                    'Make alarm anyways',
+                                    style: context.watch<Styles>().textDefaultRed,
+                                  ),
+                                  style: TextButton.styleFrom(
+                                      backgroundColor: context
+                                          .watch<Styles>()
+                                          .selectedAccentColor),
+                                ),
+                              ),
+                              TextButton(
+                                  onPressed: () {
+                                    NotificationPermissions
+                                            .requestNotificationPermissions(
+                                                iosSettings:
+                                                    const NotificationSettingsIos(
+                                                        sound: true,
+                                                        badge: true,
+                                                        alert: true))
+                                        .then((value) =>
+                                            allowedNotificationsPerm =
+                                                getAllowedNotificationsPerm());
+                                  },
+                                  child: Text(
+                                    'Go to notifications settings',
+                                    style: context.watch<Styles>().textDefault,
+                                  ),
+                                  style: TextButton.styleFrom(
+                                      backgroundColor: context
+                                          .watch<Styles>()
+                                          .selectedAccentColor)),
+                            ],
+                          ),
+                        ]),
+                      ),
+                    );
+                  }
+                  return const Text('No permission status yet');
+                }),
+          ),
+        ));
+  }
+
+  Widget CreateAlarmPage() {
+    return Column(children: [
+      const PageTitle(
+        title: 'Create Alarm',
       ),
-    );
+      Expanded(
+        child: ListView.separated(
+            itemBuilder: (context, index) {
+              return Padding(
+                  padding: const EdgeInsets.only(left: 25, right: 25),
+                  child: listOfListViewWidgets[index]);
+            },
+            separatorBuilder: (context, index) {
+              return const SizedBox(height: 30);
+            },
+            itemCount: 5),
+      )
+    ]);
   }
 
   void _showDialog(Widget child) {
@@ -356,10 +472,7 @@ class RingToneListTile extends StatefulWidget {
   final String title;
   final String sound;
 
-  const RingToneListTile(
-      {Key? key,
-      required this.title,
-      required this.sound})
+  const RingToneListTile({Key? key, required this.title, required this.sound})
       : super(key: key);
 
   @override
