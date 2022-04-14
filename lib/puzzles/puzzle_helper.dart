@@ -13,7 +13,6 @@ import 'package:toki/puzzles/maze.dart';
 
 class PuzzleHelper {
   static Stopwatch? stopwatch;
-
   Future<List<Map<String, Widget>>> createPuzzleList(BuildContext context) async {
     return [
       {'Matching Icons': MatchingIcons(
@@ -42,7 +41,7 @@ class PuzzleHelper {
     return [randomPuzzle.values.first, randomPuzzle.keys.toList().first];
   }
 
-  static void completePuzzle(BuildContext context, bool test) {
+  static void completePuzzle(BuildContext context, bool test) async {
     if (!test) {
       NotificationApi.resetAlarm();
     }
@@ -117,24 +116,27 @@ class PuzzleTemplate extends StatelessWidget {
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
-        backgroundColor: context.watch<Styles>().backgroundColor,
+        backgroundColor: context.watch<Styles>().selectedAccentColor,
         body: SafeArea(
-          child: Column(
-            children: [
-              PageTitle(
-                title: puzzleName,
-              ),
-              EmergencyExitButton(
-                alarm: alarm, 
-                completePuzzle: completePuzzle,
-                test: test
+          child: Container(
+            color: context.read<Styles>().backgroundColor,
+            child: Column(
+              children: [
+                PageTitle(
+                  title: puzzleName,
                 ),
-              Expanded(
-                child: Center(
-                  child: puzzleWidget,
+                EmergencyExitButton(
+                  alarm: alarm, 
+                  completePuzzle: completePuzzle,
+                  test: test
+                  ),
+                Expanded(
+                  child: Center(
+                    child: puzzleWidget,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

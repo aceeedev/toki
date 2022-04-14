@@ -5,36 +5,50 @@ import 'package:provider/provider.dart';
 import 'package:notification_permissions/notification_permissions.dart';
 import 'package:toki/backend/database_helpers.dart';
 import 'package:toki/backend/notification_api.dart';
-import 'package:toki/page/alarm_page.dart';
 import 'package:toki/providers/create_form.dart';
 import 'package:toki/providers/styles.dart';
 import 'package:toki/model/alarm.dart';
 import 'package:toki/widget/page_title.dart';
 
-class StatefulAlarmPage extends StatefulWidget {
-  const StatefulAlarmPage({Key? key}) : super(key: key);
+class CreateAlarmPage extends StatefulWidget {
+  final bool edit;
+  final Alarm? alarm;
+  final Function refreshFunc;
+  const CreateAlarmPage({Key? key, required this.edit, required this.alarm, required this.refreshFunc}) : super(key: key);
 
   @override
-  State<StatefulAlarmPage> createState() => _StatefulAlarmPageState();
+  State<CreateAlarmPage> createState() => _CreateAlarmPageState();
 }
 
-class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
+class _CreateAlarmPageState extends State<CreateAlarmPage> {
   late TextEditingController _controller;
 
-  List<DayButton> dayButtons = [
-    DayButton('Su'),
-    DayButton('Mo'),
-    DayButton('Tu'),
-    DayButton('We'),
-    DayButton('Th'),
-    DayButton('Fr'),
-    DayButton('Sa'),
-  ];
+  late List<DayButton> dayButtons;
 
-  String alarmName = "";
+  late String alarmName;
 
   late List<RingToneListTile> ringtoneListTiles;
   late List<Widget> listOfListViewWidgets;
+
+  String createAlarmName() {
+    if (widget.edit) {
+      return widget.alarm!.alarmName;
+    }
+
+    return "";
+  }
+
+  List<DayButton> createDayButtons() {
+    return [
+      DayButton(day: 'Su', selected: widget.edit ? widget.alarm!.selectedSu : false,),
+      DayButton(day: 'Mo', selected: widget.edit ? widget.alarm!.selectedMo : false,),
+      DayButton(day: 'Tu', selected: widget.edit ? widget.alarm!.selectedTu : false,),
+      DayButton(day: 'We', selected: widget.edit ? widget.alarm!.selectedWe : false,),
+      DayButton(day: 'Th', selected: widget.edit ? widget.alarm!.selectedTh : false,),
+      DayButton(day: 'Fr', selected: widget.edit ? widget.alarm!.selectedFr : false,),
+      DayButton(day: 'Sa', selected: widget.edit ? widget.alarm!.selectedSa : false,),
+    ];
+  }
 
   List<RingToneListTile> createRingtoneListTiles() {
     return const [
@@ -67,7 +81,7 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
         child: CupertinoButton(
           onPressed: () => _showDialog(
             CupertinoDatePicker(
-              initialDateTime: context.read<CreateForm>().time,
+              initialDateTime: widget.edit ? widget.alarm!.time : context.read<CreateForm>().time,
               mode: CupertinoDatePickerMode.time,
               use24hFormat: false,
               onDateTimeChanged: (DateTime newTime) =>
@@ -97,7 +111,7 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
           child: Padding(
             padding: const EdgeInsets.all(10.0),
             child: CupertinoTextField(
-              controller: _controller,
+              controller: widget.edit ? (_controller..text = widget.alarm!.alarmName) : _controller,
               placeholder: 'Optional: Alarm Name',
             ),
           ),
@@ -169,10 +183,11 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
               child: ElevatedButton.icon(
                 onPressed: () async {
                   await _addAlarm();
+
                   Navigator.pop(context);
                 },
-                icon: const Icon(Icons.check),
-                label: const Text('Create'),
+                icon: Icon(widget.edit ? Icons.edit : Icons.check),
+                label: Text(widget.edit ? 'Edit' : 'Create'),
                 style: context.watch<Styles>().alarmFormButtonStyle,
               ),
             )
@@ -187,20 +202,40 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
 
   @override
   void initState() {
-    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
-      context.read<CreateForm>().resetTime();
-      context.read<CreateForm>().setRingtoneName(ringtoneListTiles.first.title);
-      context
-          .read<CreateForm>()
-          .setRingtoneSound(ringtoneListTiles.first.sound);
-    });
+    if (widget.edit) {
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        context.read<CreateForm>().setTime(widget.alarm!.time);
 
+        Map<String?, String> ringtoneMap = {};
+        for (RingToneListTile ringToneListTile in ringtoneListTiles) {
+          ringtoneMap[ringToneListTile.sound] = ringToneListTile.title;
+        }
+
+        context.read<CreateForm>().setRingtoneName(ringtoneMap[widget.alarm!.alarmRingtone] ?? 'Error');
+        context
+            .read<CreateForm>()
+            .setRingtoneSound(widget.alarm!.alarmRingtone);
+      });
+    } else {
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        context.read<CreateForm>().resetTime();
+        context.read<CreateForm>().setRingtoneName(ringtoneListTiles.first.title);
+        context
+            .read<CreateForm>()
+            .setRingtoneSound(ringtoneListTiles.first.sound);
+      });
+    }
+    
+
+    dayButtons = createDayButtons();
     ringtoneListTiles = createRingtoneListTiles();
 
     _controller = TextEditingController();
     _controller.addListener(() {
       alarmName = _controller.text;
     });
+
+    alarmName = createAlarmName();
 
     allowedNotificationsPerm = getAllowedNotificationsPerm();
 
@@ -242,7 +277,7 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
         child: Scaffold(
           backgroundColor: context.read<Styles>().backgroundColor,
           body: SafeArea(
-            child: skipNotifications == 'Yes' ? CreateAlarmPage() : FutureBuilder(
+            child: skipNotifications == 'Yes' ? createAlarmPage() : FutureBuilder(
                 future: allowedNotificationsPerm,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
@@ -258,7 +293,7 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
 
                   if (snapshot.hasData) {
                     if (snapshot.data == 'granted') {
-                      return CreateAlarmPage();
+                      return createAlarmPage();
                     }
 
                     return Scaffold(
@@ -329,10 +364,10 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
         ));
   }
 
-  Widget CreateAlarmPage() {
+  Widget createAlarmPage() {
     return Column(children: [
-      const PageTitle(
-        title: 'Create Alarm',
+      PageTitle(
+        title: '${widget.edit ? 'Edit' : 'Create'} Alarm',
       ),
       Expanded(
         child: ListView.separated(
@@ -376,7 +411,6 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
         numSelectedDays++;
       }
     }
-    print(numSelectedDays);
 
     // make sure at least one day is selected
     if (numSelectedDays == 0) {
@@ -394,7 +428,7 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
             ]),
       );
     } else {
-      final alarm = Alarm(
+      Alarm alarm = Alarm(
         time: context.read<CreateForm>().time,
         selectedSu: selectedDays['Su']!,
         selectedMo: selectedDays['Mo']!,
@@ -409,11 +443,19 @@ class _StatefulAlarmPageState extends State<StatefulAlarmPage> {
         currentAlarm: false,
       );
 
-      await TokiDatabase.instance.createAlarm(alarm);
+      if (widget.edit) {
+        Alarm alarmWithID = alarm.copy(
+          id: widget.alarm!.id,
+          alarmOn: widget.alarm!.alarmOn
+        );
 
-      NotificationApi.scheduleNotification();
-
-      print('added alarm');
+        await TokiDatabase.instance.updateAlarm(alarmWithID);
+      } else {
+        await TokiDatabase.instance.createAlarm(alarm);
+      }
+      NotificationApi.resetAlarm();
+      
+      widget.refreshFunc();
     }
   }
 }
@@ -441,9 +483,9 @@ class _StyledCard extends StatelessWidget {
 class DayButton extends StatefulWidget {
   final String day;
   // default to being selected
-  bool selected = false;
+  bool selected;
 
-  DayButton(this.day, {Key? key}) : super(key: key);
+  DayButton({Key? key, required this.day, required this.selected}) : super(key: key);
 
   @override
   State<DayButton> createState() => _DayButtonState();

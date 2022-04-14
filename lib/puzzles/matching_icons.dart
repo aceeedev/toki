@@ -28,6 +28,7 @@ class _MatchingIconsState extends State<MatchingIcons> {
   late IconData correctIcon;
   late List<SpecialIconButton> listofSpecialIconButtons;
   late int numOfButtons;
+  late int minCorrectIcons;
   late int crossAxisCount;
   late String diff;
 
@@ -37,12 +38,14 @@ class _MatchingIconsState extends State<MatchingIcons> {
 
     if (widget.difficulty == 1) {
       numOfButtons = 9;
+      minCorrectIcons = 2;
       diff = 'Easy';
     } else if (widget.difficulty == 2) {
       numOfButtons = 15;
+      minCorrectIcons = 3;
       diff = 'Medium';
     } else if (widget.difficulty == 3) {
-      numOfButtons = 20;
+      numOfButtons = 5;
       diff = 'Hard';
     }
 
@@ -80,8 +83,7 @@ class _MatchingIconsState extends State<MatchingIcons> {
             child: Center(
               child: GridView.count(
                 children: listofSpecialIconButtons,
-                primary: true, 
-                physics: const NeverScrollableScrollPhysics(),
+                primary: true,
                 crossAxisCount: crossAxisCount,
                 crossAxisSpacing: 10.0,
                 mainAxisSpacing: 10.0,
@@ -102,7 +104,7 @@ class _MatchingIconsState extends State<MatchingIcons> {
 
   List<SpecialIconButton> createListOfSpecialIconButtons(int listLength) {
     List<SpecialIconButton> listOfSpecialIconButtons = [];
-    int numOfCorrectIcons = 2 + Random().nextInt((listLength ~/ 2) - 2);
+    int numOfCorrectIcons = minCorrectIcons + Random().nextInt((listLength ~/ 2) - minCorrectIcons);
 
     // add the correct icons
     for (int i = 0; i < numOfCorrectIcons; i++) {

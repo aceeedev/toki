@@ -12,7 +12,7 @@ class PageTitle extends StatelessWidget {
     return Align(
       alignment: Alignment.topLeft,
       child: Container(
-        padding: const EdgeInsets.only(left: 10.0),
+        padding: const EdgeInsets.only(left: 10.0, top: 10.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -22,7 +22,7 @@ class PageTitle extends StatelessWidget {
               style: context.watch<Styles>().pageTitle
             ),
             SizedBox(
-              width: title.length.toDouble() * 30,
+              width: title.length.toDouble() * 24,
               height: 7.0,
               child: DecoratedBox(
                 decoration: BoxDecoration(

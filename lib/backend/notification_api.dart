@@ -138,12 +138,13 @@ class NotificationApi {
       weekdaysBetweenNowAndNextAlarm = (7 - todayWeekday) + nextWeekdayAlarm;
     }
 
-    print(weekdaysBetweenNowAndNextAlarm);
-
     return weekdaysBetweenNowAndNextAlarm;
   }
 
+  /// returns 'nextAlarm': Alarm, 'alarmTime', DateTime
   Future<Map<String, dynamic>?> getNextAlarm() async {
+    //Future.delayed(const Duration(milliseconds: 100));
+
     List<Alarm> alarmsFromDB = await TokiDatabase.instance.readAllAlarms('Time ASC');
 
     List<Map<String, dynamic>> nextAlarmsWithDateTimes = [];
@@ -177,7 +178,6 @@ class NotificationApi {
     }
 
     nextAlarmsWithDateTimes.sort(customTimeSort);
-    print(nextAlarmsWithDateTimes);
 
     Alarm nextAlarm = await TokiDatabase.instance.readAlarm(nextAlarmsWithDateTimes.first['id']);
       

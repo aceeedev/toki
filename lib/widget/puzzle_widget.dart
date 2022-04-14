@@ -40,6 +40,8 @@ class _PuzzleState extends State<PuzzleWidget> {
   @override
   Widget build(BuildContext context) {
     return CardWidget(
+      backgroundColor: isSwitched ? context.watch<Styles>().secondBackgroundColor : context.watch<Styles>().disabledColor,
+      elevation: isSwitched ? 2.0 : 0.5,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[

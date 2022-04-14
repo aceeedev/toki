@@ -3,13 +3,14 @@ import 'package:toki/backend/database_helpers.dart';
 import 'package:toki/model/setting.dart';
 
 class Styles with ChangeNotifier{
+  static const _textSizeLarger = 24.0;
   static const _textSizeLarge = 18.0;
   static const _textSizeMedium = 13.0;
   static const _textSizeDefault = 11.0;
   static const _textSizePageTitle = 40.0;
 
   static final MaterialColor _colorBlack = _createMaterialColor(const Color(0xff111111));
-  static final MaterialColor _colorWhite = _createMaterialColor(const Color(0xffaaaaaa));
+  static final MaterialColor _colorWhite = _createMaterialColor(const Color(0xffB0B0B0));
   static final MaterialColor _colorLogoGreen = _createMaterialColor(const Color(0xffC6D57E));
   static final MaterialColor _colorLogoRed = _createMaterialColor(const Color(0xffD57E7E));
   static final MaterialColor _colorLogoBlue = _createMaterialColor(const Color(0xffA2CDCD));
@@ -18,6 +19,11 @@ class Styles with ChangeNotifier{
   static final MaterialColor _blackColor = _createMaterialColor(const Color(0xff000000));
   static final MaterialColor _lightColor = _createMaterialColor(const Color(0xffFAFAFA));
   static final MaterialColor _nightColor = _createMaterialColor(const Color(0xff121212));
+  static final MaterialColor _lightGray = _createMaterialColor(const Color(0xffF0F0F0));
+  static final MaterialColor _darkGray = _createMaterialColor(const Color(0xff0a0a0a));
+  static final MaterialColor _trackColorLight = _createMaterialColor(const Color(0xffD3D3D3));
+  static final MaterialColor _trackColorDark = _createMaterialColor(const Color(0xff565656));
+  
 
   static const String _fontNameDefault = 'M+ 1C';
 
@@ -33,11 +39,15 @@ class Styles with ChangeNotifier{
   static MaterialColor _textColorDefault = _colorBlack;
   static MaterialColor _secondBackgroundColor = _whiteColor;
   static MaterialColor _backgroundColor = _lightColor;
+  static MaterialColor _disabledColor = _lightGray;
+  static MaterialColor _inactiveTrackColor = _trackColorLight;
 
   MaterialColor get selectedAccentColor => _selectedAccentColor;
   MaterialColor get textColorDefault => _textColorDefault;
   MaterialColor get secondBackgroundColor => _secondBackgroundColor;
   MaterialColor get backgroundColor => _backgroundColor;
+  MaterialColor get disabledColor => _disabledColor;
+  MaterialColor get inactiveTrackColor => _inactiveTrackColor;
 
   MaterialColor get colorLogoGreen => _colorLogoGreen;
   MaterialColor get colorLogoRed => _colorLogoRed;
@@ -87,6 +97,20 @@ class Styles with ChangeNotifier{
     fontFamily: _fontNameDefault,
     fontSize: _textSizeMedium,
     color: _textColorDefault,
+  );
+
+  TextStyle _textToday = TextStyle(
+    fontFamily: _fontNameDefault,
+    fontSize: _textSizeLarger,
+    color: _textColorDefault,
+    fontWeight: FontWeight.w700,
+  );
+
+  TextStyle _textNextAlarm = TextStyle(
+    fontFamily: _fontNameDefault,
+    fontSize: _textSizeLarger,
+    color: _textColorDefault,
+    fontWeight: FontWeight.w500,
   );
 
   ButtonStyle _alarmFormButtonStyle = ElevatedButton.styleFrom(
@@ -146,6 +170,8 @@ class Styles with ChangeNotifier{
   TextStyle get textDefault => _textDefault;
   TextStyle get largeTextDefault => _largeTextDefault;
   TextStyle get mediumTextDefault => _mediumTextDefault;
+  TextStyle get textToday => _textToday;
+  TextStyle get textNextAlarm => _textNextAlarm;
   ButtonStyle get alarmFormButtonStyle => _alarmFormButtonStyle;
   ButtonStyle get dayButtonStyleSelected => _dayButtonStyleSelected;
   ButtonStyle get dayButtonStyleNotSelected => _dayButtonStyleNotSelected;
@@ -216,10 +242,14 @@ class Styles with ChangeNotifier{
         _backgroundColor = _lightColor;
         _secondBackgroundColor = _whiteColor;
         _textColorDefault = _colorBlack;
+        _disabledColor = _lightGray;
+        _inactiveTrackColor = _trackColorLight;
       } else if (lightNightMode.settingData == 'night') {
-        _backgroundColor = _nightColor;
-        _secondBackgroundColor = _blackColor;
+        _backgroundColor = _blackColor;
+        _secondBackgroundColor = _nightColor;
         _textColorDefault = _colorWhite;
+        _disabledColor = _darkGray;
+        _inactiveTrackColor = _trackColorDark;
       } else {
         Exception('Light/Night Mode ${lightNightMode.settingData} does not match light or night');
       }
@@ -228,6 +258,8 @@ class Styles with ChangeNotifier{
       _alarmTitle = _alarmTitle.copyWith(color: _textColorDefault);
       _textDefault = _textDefault.copyWith(color: _textColorDefault);
       _largeTextDefault = _largeTextDefault.copyWith(color: _textColorDefault);
+      _textToday = _textToday.copyWith(color: _textColorDefault);
+      _textNextAlarm = _textNextAlarm.copyWith(color: _textColorDefault);
       _mediumTextDefault = _mediumTextDefault.copyWith(color: _textColorDefault);
       
       _leaderboardButton = TextButton.styleFrom(

@@ -48,30 +48,33 @@ class _PuzzlePageState extends State<PuzzlePage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    backgroundColor: context.read<Styles>().backgroundColor,
+    backgroundColor: context.read<Styles>().selectedAccentColor,
     body: SafeArea(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          const PageTitle(
-            title: 'Puzzles',
-          ),
-          Expanded(
-            child: isLoading
-              ? const Center(
-                  child: CircularProgressIndicator()
-                )
-              : puzzles.isEmpty
-                ? Center(
-                    child: Text(
-                      'No Puzzles',
-                      style: context.watch<Styles>().largeTextDefault,
-                    ),
+      child: Container(
+        color: context.read<Styles>().backgroundColor,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const PageTitle(
+              title: 'Puzzles',
+            ),
+            Expanded(
+              child: isLoading
+                ? const Center(
+                    child: CircularProgressIndicator()
                   )
-                : buildPuzzles(),
-          ),
-        ]
+                : puzzles.isEmpty
+                  ? Center(
+                      child: Text(
+                        'No Puzzles',
+                        style: context.watch<Styles>().largeTextDefault,
+                      ),
+                    )
+                  : buildPuzzles(),
+            ),
+          ]
+        ),
       ),
     ),
   );

@@ -7,6 +7,7 @@ import 'package:toki/providers/styles.dart';
 import 'package:toki/backend/database_helpers.dart';
 import 'package:toki/model/alarm.dart';
 import 'package:toki/widget/card_widget.dart';
+import 'package:toki/page/create_alarm_page.dart';
 
 class AlarmWidget extends StatefulWidget {
   final Alarm alarm;
@@ -30,6 +31,8 @@ class _AlarmState extends State<AlarmWidget> {
   @override
   Widget build(BuildContext context) {
     return CardWidget(
+      backgroundColor: isSwitched ? context.watch<Styles>().secondBackgroundColor : context.watch<Styles>().disabledColor,
+      elevation: isSwitched ? 2.0 : 0.5,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
@@ -99,11 +102,12 @@ class _AlarmState extends State<AlarmWidget> {
                       NotificationApi.cancelAlarm(widget.alarm);
                     }
 
-                    widget.refreshFunc;
+                    widget.refreshFunc();
                   });
                 },
                 activeTrackColor: context.watch<Styles>().selectedAccentColor,
                 activeColor: context.watch<Styles>().selectedAccentColor[700],
+                inactiveTrackColor: context.watch<Styles>().inactiveTrackColor,
               ),
             ),
           ),
@@ -149,25 +153,28 @@ class _ThreeDotsButtonState extends State<ThreeDotsButton> {
       ),
       iconSize: 30.0,
       itemBuilder: (BuildContext context) => [
-        /*PopupMenuItem(
+        PopupMenuItem(
           child: Row(
             children: [
-              const Icon(Icons.edit),
+              Icon(
+                Icons.edit,
+                color: context.read<Styles>().textColorDefault,
+              ),
               Text(
                 ' Edit',
-                style: Styles.textDefault,
+                style: context.read<Styles>().textDefault,
               ),
             ],
           ),
           value: 'Edit',
-        ),*/
+        ),
         PopupMenuItem(
           child: Row(
             children: [
               Icon(
                 Icons.delete,
                 color: context.read<Styles>().colorLogoRed,
-                ),
+              ),
               Text(
                 ' Delete',
                 style: context.read<Styles>().textDefaultRed
@@ -184,7 +191,7 @@ class _ThreeDotsButtonState extends State<ThreeDotsButton> {
   void handleClick(String value) {
     switch (value) {
       case 'Edit':
-        // TODO edit alarm ability
+        Navigator.push(context, MaterialPageRoute(builder: (context) => CreateAlarmPage(edit: true, alarm: widget.alarm, refreshFunc: widget.refreshFunc)));
         break;
       case 'Delete':
         showCupertinoDialog(
@@ -200,7 +207,7 @@ class _ThreeDotsButtonState extends State<ThreeDotsButton> {
               CupertinoDialogAction(
                 isDestructiveAction: true,
                 child: const Text('Yes'),
-                onPressed: () {
+                onPressed: () async {
                   // delete from db
                   TokiDatabase.instance.deleteAlarm(widget.alarm.id!);
                   // delete and schedule next alarm if exists

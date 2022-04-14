@@ -45,6 +45,8 @@ dependencies:
   audioplayers: ^0.20.1
   provider: ^6.0.2
   games_services: ^2.0.7
+  rate_my_app: ^1.1.2
+  url_launcher: ^6.0.20
 
 dev_dependencies:
   flutter_test:
