@@ -45,7 +45,8 @@ class _MatchingIconsState extends State<MatchingIcons> {
       minCorrectIcons = 3;
       diff = 'Medium';
     } else if (widget.difficulty == 3) {
-      numOfButtons = 5;
+      numOfButtons = 20;
+      minCorrectIcons = 5;
       diff = 'Hard';
     }
 
