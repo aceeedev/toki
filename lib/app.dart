@@ -14,6 +14,7 @@ import 'package:toki/providers/styles.dart';
 import 'package:toki/puzzles/puzzle_helper.dart';
 import 'package:toki/main.dart';
 import 'package:toki/config.dart';
+import 'package:toki/model/puzzle.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -185,7 +186,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       TokiDatabase.instance.updateSetting(updatedSetting);
 
       // put functions to run if updated here
-      
+      const Puzzle puzzle = Puzzle(
+        name: 'Memory',
+        difficulty: 2,
+        enabled: true,
+      );
+        TokiDatabase.instance.createPuzzle(puzzle);
     }
 
     context.read<Styles>().setStyles();

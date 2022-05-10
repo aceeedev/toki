@@ -111,6 +111,7 @@ class _AlarmPageState extends State<AlarmPage> {
                           Text(
                             'No Alarms',
                             style: context.watch<Styles>().largeTextDefault,
+                            textAlign: TextAlign.center,
                           ),
                           Text(
                             'Toki works best when your phone is off and your ringer is on.',

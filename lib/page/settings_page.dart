@@ -176,18 +176,36 @@ class _SettingsPageState extends State<SettingsPage> {
                         linkButton(
                           titleName: 'Website', 
                           redirectUrl: 'https://tokialarmclock.wixsite.com/website',
+                          icon: Icons.web
                         ),
                         TextButton(
                           onPressed: () async {
-                           widget.rateAppPopUp();
+                            widget.rateAppPopUp();
                           }, 
-                          child: Text(
-                            'Rate Us',
-                            style: context.watch<Styles>().mediumTextDefault,
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(right: 5.0),
+                                child: Icon(
+                                  Icons.star,
+                                  size: 24.0,
+                                  color: context.watch<Styles>().textColorDefault,
+                                ),
+                              ),
+                              Text(
+                                'Rate Us',
+                                style: context.watch<Styles>().mediumTextDefault,
+                              ),
+                            ],
                           ),
                           style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all(context.watch<Styles>().selectedAccentColor),
                           ),
+                        ),
+                        linkButton(
+                          titleName: 'Report a Bug', 
+                          redirectUrl: 'https://forms.gle/KLrZBsn5jPqWJfxSA',
+                          icon: Icons.bug_report
                         ),
                       ],
                     ),
@@ -292,7 +310,8 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Widget linkButton({
     required String titleName, 
-    required String redirectUrl
+    required String redirectUrl,
+    required IconData icon, 
   }) {
     return Padding(
       padding: const EdgeInsets.only(left: 10.0, right: 10.0),
@@ -304,9 +323,22 @@ class _SettingsPageState extends State<SettingsPage> {
             throw 'Could not launch $redirectUrl';
           }
         }, 
-        child: Text(
-          titleName,
-          style: context.watch<Styles>().mediumTextDefault,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(right: 5.0),
+              child: Icon(
+                icon,
+                size: 24.0,
+                color: context.watch<Styles>().textColorDefault,
+              ),
+            ),
+            Text(
+              titleName,
+              style: context.watch<Styles>().mediumTextDefault,
+            ),
+          ],
         ),
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all(context.watch<Styles>().selectedAccentColor),

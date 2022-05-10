@@ -6,6 +6,7 @@ import 'package:games_services/games_services.dart';
 import 'package:toki/providers/styles.dart';
 import 'package:toki/backend/notification_api.dart';
 import 'package:toki/model/alarm.dart';
+import 'package:toki/puzzles/memory.dart';
 import 'package:toki/widget/page_title.dart';
 import 'package:toki/widget/emergency_exit_button.dart';
 import 'package:toki/puzzles/matching_icons.dart';
@@ -61,6 +62,12 @@ class PuzzleHelper {
       puzzleWidget = MazePuzzle(
         completePuzzle: completePuzzle,
         difficulty: (await TokiDatabase.instance.readPuzzle(null, 'Maze')).difficulty,
+        test: true,
+      );
+    } else if (puzzleName == 'Memory') {
+      puzzleWidget = MemoryGame(
+        completePuzzle: completePuzzle,
+        difficulty: (await TokiDatabase.instance.readPuzzle(null, 'Memory')).difficulty,
         test: true,
       );
     } else {
