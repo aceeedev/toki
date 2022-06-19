@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:toki/providers/styles.dart';
 import 'package:toki/puzzles/puzzle_helper.dart';
 
+// TODO: never finished
+
 class MemoryGame extends StatefulWidget {
   final Function completePuzzle;
   final int difficulty;
@@ -83,6 +85,7 @@ class _MemoryGameState extends State<MemoryGame> {
         completePuzzle: widget.completePuzzle,
         test: widget.test,
         diff: diff,
+        id: i,
       ));
     }
 
@@ -117,7 +120,8 @@ class Button extends StatefulWidget {
   final Function completePuzzle;
   final bool test;
   final String diff;
-  Button({Key? key, required this.checkAllIconsFunc, required this.completePuzzle, required this.test, required this.diff}) : super(key: key);
+  final int id;
+  Button({Key? key, required this.checkAllIconsFunc, required this.completePuzzle, required this.test, required this.diff, required this.id}) : super(key: key);
   
   bool pressed = false;
 
@@ -139,7 +143,7 @@ class _ButtonState extends State<Button> {
             if (widget.checkAllIconsFunc()) {
               if (!widget.test) {
                 int elapsedTime = PuzzleHelper.stopStopwatch();
-                PuzzleHelper.addScoreToLeaderboard('matchingIcons${widget.diff}', elapsedTime);
+                PuzzleHelper.addScoreToLeaderboard('memory${widget.diff}', elapsedTime);
               }
 
               widget.completePuzzle(context, widget.test);

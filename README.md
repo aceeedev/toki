@@ -1,6 +1,6 @@
 # Toki
 
-The alarm clock app that requires you to solve a puzzle to stop.
+The alarm clock app that requires you to solve a puzzle to stop the alarm.
 
 ## Purpose
 

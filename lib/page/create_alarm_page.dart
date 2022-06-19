@@ -203,7 +203,7 @@ class _CreateAlarmPageState extends State<CreateAlarmPage> {
   @override
   void initState() {
     if (widget.edit) {
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         context.read<CreateForm>().setTime(widget.alarm!.time);
 
         Map<String?, String> ringtoneMap = {};
@@ -217,7 +217,7 @@ class _CreateAlarmPageState extends State<CreateAlarmPage> {
             .setRingtoneSound(widget.alarm!.alarmRingtone);
       });
     } else {
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         context.read<CreateForm>().resetTime();
         context.read<CreateForm>().setRingtoneName(ringtoneListTiles.first.title);
         context

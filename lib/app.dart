@@ -59,7 +59,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     NotificationApi.init(initScheduled: true);
     listenNotifications();
 
-    WidgetsBinding.instance?.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   void rateAppPopUp() {
@@ -169,7 +169,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     print(dir.path);
   }
 
-  /// function runs when there has been an update to the app
+  /// Function runs when there has been an update to the app
   Future checkForUpdate() async {
     await TokiDatabase.instance.initializeInsert();
 
@@ -186,12 +186,19 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       TokiDatabase.instance.updateSetting(updatedSetting);
 
       // put functions to run if updated here
-      const Puzzle puzzle = Puzzle(
+      // uncomment when memory is ready to be releaased
+      /*const Puzzle puzzle = Puzzle(
         name: 'Memory',
         difficulty: 2,
         enabled: true,
       );
-        TokiDatabase.instance.createPuzzle(puzzle);
+      TokiDatabase.instance.createPuzzle(puzzle);*/
+      const Puzzle puzzle = Puzzle(
+        name: 'Complete the Word',
+        difficulty: 2,
+        enabled: true,
+      );
+      TokiDatabase.instance.createPuzzle(puzzle);
     }
 
     context.read<Styles>().setStyles();

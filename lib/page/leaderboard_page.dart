@@ -16,6 +16,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
   Map<String, String> leaderboards = {
     'Matching Icons':'matchingIcons',
     'Maze':'maze',
+    'Complete the Word': 'completeWord',
   };
 
   @override
@@ -40,7 +41,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                             itemCount: leaderboards.length,
                             itemBuilder: (BuildContext contxext, int index) {
                               return Padding(
-                                padding: const EdgeInsets.all(25.0),
+                                padding: const EdgeInsets.all(1.0),
                                 child: CardWidget(
                                   backgroundColor: context.watch<Styles>().secondBackgroundColor,
                                   elevation: 2.0,

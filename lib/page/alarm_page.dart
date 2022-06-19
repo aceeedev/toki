@@ -133,7 +133,7 @@ class _AlarmPageState extends State<AlarmPage> {
         child: const Icon(Icons.add),
         backgroundColor: context.watch<Styles>().selectedAccentColor,
         onPressed: () {
-          WidgetsBinding.instance?.addPostFrameCallback((_){
+          WidgetsBinding.instance.addPostFrameCallback((_){
             Navigator.push(context, MaterialPageRoute(builder: (context) => CreateAlarmPage(edit: false, alarm: null, refreshFunc: refreshAlarms)));
           });
         },
