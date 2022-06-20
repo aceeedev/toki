@@ -11,6 +11,8 @@ import 'package:toki/widget/emergency_exit_button.dart';
 import 'package:toki/puzzles/matching_icons.dart';
 import 'package:toki/puzzles/maze.dart';
 import 'package:toki/puzzles/complete_word.dart';
+import 'package:toki/puzzles/hangman.dart';
+import 'package:toki/puzzles/word_search.dart';
 //import 'package:toki/puzzles/memory.dart';
 
 
@@ -34,7 +36,17 @@ class PuzzleHelper {
         completePuzzle: completePuzzle,
         difficulty: (await TokiDatabase.instance.readPuzzle(null, 'Complete the Word')).difficulty,
         test: false,
-      )}
+      )},
+      {'Hangman': Hangman(
+        completePuzzle: completePuzzle,
+        difficulty: (await TokiDatabase.instance.readPuzzle(null, 'Hangman')).difficulty,
+        test: false,
+      )},
+      {'Word Search': WordSearchGame(
+        completePuzzle: completePuzzle,
+        difficulty: (await TokiDatabase.instance.readPuzzle(null, 'Word Search')).difficulty,
+        test: false,
+      )},
     ];
   } 
 
@@ -79,7 +91,19 @@ class PuzzleHelper {
         difficulty: (await TokiDatabase.instance.readPuzzle(null, 'Complete the Word')).difficulty,
         test: true,
       );
-    }else {
+    } else if (puzzleName == 'Hangman') {
+      puzzleWidget = Hangman(
+        completePuzzle: completePuzzle,
+        difficulty: (await TokiDatabase.instance.readPuzzle(null, 'Hangman')).difficulty,
+        test: true,
+      );
+    } else if (puzzleName == 'Word Search') {
+      puzzleWidget = WordSearchGame(
+        completePuzzle: completePuzzle,
+        difficulty: (await TokiDatabase.instance.readPuzzle(null, 'Word Search')).difficulty,
+        test: true,
+      );
+    } else {
       throw Exception('Puzzle Name $puzzleName not found');
     }
 

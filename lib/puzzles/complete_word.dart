@@ -132,7 +132,7 @@ class _CompleteWordState extends State<CompleteWord> {
     );
 
     // add incorrect letters
-    const chars = 'abcdefghijklmnopqrstuvwxyz';
+    const String chars = 'abcdefghijklmnopqrstuvwxyz';
     for (int i = 0; i < 4; i++) {
       String randomLetter = String.fromCharCodes(Iterable.generate(
         1, (_) => chars.codeUnitAt(Random().nextInt(chars.length))

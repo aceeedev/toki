@@ -22,7 +22,7 @@ class _HangmanState extends State<Hangman> {
   List<String> usedWords = [];
   List<String> usedLetters = [];
   late String maskedWord;
-  late List<List<TextButton>> listOfListOfLetterButtons;
+  late List<List<CustomTextButton>> listOfListOfLetterButtons;
 
   @override
   void initState() {
@@ -37,36 +37,25 @@ class _HangmanState extends State<Hangman> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Lives: $numOfLives',
+              style: context.watch<Styles>().largeTextDefault,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
         Text(
-          'Complete the word',
+          maskedWord,
           style: context.watch<Styles>().largeTextDefault,
+          textAlign: TextAlign.center,
         ),
-        Expanded(
-          child: Column(
-            children: [
-              Text(
-                'Round $currentRound/$numOfRounds',
-                style: context.watch<Styles>().largeTextDefault,
-              ),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      missingLetterWord,
-                      style: context.watch<Styles>().pageTitle,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: listOfLetterButtons,
-                    ),
-                  ],
-                )
-              ),
-            ],
-          ),
-        ),
+        const Spacer(),
+        lettersRow(listOfListOfLetterButtons[0]),
+        lettersRow(listOfListOfLetterButtons[1]),
+        lettersRow(listOfListOfLetterButtons[2]),
       ],
     );
   }
@@ -74,13 +63,13 @@ class _HangmanState extends State<Hangman> {
   int _getNumOfLives() {
     if (widget.difficulty == 1) {
       diff = 'Easy';
-      return 9;
+      return 15;
     } else if (widget.difficulty == 2) {
       diff = 'Medium';
-      return 6;
+      return 10;
     } else if (widget.difficulty == 3) {
       diff = 'Hard';
-      return 4;
+      return 6;
     }
 
     throw Exception('difficulty ${widget.difficulty} is not 1, 2, or 3');
@@ -95,18 +84,51 @@ class _HangmanState extends State<Hangman> {
 
     usedWords.add(word);
 
+    maskedWord = ' _ ' * word.length;
+    maskedWord = maskedWord.substring(1, maskedWord.length - 1);
+
     listOfListOfLetterButtons = _createLetterButtons();
   }
 
-  /*if (!widget.test) {
-    int elapsedTime = PuzzleHelper.stopStopwatch();
-    PuzzleHelper.addScoreToLeaderboard('completeWord$diff', elapsedTime);
+  void checkLetter(String letter) {
+    if (!usedLetters.contains(letter)) {
+      usedLetters.add(letter);
+
+      if (word.contains(letter)) {
+        for (int i = 0; i < word.length; i++) {
+          if (word[i] == letter) {
+            setState(() {
+              maskedWord = maskedWord.substring(0, i * 3) + letter + maskedWord.substring((i * 3) + 1);
+            });
+          }
+        }
+
+        if (!maskedWord.contains('_')) {
+          if (!widget.test) {
+            int elapsedTime = PuzzleHelper.stopStopwatch();
+            PuzzleHelper.addScoreToLeaderboard('hangman$diff', elapsedTime);
+          }
+
+          widget.completePuzzle(context, widget.test);
+        }
+      } else {
+        setState(() => numOfLives--);
+
+        // reset game if ran out of lives
+        if (numOfLives <= 0) {
+          setState(() {
+            _initWord();
+            numOfLives = _getNumOfLives();
+            listOfListOfLetterButtons = _createLetterButtons();
+            usedLetters = [];
+          });
+        }
+      }
+    }
   }
 
-  widget.completePuzzle(context, widget.test);*/
-
-  List<TextButton> _createLetterButtons() {
-    List<TextButton> listOfLetterButtons = [];
+  List<List<CustomTextButton>> _createLetterButtons() {
+    List<List<CustomTextButton>> listOfLetterButtons = [[], [], []];
 
     const List<List<String>> keyboardLetters = [
       ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'], 
@@ -115,18 +137,31 @@ class _HangmanState extends State<Hangman> {
     
     for (int row = 0; row < keyboardLetters.length; row++) {
       for (int letter = 0; letter < keyboardLetters[row].length; letter++) {
-        // make button of letter index
+        listOfLetterButtons[row].add(CustomTextButton(
+          value: keyboardLetters[row][letter],
+          checkLetter: checkLetter,
+        ));
       }
     }
 
     return listOfLetterButtons;
   }
+
+  Row lettersRow(List<CustomTextButton> listOfButtons) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: listOfButtons,
+    );
+  }
 }
 
 class CustomTextButton extends StatefulWidget {
   final String value;
-  const CustomTextButton({Key? key, required this.value})
-      : super(key: key);
+  final Function checkLetter;
+  bool selected = false;
+
+  CustomTextButton({Key? key, required this.value, required this.checkLetter}) : super(key: key);
 
   @override
   State<CustomTextButton> createState() => _CustomTextButtonState();
@@ -135,15 +170,22 @@ class CustomTextButton extends StatefulWidget {
 class _CustomTextButtonState extends State<CustomTextButton> {
   @override
   Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: () => setState(() {
-        
-      }), 
-      child: Text(
-        widget.value,
-        style: context.read<Styles>().largeTextDefault,
+    return Expanded(
+      child: TextButton(
+        onPressed: () => setState(() {
+          if (!widget.selected) {
+            widget.checkLetter(widget.value);
+            widget.selected = true;
+          }
+        }), 
+        child: Text(
+          widget.value,
+          style: context.read<Styles>().largeTextDefault,
+        ),
+        style: widget.selected ? 
+          context.read<Styles>().dayButtonStyleNotSelected :
+          context.read<Styles>().dayButtonStyleSelected,
       ),
-      style: context.read<Styles>().leaderboardButton,
     );
   }
 }

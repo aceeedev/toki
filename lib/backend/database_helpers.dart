@@ -99,7 +99,7 @@ CREATE TABLE $tableSettings (
       }
 
       // initalize puzzles 
-      List<String> puzzleNames = ['Matching Icons', 'Maze', 'Complete the Word'];
+      List<String> puzzleNames = ['Matching Icons', 'Maze', 'Hangman', 'Word Search', 'Complete the Word'];
       for (String name in puzzleNames) {
         Puzzle puzzle = Puzzle(
           name: name,

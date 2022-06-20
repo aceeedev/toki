@@ -193,12 +193,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         enabled: true,
       );
       TokiDatabase.instance.createPuzzle(puzzle);*/
-      const Puzzle puzzle = Puzzle(
-        name: 'Complete the Word',
-        difficulty: 2,
-        enabled: true,
-      );
-      TokiDatabase.instance.createPuzzle(puzzle);
+      List<String> puzzleNames = ['Hangman', 'Word Search', 'Complete the Word'];
+      for (String name in puzzleNames) {
+        Puzzle puzzle = Puzzle(
+          name: name,
+          difficulty: 2,
+          enabled: true,
+        );
+        TokiDatabase.instance.createPuzzle(puzzle);
+      }
     }
 
     context.read<Styles>().setStyles();
