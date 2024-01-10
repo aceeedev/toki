@@ -104,10 +104,11 @@ class _HangmanState extends State<Hangman> {
         }
 
         if (!maskedWord.contains('_')) {
-          if (!widget.test) {
-            int elapsedTime = PuzzleHelper.stopStopwatch();
-            PuzzleHelper.addScoreToLeaderboard('hangman$diff', elapsedTime);
-          }
+          // if (!widget.test) {
+          int elapsedTime = PuzzleHelper.stopStopwatch();
+          // print(elapsedTime);
+          PuzzleHelper.addScoreToLeaderboard('hangman$diff', elapsedTime);
+          // }
 
           widget.completePuzzle(context, widget.test);
         }

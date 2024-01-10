@@ -146,10 +146,11 @@ class _WordSearchState extends State<WordSearchGame> {
       }
     }
 
-    if (!widget.test) {
-      int elapsedTime = PuzzleHelper.stopStopwatch();
-      PuzzleHelper.addScoreToLeaderboard('wordSearch$diff', elapsedTime);
-    }
+    // if (!widget.test) {
+    int elapsedTime = PuzzleHelper.stopStopwatch();
+    // print(elapsedTime);
+    PuzzleHelper.addScoreToLeaderboard('wordSearch$diff', elapsedTime);
+    // }
 
     widget.completePuzzle(context, widget.test);
 

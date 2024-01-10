@@ -105,10 +105,11 @@ class _CompleteWordState extends State<CompleteWord> {
     currentRound += 1;
 
     if (currentRound > numOfRounds) {
-      if (!widget.test) {
-        int elapsedTime = PuzzleHelper.stopStopwatch();
-        PuzzleHelper.addScoreToLeaderboard('completeWord$diff', elapsedTime);
-      }
+      // if (!widget.test) {
+      int elapsedTime = PuzzleHelper.stopStopwatch();
+      // print(elapsedTime);
+      PuzzleHelper.addScoreToLeaderboard('completeWord$diff', elapsedTime);
+      // }
 
       widget.completePuzzle(context, widget.test);
     }
