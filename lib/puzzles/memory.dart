@@ -141,10 +141,12 @@ class _ButtonState extends State<Button> {
             setState(() => widget.pressed = !widget.pressed);
 
             if (widget.checkAllIconsFunc()) {
-              if (!widget.test) {
-                int elapsedTime = PuzzleHelper.stopStopwatch();
-                PuzzleHelper.addScoreToLeaderboard('memory${widget.diff}', elapsedTime);
-              }
+              // if (!widget.test) {
+              int elapsedTime = PuzzleHelper.stopStopwatch();
+              // print(elapsedTime);
+              PuzzleHelper.addScoreToLeaderboard(
+                  'memory${widget.diff}', elapsedTime);
+              // }
 
               widget.completePuzzle(context, widget.test);
             }

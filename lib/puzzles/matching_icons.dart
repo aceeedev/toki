@@ -178,10 +178,11 @@ class _SpecialIconButtonState extends State<SpecialIconButton> {
             setState(() => widget.pressed = !widget.pressed);
 
             if (widget.checkAllIconsFunc()) {
-              if (!widget.test) {
-                int elapsedTime = PuzzleHelper.stopStopwatch();
-                PuzzleHelper.addScoreToLeaderboard('matchingIcons${widget.diff}', elapsedTime);
-              }
+              // if (!widget.test) {
+              int elapsedTime = PuzzleHelper.stopStopwatch();
+              // print(elapsedTime);
+              PuzzleHelper.addScoreToLeaderboard('matchingIcons${widget.diff}', elapsedTime);
+              // }
 
               widget.completePuzzle(context, widget.test);
             }

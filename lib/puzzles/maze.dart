@@ -39,10 +39,11 @@ class _MazePuzzleState extends State<MazePuzzle> {
             rows: _getNumOfRows(),
             wallColor: context.watch<Styles>().selectedAccentColor,
             onFinish: () {
-              if (!widget.test) {
-                int elapsedTime = PuzzleHelper.stopStopwatch();
-                PuzzleHelper.addScoreToLeaderboard('maze$diff', elapsedTime);
-              }
+              // if (!widget.test) {
+              int elapsedTime = PuzzleHelper.stopStopwatch();
+              // print(elapsedTime);
+              PuzzleHelper.addScoreToLeaderboard('maze$diff', elapsedTime);
+              // }
 
               widget.completePuzzle(context, widget.test);
             },
