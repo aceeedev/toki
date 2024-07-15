@@ -15,8 +15,9 @@ void main() {
         ChangeNotifierProvider(create: (_) => Styles()),
         ChangeNotifierProvider(create: (_) => CreateForm()),
       ],
-      child: const MaterialApp(
-        home: MyApp(),
+      child:  MaterialApp(
+        home: const MyApp(),
+        theme: ThemeData(useMaterial3: false),
         debugShowCheckedModeBanner: false,
       ),
     ),

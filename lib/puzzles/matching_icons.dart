@@ -199,7 +199,7 @@ class _SpecialIconButtonState extends State<SpecialIconButton> {
           ),
           style: ElevatedButton.styleFrom(
             elevation: 0.0,
-            primary: context.watch<Styles>().secondBackgroundColor,
+            backgroundColor: context.watch<Styles>().secondBackgroundColor,
             side: BorderSide(
               width: 5.0,
               color: widget.pressed ? context.watch<Styles>().selectedAccentColor : context.watch<Styles>().secondBackgroundColor,

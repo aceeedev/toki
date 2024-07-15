@@ -115,12 +115,12 @@ class Styles with ChangeNotifier{
 
   ButtonStyle _alarmFormButtonStyle = ElevatedButton.styleFrom(
     fixedSize: _alarmFormButtonFixedSize, 
-    primary: _selectedAccentColor,
+    backgroundColor: _selectedAccentColor,
   );
 
   static final _dayButtonStyleSelected = TextButton.styleFrom(
     minimumSize: const Size(3.0, 3.0),
-    primary: _selectedAccentColor[500],
+    backgroundColor: _selectedAccentColor[500],
     textStyle: const TextStyle(
       fontFamily: _fontNameDefault,
       fontSize: _textSizeMedium,
@@ -133,7 +133,7 @@ class Styles with ChangeNotifier{
 
   static final _dayButtonStyleNotSelected = TextButton.styleFrom(
     minimumSize: const Size(3.0, 3.0),
-    primary: Colors.grey[400],
+    backgroundColor: Colors.grey[400],
     textStyle: const TextStyle(
       fontFamily: _fontNameDefault,
       fontSize: _textSizeDefault,
@@ -151,7 +151,7 @@ class Styles with ChangeNotifier{
   );
 
   static ButtonStyle _leaderboardButton = TextButton.styleFrom(
-    primary: _textColorDefault,
+    backgroundColor: _textColorDefault,
     textStyle: const TextStyle(
       fontFamily: _fontNameDefault,
       fontSize: _textSizeDefault,
@@ -233,7 +233,7 @@ class Styles with ChangeNotifier{
       _selectTimeText = _selectTimeText.copyWith(color: _selectedAccentColor);
       _alarmFormButtonStyle = ElevatedButton.styleFrom(
         fixedSize: _alarmFormButtonFixedSize, 
-        primary: _selectedAccentColor
+        backgroundColor: _selectedAccentColor
       );
       _alarmDateSelected = _alarmDateSelected.copyWith(color: _selectedAccentColor);
 
@@ -263,7 +263,6 @@ class Styles with ChangeNotifier{
       _mediumTextDefault = _mediumTextDefault.copyWith(color: _textColorDefault);
       
       _leaderboardButton = TextButton.styleFrom(
-        primary: _textColorDefault,
         textStyle: const TextStyle(
           fontFamily: _fontNameDefault,
           fontSize: _textSizeDefault,
@@ -273,8 +272,6 @@ class Styles with ChangeNotifier{
           color: _selectedAccentColor,
         )
       );
-
-
       
        notifyListeners();
     }
